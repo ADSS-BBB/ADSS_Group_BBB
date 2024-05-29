@@ -1,3 +1,5 @@
+package DeliveryM.BusinessLayer.Objects;
+
 public class Item{
 	
 
@@ -11,8 +13,8 @@ public class Item{
 		this.weight=weight;
 	}
 
-	public getidItem(){return id;}
-	public getnameItem(){return name;}
-	public getItemweight(){return weight;}
+	public int getidItem(){return id;}
+	public String getnameItem(){return name;}
+	public int getItemweight(){return weight;}
 
 }

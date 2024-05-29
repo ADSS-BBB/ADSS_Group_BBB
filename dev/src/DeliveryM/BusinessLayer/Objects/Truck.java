@@ -1,3 +1,5 @@
+package DeliveryM.BusinessLayer.Objects;
+
 public class Truck{
 
 	private int idtruck;
@@ -9,12 +11,15 @@ public class Truck{
 		this.idtruck=idtruck;
 		this.model=model;
 		this.truckWeight=truckWeight;
-		this.maxWeight=maxWeight
+		this.maxWeight=maxWeight;
 		this.isAvailable=isAvailable;
 	
 	}
-	public int getIdtruck(){return idtruck;}
+	public int getnumbertruck(){return idtruck;}
+
 	public String getmodel(){return model;}
+
+
 	public int getruckWeight(){return truckWeight;}
 	public int getmaxWeight(){return maxWeight;}
 	public boolean getisAvailableTruck(){return isAvailable;}

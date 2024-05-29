@@ -1,3 +1,5 @@
+package DeliveryM.BusinessLayer.Objects;
+
 public class Driver {
 
 	private int id;
@@ -18,7 +20,7 @@ public class Driver {
 	public String getnameDriver(){return name;}
 	public String getlicensetypeDriver(){return licensetype;}
 	public boolean getisAvailableDriver(){return isAvailable;}
-	public void getisAvailableDriver(newis){this.isAvailable=newis}
+	public void getisAvailableDriver(boolean newis){this.isAvailable=newis;}
 
 
 
