@@ -1,4 +1,4 @@
-package DeliveryM.BusinessLayer.Objects;
+package BusinessLayer.Objects;
 
 public class Item{
 	
@@ -6,15 +6,18 @@ public class Item{
 	private int id;
 	private String name;
 	private int weight;
+	//private int quantity;
 
 	public Item(int id ,String name,int weight){
 		this.id=id;
 		this.name=name;
 		this.weight=weight;
+		//this.quantity=quantity;
 	}
 
-	public int getidItem(){return id;}
-	public String getnameItem(){return name;}
-	public int getItemweight(){return weight;}
+	public int getIdItem(){return id;}
+	public String getNameItem(){return name;}
+	public int getItemWeight(){return weight;}
+	//public int getQuantity(){ return quantity;}
 
 }
