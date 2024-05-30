@@ -1,6 +1,6 @@
-package ServiceLayer;
+package HR.ServiceLayer;
 
-import DomainLayer.ShiftPackage.ShiftController;
+import HR.DomainLayer.ShiftPackage.ShiftController;
 
 public class ShiftService {
     private ShiftController shiftController = ShiftController.getInstance();

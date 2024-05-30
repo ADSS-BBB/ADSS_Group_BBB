@@ -1,6 +1,5 @@
-package DomainLayer.ShiftPackage;
+package HR.DomainLayer.ShiftPackage;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -23,6 +22,14 @@ public class Shift {
         this.MinWorkers = MinWorkers;
         Employees = new HashMap<>();
         Cancelation = new LinkedList<>();
-
     }
+
+    public HashMap<Integer, String> getEmployees() {
+        return Employees;
+    }
+
+    public Integer getShiftId() {
+        return ShiftId;
+    }
+
 }

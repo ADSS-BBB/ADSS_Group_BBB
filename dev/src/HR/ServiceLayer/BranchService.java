@@ -1,6 +1,6 @@
-package ServiceLayer;
+package HR.ServiceLayer;
 
-import DomainLayer.BranchPackage.BranchController;
+import HR.DomainLayer.BranchPackage.BranchController;
 
 public class BranchService {
     private BranchController branchController = BranchController.getInstance();

@@ -1,4 +1,4 @@
-package DomainLayer;
+package HR.DomainLayer;
 
 public class BankAccount {
     private String Username;
@@ -9,6 +9,17 @@ public class BankAccount {
         this.Username = username;
         this.Password = password;
         this.Balance = balance;
+    }
 
+    public Integer getBalance() {
+        return Balance;
+    }
+
+    public String getPassword() {
+        return Password;
+    }
+
+    public String getUsername() {
+        return Username;
     }
 }

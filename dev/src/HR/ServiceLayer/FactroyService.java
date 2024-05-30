@@ -1,4 +1,4 @@
-package ServiceLayer;
+package HR.ServiceLayer;
 
 public class FactroyService {
     private ShiftService shiftService;

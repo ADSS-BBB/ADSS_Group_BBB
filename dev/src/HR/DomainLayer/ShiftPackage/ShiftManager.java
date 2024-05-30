@@ -1,6 +1,6 @@
-package DomainLayer.ShiftPackage;
+package HR.DomainLayer.ShiftPackage;
 
-import DomainLayer.Contract;
+import HR.DomainLayer.Contract;
 
 public class ShiftManager {
     private Integer Id;
@@ -11,6 +11,5 @@ public class ShiftManager {
         this.Id = Id;
         this.Dealdetails = Dealdetails;
         this.name = name;
-
     }
 }

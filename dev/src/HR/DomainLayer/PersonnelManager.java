@@ -1,4 +1,4 @@
-package DomainLayer;
+package HR.DomainLayer;
 
 import java.util.HashMap;
 import java.util.LinkedList;
