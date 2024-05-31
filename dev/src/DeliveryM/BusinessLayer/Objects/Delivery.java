@@ -54,14 +54,7 @@ public class Delivery {
 		destinations.add(des);
 	}
 	public void removeDest(Location dest){
-		destinations.remove(dest);
-		for(Item i :items){
-			if(i.getDestinationid()==dest.getlocationid()){
-				items.remove(i);
-			}
-		}
-
-
+		destinations.remove((dest));
 	}
 	public  int getDriverId(){
 		return  this.driverid;

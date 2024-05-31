@@ -73,6 +73,7 @@ public class MainController {
                     Delivery singleOne=this.deliveryController.addDelivery(new Date(),src,
                             dests,driver.getIdDriver(),truck.getNumber(),truck.getTruckWeight(),items);
                     //must send a doc for the driver
+                    driverController.createSendDoc(singleOne,driver.getIdDriver());
 
 
                 }

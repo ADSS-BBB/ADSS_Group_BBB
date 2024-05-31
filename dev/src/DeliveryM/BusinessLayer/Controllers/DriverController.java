@@ -11,11 +11,13 @@ public class DriverController {
 
     private List<Driver> drivers;
     private Map<String,Integer> licenseWeight;
+    private int docId;
     private int driverId;
     public DriverController(){
         this.drivers=new LinkedList<>();
         this.driverId=0;
         licenseWeight=new HashMap<>();
+        docId=0;
         fillLicense();
 
     }
@@ -46,7 +48,7 @@ public class DriverController {
             }
         }
         return false;
-       //throw new Exception("driver does not exist!");
+        //throw new Exception("driver does not exist!");
     }
     public boolean updateIsAvalible(int driverId){
         for (int i=0;i<drivers.size();i++) {
@@ -72,12 +74,12 @@ public class DriverController {
             if (driver.getIsAvailableDriver() && driver.getLicenseTypeDriver().equals(licenseType)) {
                 updateIsAvalible(driver.getIdDriver());
                 return driver;
-                }
             }
+        }
         return  null;
     }
 
-    public void sendDecuments(int driverId,List<LocItemDoc> docs) {
+    private void sendDecuments(int driverId,List<LocItemDoc> docs) {
         for (int i = 0; i < drivers.size(); i++) {
             Driver driver = drivers.get(i);
             if (driver.getIdDriver() == driverId) {
@@ -85,15 +87,35 @@ public class DriverController {
                     driver.addDoc(docs.get(i));
                 }
             }
-
         }
     }
-        public void deleteDoc ( int driverId, int delId){
-            for (int i = 0; i < drivers.size(); i++) {
-                if (drivers.get(i).getIdDriver() == driverId)
-                    drivers.get(i).deleteDocByDelId(delId);
+    public void createSendDoc(Delivery delivery, int driverId){
+        //for each destination must be a doc
+        List<LocItemDoc> docs=new LinkedList<>();
+        List<Location> delDest= delivery.getDestinations();
+        List<Item> delItems=delivery.getItems();
+        Map<String,Integer> itemQuantity=new HashMap<>();
+        for (int i=0;i<delDest.size();i++){
+            Location curr=delDest.get(i);
+            for (int j=0;j<delItems.size();j++){
+                if(delItems.get(j).getDestinationid()== curr.getlocationid())
+                    itemQuantity.put(delItems.get(j).getNameItem(),delItems.get(j).getQuantity());
             }
+            //adding the docs
+            LocItemDoc doc=new LocItemDoc(docId,delivery,itemQuantity);
+            docId++;
+            docs.add(doc);
+
         }
-
-
+        sendDecuments(driverId,docs);
     }
+
+    public void deleteDoc ( int driverId, int delId){
+        for (int i = 0; i < drivers.size(); i++) {
+            if (drivers.get(i).getIdDriver() == driverId)
+                drivers.get(i).deleteDocByDelId(delId);
+        }
+    }
+
+
+}
