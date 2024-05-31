@@ -13,8 +13,6 @@ public class DelievryService {
     public void addDelievry(String itemName,int quantity,String address){
 
     }
-    public void addArea(String area){
 
-    }
 
 }

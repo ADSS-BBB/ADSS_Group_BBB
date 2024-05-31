@@ -7,14 +7,17 @@ public class MainApplecation {
     private DelievryService delievryService;
     private DriverService driverService;
     private TruckService truckService;
+    private ItemsService itemsService;
     private DriverController driverController;
     private DeliveryController deliveryController;
     private TruckController truckController;
+    private ItemsController itemsController;
     public MainApplecation(){
         deliveryController = new DeliveryController();
         driverController = new DriverController();
         truckController = new TruckController();
-        mainController= new MainController(driverController,deliveryController,truckController);
+        itemsController =new ItemsController();
+        mainController= new MainController(driverController,deliveryController,truckController, itemsController) ;
         this.truckService= new TruckService(truckController);
         this.delievryService= new DelievryService(deliveryController);
         this.driverService=new DriverService(driverController);
@@ -32,12 +35,12 @@ public class MainApplecation {
 
     //------------------------------------------------------------
     //must use response and update if succeed or noy
-    public void addDriver(String name,String licenseType){
+    public void addDriver(int humanId,String name,String licenseType){
 
-        this.driverService.addDriver(name, licenseType);
+        this.driverService.addDriver(humanId,name, licenseType);
     }
-    public void deleteDriver(int id,String name){
-        this.driverService.deleteDriver(id,name);
+    public void deleteDriver(int humanId){
+        this.driverService.deleteDriver(humanId);
     }
     public void addTruck(int number,String model,int weight,int maxWeight){
         this.truckService.addTruck(number, model, weight, maxWeight);
@@ -50,9 +53,6 @@ public class MainApplecation {
     public void addDelievry(String itemName,int quantity,String address){
         this.delievryService.addDelievry(itemName,quantity,address);
 
-    }
-    public void addArea(String area){
-        this.delievryService.addArea(area);
     }
 
 

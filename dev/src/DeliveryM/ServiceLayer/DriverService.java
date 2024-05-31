@@ -9,7 +9,7 @@ public class DriverService {
         this.driverController=driverController;
     }
 
-    public void addDriver(String name,String licenseType) {
+    public void addDriver(int humanId,String name,String licenseType) {
 //        String msg;
 //        Response res;
 //        try {
@@ -24,6 +24,6 @@ public class DriverService {
 //        }
 //       //must find a way to work with json
     }
-    public void deleteDriver(int id,String name){
+    public void deleteDriver(int humanId){
     }
 }

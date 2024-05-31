@@ -14,15 +14,14 @@ public class Applecation {
 
     public void menu (){
 
-        System.out.println("Delievry Page.");
+        System.out.println("Delivery Page.");
         System.out.println("Please choose an option: ");
         System.out.println("1.Mange Trucks.");
         System.out.println("2.Mange Drivers.");
-        System.out.println("3.Add area.");
-        System.out.println("4.Add Delievry.");
+        System.out.println("3.Add Delivery.");
         int choice= input.nextInt();
 
-        while (choice <1 || choice >4)
+        while (choice <1 || choice >3)
         {
             System.out.println("your choice is out of the range! ");
             System.out.println("Please choose an option: ");
@@ -58,9 +57,6 @@ public class Applecation {
                 }
                 break;
             case 3:
-                addArea();
-                break;
-            case 4:
                 addDelievry();
                 break;
         }
@@ -72,9 +68,9 @@ public class Applecation {
         int number =input.nextInt();
         System.out.println("Please the truck's model: ");
         String model=input.nextLine();
-        System.out.println("please enter the truk's weight:");
+        System.out.println("please enter the truck's weight:");
         int weight=input.nextInt();
-        System.out.println("please enter the truk's max weight:");
+        System.out.println("please enter the truck's max weight:");
         int maxW=input.nextInt();
         //mainApplecation.getTruckService().addTruck(number,model,weight,maxW);
 
@@ -91,19 +87,16 @@ public class Applecation {
         //String name,String licenseType
         System.out.println("Please the driver's name: ");
         String name=input.next();
-        System.out.println("Please the driver's licence type: ");
+        System.out.println("Please the driver's id: ");
+        int id=input.nextInt();
+        System.out.println("Please the driver's licence type from this options: C C1 E: ");
         String type=input.nextLine();
         System.out.println("driver has been added successfully!");
     }
     private void deleteDriver(){
-        System.out.println("Please the driver's name: ");
-        String name=input.next();
-        System.out.println("Truck has been deleted successfully!");
-    }
-    private void addArea(){
-        System.out.println("Please the area's name: ");
-        String name=input.next();
-        System.out.println("area has been added successfully!");
+        System.out.println("Please the driver's id: ");
+        int id=input.nextInt();
+        System.out.println("Driver has been deleted successfully!");
     }
     private void addDelievry(){
         System.out.println("Please the item's name: ");

@@ -1,8 +1,9 @@
-package BusinessLayer.Objects;
+package DeliveryM.BusinessLayer.Objects;
 
 public class Location {
 
 	private int id;
+
 	private String address;
 	private String contactNumber;
 	private String contactName;
