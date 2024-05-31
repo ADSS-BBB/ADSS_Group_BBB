@@ -13,12 +13,13 @@ public class ItemsController {
     private Map<Item, Location> items;//item, destination
     //private List<String> areas;
     //must do add location somewhere
-    private List<Location> locations;
+    private List<Location> srcLocations;
     private int itemId;
     private int locationId;
     private int docCnt;
     public ItemsController(){
         this.items=new HashMap<>();
+        srcLocations=new LinkedList<>();
         itemId=0;
         locationId =0;
         docCnt=0;
@@ -28,8 +29,8 @@ public class ItemsController {
     //String address,String contactNumber,String contactName,String area
     public void addItem(String itemName, int weight, int quantity,String address,String contantNumber,String contantName,String area){
         Location loc=new Location(locationId,address,contantNumber,contantName,area);
-        items.put(new Item(itemId,itemName,weight,quantity),new Location(locationId,address,contantNumber,contantName,area));
-        locations.add(loc);
+        items.put(new Item(itemId,itemName,weight,quantity,locationId),new Location(locationId,address,contantNumber,contantName,area));
+
         itemId++;
         locationId++;
     }
@@ -89,16 +90,26 @@ public class ItemsController {
         return toReturn;
 
     }
-    public boolean deleteItemsAndItsLoc(int itemId){
+//    public boolean deleteItemsAndItsLoc(int itemId){
+//        for (Map.Entry<Item, Location> entry : items.entrySet()) {
+//            Item item = entry.getKey();
+//            Location loc = entry.getValue();
+//            if(item.getIdItem()==itemId){
+//                items.remove(item);
+//                for (int i=0;i<locations.size();i++)
+//                    if(locations.get(i).getlocationid()==loc.getlocationid())
+//                        locations.remove(i);
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+    public boolean deleteItemsWithoutItsLoc(int itemId){
         for (Map.Entry<Item, Location> entry : items.entrySet()) {
             Item item = entry.getKey();
             Location loc = entry.getValue();
             if(item.getIdItem()==itemId){
                 items.remove(item);
-                for (int i=0;i<locations.size();i++)
-                    if(locations.get(i).getlocationid()==loc.getlocationid())
-                        locations.remove(i);
-                return true;
             }
         }
         return false;

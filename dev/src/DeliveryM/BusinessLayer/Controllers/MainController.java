@@ -62,7 +62,9 @@ public class MainController {
             int itemsWeight= itemsController.getWeightOfItems(items);
             //find a truck and driver for that delivery
             Truck truck=this.truckController.findTruck(itemsWeight);
-            if(truck!= null){
+            //check
+            if(truck!= null&&truck.getTruckWeight()+itemsWeight>truck.getMaxWeight()){
+
                 //found a suitable truck and must find a driver
                 Driver driver=driverController.findDriver(itemsWeight);
                 if(driver != null)
@@ -73,9 +75,19 @@ public class MainController {
                     //must send a doc for the driver
 
 
-            }}
+                }
+            }
+
             else {
-                //choose what to do ->4 options +must if the this option is
+                System.out.println("We have an issue with the delivery \nPlease choose a option :");
+                System.out.println("1)delete destination.");
+                System.out.println("1)change destination.");
+                System.out.println("1)change truck.");
+                System.out.println("1)delete items.");
+
+
+
+
             }
 
 
@@ -89,11 +101,69 @@ public class MainController {
     }
     //int deliveryid,int docid,String addressloc,Map<Integer,Integer> locItems,int truckweight,String contactName,String contactNumber){
 
+    //1)
+    //review destinations to choose which one
+
+    public boolean deleteDest(int deliveryId,int destId){
+        //check if exist at the objects better
+        Delivery deliveryRelatedDest=this.deliveryController.getDeliveries().get(deliveryId);
+        List<Location> L=deliveryRelatedDest.getDestinations();
+        Location toDel=new Location(-1,"","","","");
+        for(Location l:L){
+            if(l.getlocationid()==destId)
+                toDel=l;
+        }
+        if(toDel.getlocationid()==-1)return false;
+        List<Item> currentItems=deliveryRelatedDest.getItems();
+
+        List<Item> itemToDel=new LinkedList<>();
+        for(Item a: currentItems) {
+            if(a.getDestinationid()==destId){
+                this.itemsController.deleteItemsWithoutItsLoc(a.getIdItem());
+            }
+        }
+        deliveryRelatedDest.removeDest(toDel);
+        return true;
+    }
+    //2)
+    //int delId, List<Location> dests, int truckWeight,List<Item> items
+    //
+    public boolean changeDest(int deliveryid,int prevdest,int newdest,String address,String contactName,String contactNumber,String area,List<Item> itemsToAdd){
+
+        //there is any function to add destination!
+        Delivery deliveryRelatedDest=this.deliveryController.getDeliveries().get(deliveryid);
+        List<Location> L=deliveryRelatedDest.getDestinations();
+        L.add(new Location(newdest,address,contactNumber,contactName,area));
+
+        if(deleteDest(deliveryid,prevdest)){
+            if(this.deliveryController.getDeliveries().get(deliveryid)!=null){
+                for(int i=0;i<itemsToAdd.size();i++){
+                    this.itemsController.addItem(itemsToAdd.get(i).getNameItem(),itemsToAdd.get(i).getItemWeight(),itemsToAdd.get(i).getQuantity(),address,contactNumber,contactName,area);
+
+                }
+            }else return false;//this del not exist
+
+            return true;
+        }
+        return  false;
+    }
+    //REVIEW ALL TRUCK WITH MORE WIEGHT
+    public boolean changeTruck(int deliveryid,int weight,int truckId){
+
+
+        return false;
+    }
+
+    public boolean deleteItem(int deliveryId,int weight){
+        return false;
+    }
+
+
     public boolean deleteDeliveryAll(int delievryId){
         Delivery toDel=this.deliveryController.getDelievryById(delievryId);
         if(this.deliveryController.removeDelivery(delievryId)) {
             for (int i = 0; i < toDel.getItems().size(); i++)
-                this.itemsController.deleteItemsAndItsLoc(toDel.getItems().get(i).getIdItem());
+                this.itemsController.deleteItemsWithoutItsLoc(toDel.getItems().get(i).getIdItem());
             int truckNum=toDel.getTruckNumber();
             int driverId= toDel.getDriverId();
             truckController.updateIsAvaliable(truckNum);
