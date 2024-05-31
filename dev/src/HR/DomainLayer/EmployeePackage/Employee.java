@@ -89,9 +89,6 @@ public class Employee {
 
 
     public String IncreaseSalary(Integer salary) throws Exception{
-        if (salary == null || salary <= 0){
-            throw new Exception("salary can not null or 0");
-        }
         if (salary < Dealdetails.getSalary()){
             throw new Exception("current salary is higher than the new salary");
         }
@@ -100,9 +97,6 @@ public class Employee {
     }
 
     public String DecreaseSalary(Integer salary) throws Exception{
-        if (salary == null || salary <= 0){
-            throw new Exception("salary can not null or 0");
-        }
         if (salary > Dealdetails.getSalary()){
             throw new Exception("current salary is lower than the new salary");
         }
@@ -180,12 +174,6 @@ public class Employee {
     }
 
     public String setEmploymentType(String newType) throws Exception{
-        if (newType == null){
-            throw new Exception("null employment type");
-        }
-        if (!newType.equals("full") && !newType.equals("partial")){
-            throw new Exception("Invalid employment type");
-        }
         Dealdetails.setEmploymentType(newType);
         return "employment type changed successfully";
     }
@@ -194,7 +182,7 @@ public class Employee {
         HashMap<Integer, Shift> shifts = ShiftController.getInstance().getShifts();
         for (int i = 0 ; i < shifts.size() ; i++){
             Shift currshift = shifts.get(i);
-            if (currshift.getEmployees().containsKey(this.EmployeeID)){
+            if (currshift.getEmployees().contains(this.EmployeeID)){
                 ShiftsHistory.add(currshift.getShiftId());
             }
         }
