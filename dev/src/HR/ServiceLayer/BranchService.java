@@ -31,7 +31,7 @@ public class BranchService {
         }
     }
 
-    public String addُُEmployee(Integer employeeId, Integer branchId) throws Exception{
+    public String addEmployee(Integer employeeId, Integer branchId) throws Exception{
         try{
             String result = branchController.addEmployee(employeeId , branchId);
             return result;
@@ -40,7 +40,7 @@ public class BranchService {
         }
     }
 
-    public String removeُُEmployee(Integer employeeId, Integer branchId) throws Exception{
+    public String removeEmployee(Integer employeeId, Integer branchId) throws Exception{
         try{
             String result = branchController.removeEmployee(employeeId , branchId);
             return result;

@@ -4,6 +4,7 @@ import HR.DomainLayer.BankAccount;
 import HR.DomainLayer.BranchPackage.Branch;
 import HR.DomainLayer.BranchPackage.BranchController;
 import HR.DomainLayer.Contract;
+import HR.DomainLayer.ShiftPackage.Shift;
 import HR.DomainLayer.ShiftPackage.ShiftController;
 
 import java.util.HashMap;
@@ -124,14 +125,15 @@ public class EmployeeController {
         return employees.get(id).setEmploymentType(type);
     }
 
-    public String updateHistory(Integer id) throws Exception{
+    public LinkedList<Integer> updateHistory(Integer id) throws Exception{
         if (id == null || id < 0){
             throw new Exception("Employee id is null");
         }
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
-        return employees.get(id).updatehistory();
+        employees.get(id).updatehistory();
+        return employees.get(id).getShiftsHistory();
     }
 
     public LinkedList<Employee> schedulingShifts(Integer shiftId) throws Exception{
@@ -193,5 +195,17 @@ public class EmployeeController {
             branch.getBranchEmployees().remove(id);
         }
         return "Employee removed successfully";
+    }
+
+    public LinkedList<Integer> showAvailableShifts(Integer id, Integer shiftid) throws Exception{
+        if (id == null || id < 0){
+            throw new Exception("Employee id is null");
+        }
+        if (!employees.containsKey(id)){
+            throw new Exception("Employee is not existed");
+        }
+        LinkedList<Integer> ans = new LinkedList<Integer>();
+        employees.get(id).getWeeklyAvailableShifts().add(shiftid);
+        return employees.get(id).getWeeklyAvailableShifts();
     }
 }
