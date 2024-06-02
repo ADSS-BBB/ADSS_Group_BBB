@@ -25,24 +25,26 @@ public class BranchController {
         return branches;
     }
 
-    public String setShift1Hours(Integer branchId, Integer[] shift1Hours) throws Exception {
+    public Integer[] setShift1Hours(Integer branchId, Integer[] shift1Hours) throws Exception {
         if (branchId == null || branchId < 0){
             throw new Exception("Branch id is null");
         }
         if (!branches.containsKey(branchId)){
             throw new Exception("Branch is not existed");
         }
-        return branches.get(branchId).setShift1Hours(shift1Hours);
+        branches.get(branchId).setShift1Hours(shift1Hours);
+        return branches.get(branchId).getShift1Hours();
     }
 
-    public String setShift2Hours(Integer branchId, Integer[] shift2Hours) throws Exception {
+    public Integer[] setShift2Hours(Integer branchId, Integer[] shift2Hours) throws Exception {
         if (branchId == null || branchId < 0){
             throw new Exception("Branch id is null");
         }
         if (!branches.containsKey(branchId)){
             throw new Exception("Branch is not existed");
         }
-        return branches.get(branchId).setShift2Hours(shift2Hours);
+        branches.get(branchId).setShift2Hours(shift2Hours);
+        return branches.get(branchId).getShift2Hours();
     }
 
     public String addRole(Integer branchId, String role) throws Exception {
@@ -112,15 +114,15 @@ public class BranchController {
         return "Branch removed successfully";
     }
 
-    public String updateBranchShift(Integer branchId) throws Exception{
+    public HashMap<Integer, Branch> updateBranchShift(Integer branchId) throws Exception{
         if (branchId == null || branchId < 0){
             throw new Exception("Branch id is null");
         }
         if (!branches.containsKey(branchId)){
             throw new Exception("Branch is not existed");
         }
-        return branches.get(branchId).updateBranchShift();
-
+        branches.get(branchId).updateBranchShift();
+        return branches;
     }
 
 }
