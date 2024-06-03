@@ -30,6 +30,8 @@ public class Employee {
         ShiftsHistory = new LinkedList<>();
         roles = new LinkedList<>();
         this.BranchId = BranchId;
+        EmployeeController.getInstance().getEmployees().put(EmployeeID,this);
+
     }
 
     public String getUsername() {
@@ -117,7 +119,7 @@ public class Employee {
         if (bankAccount.getUsername() == null){
             throw new Exception("null username");
         }
-        if (bankAccount.equals(this.BankAccount)){
+        if (bankAccount.getUsername().equals(this.BankAccount.getUsername())){
             throw new Exception("same bank account");
         }
         this.BankAccount = bankAccount;
@@ -125,7 +127,7 @@ public class Employee {
     }
 
     public String changeBranch(Integer branch2) throws Exception{
-        Branch currbranch = BranchController.getInstance().getBranch(BranchId);
+        Branch currbranch = BranchController.getInstance().getBranch(branch2);
         if (branch2 == null || branch2 < 0){
             throw new Exception("Invalid id");
         }
@@ -159,7 +161,7 @@ public class Employee {
         return "employee added an available day";
     }
 
-    public String removeShiftfromWeek(Integer ShiftId) throws Exception{
+    public String removeShiftFromWeek(Integer ShiftId) throws Exception{
         if (ShiftId == null){
             throw new Exception("null shiftId to remove");
         }

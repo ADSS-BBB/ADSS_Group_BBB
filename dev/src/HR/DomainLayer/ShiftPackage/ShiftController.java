@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class ShiftController {
     private static ShiftController instance;
-    private HashMap<Integer, Shift> shifts;
+    private HashMap<Integer, Shift> shifts = new HashMap<>();
 
     public static ShiftController getInstance() {
         if (instance == null) {

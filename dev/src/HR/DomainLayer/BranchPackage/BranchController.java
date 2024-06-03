@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class BranchController {
     private static BranchController instance;
-    private HashMap<Integer, Branch> branches;
+    private HashMap<Integer, Branch> branches = new HashMap<>();
 
     public static BranchController getInstance() {
         if (instance == null) {

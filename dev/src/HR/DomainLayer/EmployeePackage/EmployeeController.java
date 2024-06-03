@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class EmployeeController {
-    private HashMap<Integer, Employee> employees;
+    private HashMap<Integer, Employee> employees = new HashMap<>();
     private static EmployeeController instance;
     public static EmployeeController getInstance() {
         if (instance == null) {
@@ -112,7 +112,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
-        return employees.get(id).addShiftToWeek(shiftid);
+        return employees.get(id).removeShiftFromWeek(shiftid);
     }
 
     public String setEmploymentType(Integer id, String type) throws Exception{
@@ -176,6 +176,9 @@ public class EmployeeController {
         }
         if (branchid == null || branchid<0){
             throw new Exception("Branchid is null");
+        }
+        if (!BranchController.getInstance().getBranches().containsKey(branchid)){
+            throw new Exception("no such branch");
         }
         employees.put(id, new Employee(id, username, contract, bankAccount, branchid));
         return "Employee added successfully";

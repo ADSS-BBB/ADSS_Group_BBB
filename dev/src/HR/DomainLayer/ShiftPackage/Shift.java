@@ -26,6 +26,7 @@ public class Shift {
         Cancelations = new LinkedList<>();
         this.Type = Type;
         this.BranchId = BranchId;
+        ShiftController.getInstance().getShifts().put(ShiftId , this);
 
     }
     public Shift getShift(Integer ShiftId) {

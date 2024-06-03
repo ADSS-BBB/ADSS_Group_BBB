@@ -24,6 +24,7 @@ public class Branch {
         roles = new LinkedList<>();
         BranchEmployees = new LinkedList<>();
         BranchShiftList = new LinkedList<>();
+        BranchController.getInstance().getBranches().put(BranchId,this);
     }
 
     public LinkedList getBranchEmployees() {
