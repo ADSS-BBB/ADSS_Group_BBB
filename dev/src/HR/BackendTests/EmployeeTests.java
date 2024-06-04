@@ -20,7 +20,7 @@ public class EmployeeTests {
         Contract contract = new Contract(1 , 10000,1,"full");
         BankAccount bankAccount = new BankAccount("essa", "Essa1234",5000);
         Branch branch1 = new Branch("tel aviv", 1);
-        employee = new Employee(1 , "essa" , contract , bankAccount, 1);
+        employee = new Employee(1 , "essa" , contract , bankAccount);
         Shift shift = new Shift(1 , 1 , 10 , "Morning" , 1);
         Branch branch2 = new Branch("beer sheva", 2);
         LinkedList<String> roles = new LinkedList<>();

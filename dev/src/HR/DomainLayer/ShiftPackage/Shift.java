@@ -78,7 +78,7 @@ public class Shift {
         if (!EmployeeController.getInstance().getEmployees().containsKey(WorkerId)) {
             throw new Exception("Employee does not exist");
         }
-        if (!EmployeeController.getInstance().getEmployee(WorkerId).getWeeklyAvailableShifts().contains(WorkerId)) {
+        if (!EmployeeController.getInstance().getEmployee(WorkerId).getWeeklyAvailableShifts().contains(ShiftId)) {
             throw new Exception("Employee is not available");
         }
         Employees.add(WorkerId);

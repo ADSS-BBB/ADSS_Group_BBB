@@ -21,7 +21,7 @@ public class Employee {
     private Integer BranchId;
 
 
-    public Employee(Integer EmployeeID , String Username, Contract Dealdetails, BankAccount BankAccount, Integer BranchId) {
+    public Employee(Integer EmployeeID , String Username, Contract Dealdetails, BankAccount BankAccount) throws Exception{
         this.EmployeeID = EmployeeID;
         this.Username = Username;
         this.Dealdetails = Dealdetails;
@@ -29,9 +29,9 @@ public class Employee {
         WeeklyAvailableShifts = new LinkedList<>();
         ShiftsHistory = new LinkedList<>();
         roles = new LinkedList<>();
-        this.BranchId = BranchId;
+        this.BranchId = Dealdetails.getBranchId();
         EmployeeController.getInstance().getEmployees().put(EmployeeID,this);
-
+        BranchController.getInstance().addEmployee(EmployeeID , Dealdetails.getBranchId());
     }
 
     public String getUsername() {
@@ -182,10 +182,11 @@ public class Employee {
 
     public String updatehistory() throws Exception{
         HashMap<Integer, Shift> shifts = ShiftController.getInstance().getShifts();
-        for (int i = 0 ; i < shifts.size() ; i++){
-            Shift currshift = shifts.get(i);
-            if (currshift.getEmployees().contains(this.EmployeeID)){
-                ShiftsHistory.add(currshift.getShiftId());
+        for (Shift shift : shifts.values()){
+            if (shift != null) {
+                if (shift.getEmployees().contains(this.EmployeeID)) {
+                    ShiftsHistory.add(shift.getShiftId());
+                }
             }
         }
         return "updated the history";

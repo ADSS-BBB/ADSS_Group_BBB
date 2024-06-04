@@ -15,9 +15,9 @@ public class EmployeeService {
         employeeController = EmployeeController.getInstance();
     }
 
-    public String addEmployee(Integer id, String username, Contract contract, BankAccount bankAccount, Integer branchid) throws Exception {
+    public String addEmployee(Integer id, String username, Contract contract, BankAccount bankAccount) throws Exception {
         try {
-            String result = employeeController.addEmployee(id, username, contract, bankAccount, branchid);
+            String result = employeeController.addEmployee(id, username, contract, bankAccount);
             return result;
         }
         catch (Exception e) {
@@ -150,9 +150,9 @@ public class EmployeeService {
         }
     }
 
-    public String showAvailableShifts(Integer id, Integer shiftid) throws Exception{
+    public String showAvailableShifts(Integer id) throws Exception{
         try {
-            LinkedList<Integer> result = employeeController.showAvailableShifts(id, shiftid);
+            LinkedList<Integer> result = employeeController.showAvailableShifts(id);
             Gson gson = new Gson();
             String json = gson.toJson(result);
             return json;

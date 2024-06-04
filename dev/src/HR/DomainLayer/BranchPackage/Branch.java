@@ -113,9 +113,6 @@ public class Branch {
         if (EmployeeId == null || EmployeeId < 0) {
             throw new Exception("EmployeeId is null");
         }
-        if (EmployeeController.getInstance().getEmployees().containsKey(EmployeeId)) {
-            throw new Exception("Employee already taken");
-        }
         if(BranchEmployees.contains(EmployeeId)){
             throw new Exception("Employee already exists");
         }

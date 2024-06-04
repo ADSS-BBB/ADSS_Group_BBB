@@ -145,7 +145,7 @@ public class EmployeeController {
             if (employee.getWeeklyAvailableShifts().contains(shiftId)){
                 if (!shiftEmployees.contains(employee)){
                     shiftEmployees.add(employee);
-                    ShiftController.getInstance().getShift(shiftId).getEmployees().add(employee.getEmployeeID());
+                    ShiftController.getInstance().getShift(shiftId).AddEmployee(employee.getEmployeeID());
                     employee.updatehistory();
                 }
 
@@ -158,7 +158,7 @@ public class EmployeeController {
     }
 
 
-    public String addEmployee(Integer id, String username, Contract contract , BankAccount bankAccount, Integer branchid) throws Exception{
+    public String addEmployee(Integer id, String username, Contract contract , BankAccount bankAccount) throws Exception{
         if (id == null || id < 0){
             throw new Exception("Employee id is null");
         }
@@ -174,13 +174,14 @@ public class EmployeeController {
         if (bankAccount == null || bankAccount.isEmpty()){
             throw new Exception("BankAccount is null");
         }
-        if (branchid == null || branchid<0){
+        if (contract.getBranchId() == null || contract.getBranchId()<0){
             throw new Exception("Branchid is null");
         }
-        if (!BranchController.getInstance().getBranches().containsKey(branchid)){
+        if (!BranchController.getInstance().getBranches().containsKey(contract.getBranchId())){
             throw new Exception("no such branch");
         }
-        employees.put(id, new Employee(id, username, contract, bankAccount, branchid));
+        employees.put(id, new Employee(id, username, contract, bankAccount));
+        BranchController.getInstance().getBranch(contract.getBranchId()).AddBranchEmployee(id);
         return "Employee added successfully";
 
     }
@@ -195,20 +196,18 @@ public class EmployeeController {
         employees.remove(id);
         HashMap<Integer, Branch> branches = BranchController.getInstance().getBranches();
         for (Branch branch : branches.values()){
-            branch.getBranchEmployees().remove(id);
+            branch.RemoveBranchEmployee(id);
         }
         return "Employee removed successfully";
     }
 
-    public LinkedList<Integer> showAvailableShifts(Integer id, Integer shiftid) throws Exception{
+    public LinkedList<Integer> showAvailableShifts(Integer id) throws Exception{
         if (id == null || id < 0){
             throw new Exception("Employee id is null");
         }
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
-        LinkedList<Integer> ans = new LinkedList<Integer>();
-        employees.get(id).getWeeklyAvailableShifts().add(shiftid);
         return employees.get(id).getWeeklyAvailableShifts();
     }
 }

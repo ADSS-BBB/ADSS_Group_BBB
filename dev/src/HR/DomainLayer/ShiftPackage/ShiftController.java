@@ -86,7 +86,7 @@ public class ShiftController {
         if (Type == null || Type.equals("")){
             throw new Exception("Type is null");
         }
-        if (!Type.equals("full") && !Type.equals("partial")){
+        if (!Type.equals("Morning") && !Type.equals("Evening")){
             throw new Exception("Type is invalid");
         }
         if (BranchId == null || BranchId < 0){

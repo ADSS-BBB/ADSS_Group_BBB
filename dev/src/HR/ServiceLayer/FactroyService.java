@@ -54,8 +54,8 @@ public class FactroyService {
 
 
 //employee service
-    public String addEmployee(Integer id, String username, Contract contract, BankAccount bankAccount,  Integer branchid) throws Exception{
-        return employeeService.addEmployee(id, username, contract, bankAccount, branchid);
+    public String addEmployee(Integer id, String username, Contract contract, BankAccount bankAccount) throws Exception{
+        return employeeService.addEmployee(id, username, contract, bankAccount);
     }
 
     public String removeEmployee(Integer id) throws Exception{
@@ -106,8 +106,8 @@ public class FactroyService {
         return employeeService.schedulingShifts(shiftid);
     }
 
-    public String showAvailableShifts(Integer id, Integer shiftid) throws Exception{
-        return employeeService.showAvailableShifts(id, shiftid);
+    public String showAvailableShifts(Integer id) throws Exception{
+        return employeeService.showAvailableShifts(id);
     }
 
 

@@ -74,7 +74,8 @@ public class BranchController {
         if (!branches.containsKey(branchId)){
             throw new Exception("Branch is not existed");
         }
-        return branches.get(branchId).AddBranchEmployee(employeeId);
+        branches.get(branchId).AddBranchEmployee(employeeId);
+        return "employee added successfully";
 
     }
 
