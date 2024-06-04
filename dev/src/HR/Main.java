@@ -1,5 +1,6 @@
 package HR;
 
+import HR.DomainLayer.PersonnelManager;
 import HR.ServiceLayer.FactroyService;
 
 import java.util.Scanner;
@@ -8,8 +9,14 @@ import java.util.Scanner;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static FactroyService factroyService = new FactroyService();
+    public static PersonnelManager manager = new PersonnelManager("Firas");
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        MenuPage();
+    }
+
+
+    private static void MenuPage() throws Exception {
         Scanner sc = new Scanner(System.in);
         String input;
         while (true) {
@@ -22,7 +29,8 @@ public class Main {
                 switch (Integer.parseInt(input)) {
                     case 1:
                         HRManagerPage();
-                        //case 2: EmployeePage();
+                    case 2:
+                        EmployeePage();
                     case 3:
                         System.exit(0);
                     default:
@@ -63,7 +71,9 @@ public class Main {
             System.out.println("23. Add Employee To Shift");
             System.out.println("24. Remove Employee From Shift");
             System.out.println("25. Set Shift Minimum Workers");
-            System.out.println("26. Exit");
+            System.out.println("26. Show Available Employees");
+            System.out.println("27. go back to menu page");
+            System.out.println("28. Exit");
             try {
                 input = scanner.nextLine();
                 switch (Integer.parseInt(input)) {
@@ -143,6 +153,12 @@ public class Main {
                         setMinWorkers();
                         break;
                     case 26:
+                        ShowAvailableEmployees();
+                        break;
+                    case 27:
+                        MenuPage();
+                        break;
+                    case 28:
                         System.exit(0);
                         break;
                     default:
@@ -155,6 +171,8 @@ public class Main {
         }
     }
 
+
+
     private static void EmployeePage() throws Exception {
         Scanner scanner = new Scanner(System.in);
         String input;
@@ -164,7 +182,8 @@ public class Main {
             System.out.println("3. Remove Available Shift");
             System.out.println("4. Update History");
             System.out.println("5. Add Cancellation");
-            System.out.println("6. Exit");
+            System.out.println("6. go back to menu page");
+            System.out.println("7. Exit");
 
             try {
                 input = scanner.nextLine();
@@ -185,6 +204,9 @@ public class Main {
                         AddCancellation();
                         break;
                     case 6:
+                        MenuPage();
+                        break;
+                    case 7:
                         System.exit(0);
                         break;
                     default:
@@ -245,6 +267,15 @@ public class Main {
             factroyService.removeShiftFromWeek(Integer.parseInt(input2), Integer.parseInt(input));
         } catch (Exception e) {
             System.out.println("Invalid input");
+        }
+    }
+
+    private static void ShowAvailableEmployees() throws Exception {
+        try {
+            manager.showAvailableEmployees();
+        }
+        catch (Exception e){
+            System.out.println("failed while trying to show the available empolyees");
         }
     }
 
@@ -378,7 +409,7 @@ public class Main {
         String input2;
         System.out.println("Enter Branch Id");
         input = scanner.nextLine();
-        System.out.println("Enter Role Id");
+        System.out.println("Enter Role");
         input2 = scanner.nextLine();
         try {
             factroyService.addRole(Integer.parseInt(input), input2);
@@ -669,10 +700,5 @@ public class Main {
             System.out.println("Invalid input");
         }
     }
-
-
-
-
-
 
 }

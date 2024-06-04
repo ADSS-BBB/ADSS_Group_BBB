@@ -181,7 +181,6 @@ public class EmployeeController {
             throw new Exception("no such branch");
         }
         employees.put(id, new Employee(id, username, contract, bankAccount));
-        BranchController.getInstance().getBranch(contract.getBranchId()).AddBranchEmployee(id);
         return "Employee added successfully";
 
     }

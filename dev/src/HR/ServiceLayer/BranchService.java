@@ -27,7 +27,7 @@ public class BranchService {
             String result = branchController.removeBranch(id);
             return result;
         } catch (Exception e){
-            return "failed while trying to remove branc";
+            return "failed while trying to remove branch";
         }
     }
 
