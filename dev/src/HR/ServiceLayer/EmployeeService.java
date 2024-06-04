@@ -25,6 +25,17 @@ public class EmployeeService {
         }
     }
 
+    public String getEmployee(Integer employeeId) throws Exception{
+        try {
+            Employee result = employeeController.getEmployee(employeeId);
+            Gson gson = new Gson();
+            String json = gson.toJson(result);
+            return json;
+        } catch (Exception e) {
+            return "failed while trying to retrieve employee";
+        }
+    }
+
     public String removeEmployee(Integer id) throws Exception {
         try {
             String result = employeeController.removeEmployee(id);

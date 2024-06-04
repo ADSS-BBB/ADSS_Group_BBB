@@ -16,8 +16,8 @@ public class FactroyService {
     }
 
 //branch service
-    public String addbranch(Integer id, String locstion) throws Exception{
-        return branchService.addBranch(id, locstion);
+    public String addbranch(Integer id, String location) throws Exception{
+        return branchService.addBranch(id, location);
     }
 
     public String removebranch(Integer id) throws Exception{
@@ -54,8 +54,14 @@ public class FactroyService {
 
 
 //employee service
-    public String addEmployee(Integer id, String username, Contract contract, BankAccount bankAccount) throws Exception{
-        return employeeService.addEmployee(id, username, contract, bankAccount);
+    public String getEmployee(Integer id) throws Exception{
+        return employeeService.getEmployee(id);
+    }
+
+    public String addEmployee(Integer id, String name, Integer ContractId, Integer Salary , Integer Branchid ,String EmploymentType, String username ,String password,Integer balance ) throws Exception{
+        Contract contract = new Contract(ContractId,Salary,Branchid,EmploymentType);
+        BankAccount bankAccount = new BankAccount(username,password,balance);
+        return employeeService.addEmployee(id, name, contract, bankAccount);
     }
 
     public String removeEmployee(Integer id) throws Exception{
@@ -78,7 +84,8 @@ public class FactroyService {
         return employeeService.decreaseSalary(id, salary);
     }
 
-    public String setBankAccount(BankAccount bankAccount, Integer id) throws Exception{
+    public String setBankAccount(String username, String password, Integer balance,  Integer id) throws Exception{
+        BankAccount bankAccount = new BankAccount(username,password,balance);
         return employeeService.setBankAccount(bankAccount, id);
     }
 
