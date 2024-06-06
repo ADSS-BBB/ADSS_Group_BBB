@@ -8,6 +8,9 @@ import HR.DomainLayer.EmployeePackage.EmployeeController;
 import HR.DomainLayer.ShiftPackage.Shift;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EmployeeControllerTests {
@@ -20,10 +23,10 @@ public class EmployeeControllerTests {
     @BeforeEach
     public void init() throws Exception{
         Branch branch = new Branch("beer sheva", 1);
-        Contract contract = new Contract(1, 10000, 1, "full");
+        Contract contract = new Contract(1, 10000, 1, "full",LocalDate.of(2024,4,23));
         BankAccount bankAccount = new BankAccount("Atheel", "atheel12", 7000);
-        Shift shift = new Shift(1, 2, 2, "Morning", 1);
-        Contract contract2 = new Contract(2, 5000, 1, "full");
+        Shift shift = new Shift(1, LocalDate.of(2024,10,9), 2, 2, "Morning", 1);
+        Contract contract2 = new Contract(2, 5000, 1, "full",LocalDate.of(2024,2,23));
         BankAccount bankAccount2 = new BankAccount("essa", "essa12", 9000);
         employee = new Employee(1, "Atheel", contract, bankAccount);
         employee2 = new Employee(3, "essa", contract2, bankAccount2);
@@ -38,7 +41,7 @@ public class EmployeeControllerTests {
         init();
         boolean ans = true;
         try {
-            Contract contract2 = new Contract(2, 5000, 1, "full");
+            Contract contract2 = new Contract(2, 5000, 1, "full",LocalDate.of(2024,3,23));
             BankAccount bankAccount2 = new BankAccount("essa", "essa12", 9000);
             employeeController.addEmployee(2, "essa", contract2, bankAccount2);
         }
@@ -53,7 +56,7 @@ public class EmployeeControllerTests {
         init();
         boolean ans = true;
         try {
-            Contract contract2 = new Contract(1, 5000, 1, "full");
+            Contract contract2 = new Contract(1, 5000, 1, "full",LocalDate.of(2024,2,23));
             BankAccount bankAccount2 = new BankAccount("essa", "essa12", 9000);
             employeeController.addEmployee(1, "essa", contract2, bankAccount2);
         }

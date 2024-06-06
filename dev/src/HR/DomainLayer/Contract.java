@@ -10,10 +10,10 @@ public class Contract {
     private Integer Salary;
     private String EmploymentType;
 
-    public Contract(Integer ContractID, Integer Salary, Integer BranchId, String EmploymentType) {
+    public Contract(Integer ContractID, Integer Salary, Integer BranchId, String EmploymentType , LocalDate time) {
         this.ContractID = ContractID;
         this.BranchId = BranchId;
-        this.StartDate = LocalDate.now();
+        this.StartDate = time;
         this.Salary = Salary;
         this.EmploymentType = EmploymentType;
     }

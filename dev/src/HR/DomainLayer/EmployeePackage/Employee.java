@@ -4,6 +4,7 @@ import HR.DomainLayer.BankAccount;
 import HR.DomainLayer.BranchPackage.Branch;
 import HR.DomainLayer.BranchPackage.BranchController;
 import HR.DomainLayer.Contract;
+import HR.DomainLayer.PersonnelManager;
 import HR.DomainLayer.ShiftPackage.Shift;
 import HR.DomainLayer.ShiftPackage.ShiftController;
 
@@ -31,6 +32,7 @@ public class Employee {
         roles = new LinkedList<>();
         this.BranchId = Dealdetails.getBranchId();
         EmployeeController.getInstance().getEmployees().put(EmployeeID,this);
+        HashMap<Integer , Employee> employees = EmployeeController.getInstance().getEmployees();
         BranchController.getInstance().addEmployee(EmployeeID , Dealdetails.getBranchId());
     }
 

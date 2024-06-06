@@ -8,6 +8,9 @@ import HR.DomainLayer.EmployeePackage.EmployeeController;
 import HR.DomainLayer.ShiftPackage.Shift;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ShiftTests {
@@ -18,16 +21,15 @@ public class ShiftTests {
 
     @BeforeEach
     public void init() throws Exception{
-        Contract contract = new Contract(1 , 10000,1,"full");
-        Contract contract2 = new Contract(3 , 10000,1,"full");
+        Contract contract = new Contract(1 , 10000,1,"full",LocalDate.of(2024,2,23));
+        Contract contract2 = new Contract(3 , 10000,1,"full",LocalDate.of(2024,3,23));
         BankAccount bankAccount = new BankAccount("Atheel", "Atheel12",4000);
         BankAccount bankAccount2 = new BankAccount("essa", "Essa1234",5000);
         Branch branch1 = new Branch("tel aviv", 1);
         employee1 = new Employee(1, "Atheel", contract, bankAccount);
         employee2 = new Employee(3, "Essa", contract, bankAccount);
-        shift = new Shift(1, 2, 2, "full", 1);
+        shift = new Shift(1, LocalDate.of(2022,1,12),2, 2, "full", 1);
         employeeController = EmployeeController.getInstance();
-
     }
 
     @Test

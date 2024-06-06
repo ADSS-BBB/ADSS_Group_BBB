@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDate;
 import java.util.LinkedList;
 
 
@@ -17,11 +18,11 @@ public class EmployeeTests {
 
     @BeforeEach
     public void init() throws Exception{
-        Contract contract = new Contract(1 , 10000,1,"full");
+        Contract contract = new Contract(1 , 10000,1,"full",LocalDate.of(2023,12,20));
         BankAccount bankAccount = new BankAccount("essa", "Essa1234",5000);
         Branch branch1 = new Branch("tel aviv", 1);
         employee = new Employee(1 , "essa" , contract , bankAccount);
-        Shift shift = new Shift(1 , 1 , 10 , "Morning" , 1);
+        Shift shift = new Shift(1 , LocalDate.of(2023,11,6), 1 , 10 , "Morning" , 1);
         Branch branch2 = new Branch("beer sheva", 2);
         LinkedList<String> roles = new LinkedList<>();
         employee.getRoles().add("cashier");

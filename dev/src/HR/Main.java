@@ -3,6 +3,7 @@ package HR;
 import HR.DomainLayer.PersonnelManager;
 import HR.ServiceLayer.FactroyService;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -65,15 +66,18 @@ public class Main {
             System.out.println("17. Change Branch");
             System.out.println("18. Set Employment Type");
             System.out.println("19. Show Available Shifts");
-            System.out.println("20. Scheduling Shifts");
-            System.out.println("21. Update Employee History");
-            System.out.println("22. Add Shift To System");
-            System.out.println("23. Add Employee To Shift");
-            System.out.println("24. Remove Employee From Shift");
-            System.out.println("25. Set Shift Minimum Workers");
-            System.out.println("26. Show Available Employees");
-            System.out.println("27. go back to menu page");
-            System.out.println("28. Exit");
+            System.out.println("20. build shift with role");
+            System.out.println("21. show schedule");
+            System.out.println("22. get Shifts history");
+            System.out.println("23. Update Employee History");
+            System.out.println("24. Add Shift To System");
+            System.out.println("25. Add Employee To Shift");
+            System.out.println("26. Remove Employee From Shift");
+            System.out.println("27. Set Shift Minimum Workers");
+            System.out.println("28. Show Available Employees");
+            System.out.println("29. Show all the employees in the market");
+            System.out.println("30. go back to menu page");
+            System.out.println("31. Exit");
             try {
                 input = scanner.nextLine();
                 switch (Integer.parseInt(input)) {
@@ -135,30 +139,39 @@ public class Main {
                         showAvailableShifts();
                         break;
                     case 20:
-                        scheduleShifts();
+                        buildShift();
                         break;
                     case 21:
-                        updateEmployeeHistory();
+                        getSchedule();
                         break;
                     case 22:
-                        addShift();
+                        HRgetShiftsHistory();
                         break;
                     case 23:
-                        AddEmployeeToShift();
+                        updateEmployeeHistory();
                         break;
                     case 24:
-                        removeEmployeeFromShift();
+                        addShift();
                         break;
                     case 25:
-                        setMinWorkers();
+                        AddEmployeeToShift();
                         break;
                     case 26:
-                        ShowAvailableEmployees();
+                        removeEmployeeFromShift();
                         break;
                     case 27:
-                        MenuPage();
+                        setMinWorkers();
                         break;
                     case 28:
+                        ShowAvailableEmployees();
+                        break;
+                    case 29:
+                        HRgetEmployess();
+                        break;
+                    case 30:
+                        MenuPage();
+                        break;
+                    case 31:
                         System.exit(0);
                         break;
                     default:
@@ -173,6 +186,7 @@ public class Main {
 
 
 
+
     private static void EmployeePage() throws Exception {
         Scanner scanner = new Scanner(System.in);
         String input;
@@ -182,8 +196,9 @@ public class Main {
             System.out.println("3. Remove Available Shift");
             System.out.println("4. Update History");
             System.out.println("5. Add Cancellation");
-            System.out.println("6. go back to menu page");
-            System.out.println("7. Exit");
+            System.out.println("6. schedule");
+            System.out.println("7. go back to menu page");
+            System.out.println("8. Exit");
 
             try {
                 input = scanner.nextLine();
@@ -204,9 +219,12 @@ public class Main {
                         AddCancellation();
                         break;
                     case 6:
-                        MenuPage();
+                        getSchedule();
                         break;
                     case 7:
+                        MenuPage();
+                        break;
+                    case 8:
                         System.exit(0);
                         break;
                     default:
@@ -216,6 +234,22 @@ public class Main {
             } catch (Exception e) {
                 System.out.println("Invalid input");
             }
+        }
+    }
+
+    private static void HRgetShiftsHistory(){
+        try {
+            manager.getShiftsHistory();
+        } catch (Exception e){
+            System.out.println("failed while trying to get shifts history");
+        }
+    }
+
+    private static void getSchedule(){
+        try {
+            manager.getschedule();
+        } catch (Exception e){
+            System.out.println("failed while trying to get shifts history");
         }
     }
 
@@ -237,6 +271,37 @@ public class Main {
             factroyService.setBankAccount(input, input2, Integer.parseInt(input3), Integer.parseInt(input4));
         } catch (Exception e) {
             System.out.println("Invalid input");
+        }
+    }
+
+//    private static void HRscheduleShifts() throws Exception{
+//        try {
+//            manager.scheduleShifts();
+//        } catch (Exception e){
+//            System.out.println("failed while trying to schedule shifts");
+//        }
+//    }
+
+    private static void HRgetEmployess(){
+        try {
+            manager.checktheEmployees();
+        } catch (Exception e){
+            System.out.println("failed while trying to get employess");
+        }
+    }
+
+    private static void buildShift() throws Exception{
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        String input2;
+        System.out.println("Enter Shift id");
+        input = scanner.nextLine();
+        System.out.println("Enter role");
+        input2 = scanner.nextLine();
+        try {
+            manager.buildShift(Integer.parseInt(input), input2);
+        } catch (Exception e) {
+            System.out.println("invalid input");
         }
     }
 
@@ -468,6 +533,7 @@ public class Main {
         String input7;
         String input8;
         String input9;
+        String input10;
         System.out.println("Enter Employee Id");
         input = scanner.nextLine();
         System.out.println("Enter Employee name");
@@ -486,8 +552,16 @@ public class Main {
         input8 = scanner.nextLine();
         System.out.println("bank balance");
         input9 = scanner.nextLine();
+        System.out.println("Enter Startdate in YYYY-MM-DD format");
+        input10 = scanner.nextLine();
+        String[] date = input10.split("-");
+        if ( date.length != 3){
+            throw new Exception("invalid input");
+        }
+        LocalDate Date = LocalDate.of(Integer.parseInt(date[0]),Integer.parseInt(date[1]),Integer.parseInt(date[2]));
+
         try {
-            factroyService.addEmployee(Integer.parseInt(input), input2, Integer.parseInt(input3), Integer.parseInt(input4), Integer.parseInt(input5), input6, input7, input8, Integer.parseInt(input9));
+            factroyService.addEmployee(Integer.parseInt(input), input2, Integer.parseInt(input3), Integer.parseInt(input4), Integer.parseInt(input5), input6, input7, input8, Integer.parseInt(input9),Date);
         } catch (Exception e) {
             System.out.println("Invalid input");
         }
@@ -639,8 +713,16 @@ public class Main {
         String input3;
         String input4;
         String input5;
+        String input6;
         System.out.println("Enter Shift Id");
         input = scanner.nextLine();
+        System.out.println("Enter date in YYYY-MM_DD format");
+        input6 = scanner.nextLine();
+        String[] date = input6.split("-");
+        if ( date.length != 3){
+            throw new Exception("invalid input");
+        }
+        LocalDate Date = LocalDate.of(Integer.parseInt(date[0]),Integer.parseInt(date[1]),Integer.parseInt(date[2]));
         System.out.println("Enter Shift manager Id");
         input2 = scanner.nextLine();
         System.out.println("Enter Min workers");
@@ -650,7 +732,7 @@ public class Main {
         System.out.println("Enter Branch Id");
         input5 = scanner.nextLine();
         try {
-            factroyService.addShift(Integer.parseInt(input), Integer.parseInt(input2), Integer.parseInt(input3), input4, Integer.parseInt(input5));
+            factroyService.addShift(Integer.parseInt(input), Date, Integer.parseInt(input2), Integer.parseInt(input3), input4, Integer.parseInt(input5));
         } catch (Exception e) {
             System.out.println("Invalid input");
         }

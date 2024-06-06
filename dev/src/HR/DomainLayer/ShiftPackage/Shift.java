@@ -2,13 +2,14 @@ package HR.DomainLayer.ShiftPackage;
 
 import HR.DomainLayer.EmployeePackage.EmployeeController;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Shift {
     private Integer ShiftId;
-    private LocalDateTime Time;
+    private LocalDate Time;
     private Integer ShiftManagerId;
     private LinkedList<Integer> Employees;
     private LinkedList<Integer> Cancelations;
@@ -17,9 +18,9 @@ public class Shift {
     private Integer BranchId;
 
 
-    public Shift(Integer ShiftId, Integer ShiftManagerId , Integer MinWorkers, String Type, Integer BranchId) {
+    public Shift(Integer ShiftId, LocalDate time, Integer ShiftManagerId , Integer MinWorkers, String Type, Integer BranchId) {
         this.ShiftId = ShiftId;
-        this.Time = LocalDateTime.now();
+        this.Time = time;
         this.ShiftManagerId = ShiftManagerId;
         this.MinWorkers = MinWorkers;
         Employees = new LinkedList<>();
@@ -35,7 +36,7 @@ public class Shift {
     public Integer getShiftId() {
         return ShiftId;
     }
-    public LocalDateTime getTime() {
+    public LocalDate getTime() {
         return Time;
     }
     public Integer getShiftManagerId() {

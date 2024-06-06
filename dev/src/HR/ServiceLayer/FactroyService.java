@@ -3,6 +3,8 @@ package HR.ServiceLayer;
 import HR.DomainLayer.BankAccount;
 import HR.DomainLayer.Contract;
 
+import java.time.LocalDate;
+
 public class FactroyService {
     private ShiftService shiftService;
     private EmployeeService employeeService;
@@ -69,8 +71,8 @@ public class FactroyService {
         return "";
     }
 
-    public String addEmployee(Integer id, String name, Integer ContractId, Integer Salary , Integer Branchid ,String EmploymentType, String username ,String password,Integer balance ) throws Exception{
-        Contract contract = new Contract(ContractId,Salary,Branchid,EmploymentType);
+    public String addEmployee(Integer id, String name, Integer ContractId, Integer Salary , Integer Branchid ,String EmploymentType, String username ,String password,Integer balance, LocalDate startdate ) throws Exception{
+        Contract contract = new Contract(ContractId,Salary,Branchid,EmploymentType,startdate);
         BankAccount bankAccount = new BankAccount(username,password,balance);
         System.out.println(employeeService.addEmployee(id, name, contract, bankAccount));
         return "";
@@ -144,8 +146,8 @@ public class FactroyService {
 
 
 //shift service
-    public String addShift(Integer id, Integer shiftmanagerid, Integer minworkers, String type, Integer branchid) throws Exception{
-        System.out.println(shiftService.addShift(id, shiftmanagerid, minworkers, type, branchid));
+    public String addShift(Integer id, LocalDate time , Integer shiftmanagerid, Integer minworkers, String type, Integer branchid) throws Exception{
+        System.out.println(shiftService.addShift(id, time,shiftmanagerid, minworkers, type, branchid));
         return "";
     }
 

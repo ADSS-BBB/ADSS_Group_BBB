@@ -7,6 +7,9 @@ import HR.DomainLayer.EmployeePackage.Employee;
 import HR.DomainLayer.ShiftPackage.Shift;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -23,10 +26,10 @@ public class BranchTests {
         branch = new Branch("Beer Sheva",1 );
         branch2 = new Branch("Tel Aviv",2 );
         bankAccount = new BankAccount("essa","Essa1234",7500);
-        contract = new Contract(1 , 15000, 1 , "full");
+        contract = new Contract(1 , 15000, 1 , "full" , LocalDate.of(2024,6,6));
         employee = new Employee(1 , "essa", contract , bankAccount);
         employee.addRole("Shift Manager");
-        shift = new Shift(1, 1 , 2 , "Morning" ,1);
+        shift = new Shift(1, LocalDate.of(2023,6,19), 1 , 2 , "Morning" ,1);
 
     }
 

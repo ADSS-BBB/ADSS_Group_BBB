@@ -3,6 +3,8 @@ package HR.ServiceLayer;
 import HR.DomainLayer.ShiftPackage.ShiftController;
 import com.google.gson.Gson;
 
+import java.time.LocalDate;
+
 public class ShiftService {
 
     ShiftController shiftController;
@@ -12,9 +14,9 @@ public class ShiftService {
 
     }
 
-    public String addShift(Integer ShiftId, Integer ShiftManagerId , Integer MinWorkers, String Type, Integer BranchId) throws Exception {
+    public String addShift(Integer ShiftId, LocalDate time, Integer ShiftManagerId , Integer MinWorkers, String Type, Integer BranchId) throws Exception {
         try{
-            String result = shiftController.addShift(ShiftId, ShiftManagerId, MinWorkers, Type, BranchId);
+            String result = shiftController.addShift(ShiftId,time, ShiftManagerId, MinWorkers, Type, BranchId);
             return result;
         }
         catch (Exception e){

@@ -3,6 +3,8 @@ package HR.DomainLayer.ShiftPackage;
 import HR.DomainLayer.BranchPackage.BranchController;
 import HR.DomainLayer.EmployeePackage.EmployeeController;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class ShiftController {
@@ -67,12 +69,15 @@ public class ShiftController {
         return shifts.get(ShiftId).AddCancelation(transictionId);
     }
 
-    public String addShift(Integer ShiftId, Integer ShiftManagerId , Integer MinWorkers, String Type, Integer BranchId) throws Exception {
+    public String addShift(Integer ShiftId, LocalDate time, Integer ShiftManagerId , Integer MinWorkers, String Type, Integer BranchId) throws Exception {
         if (ShiftId == null || ShiftId < 0){
             throw new Exception("ShiftId is null");
         }
         if (shifts.containsKey(ShiftId)){
             throw new Exception("Shift already exist");
+        }
+        if (time == null){
+            throw new Exception("time is null");
         }
         if (ShiftManagerId == null || ShiftManagerId < 0){
             throw new Exception("ShiftManagerId is null");
@@ -95,9 +100,8 @@ public class ShiftController {
         if (!BranchController.getInstance().getBranches().containsKey(BranchId)){
             throw new Exception("Branch is not existed");
         }
-        shifts.put(ShiftId, new Shift(ShiftId, ShiftManagerId, MinWorkers, Type, BranchId));
+        shifts.put(ShiftId, new Shift(ShiftId , time , ShiftManagerId, MinWorkers, Type, BranchId));
         return "Shift added successfully";
-
     }
 
 
