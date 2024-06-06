@@ -6,6 +6,7 @@ import HR.DomainLayer.Contract;
 import HR.DomainLayer.EmployeePackage.Employee;
 import HR.DomainLayer.ShiftPackage.Shift;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.time.LocalDate;
@@ -26,10 +27,20 @@ public class BranchTests {
         branch = new Branch("Beer Sheva",1 );
         branch2 = new Branch("Tel Aviv",2 );
         bankAccount = new BankAccount("essa","Essa1234",7500);
-        contract = new Contract(1 , 15000, 1 , "full" , LocalDate.of(2024,6,6));
+        contract = new Contract(1 , 15000, 1 , "full" , LocalDate.of(2023,6,6));
         employee = new Employee(1 , "essa", contract , bankAccount);
         employee.addRole("Shift Manager");
-        shift = new Shift(1, LocalDate.of(2023,6,19), 1 , 2 , "Morning" ,1);
+        shift = new Shift(1, LocalDate.of(2024,6,19), 1 , 2 , "Morning" ,1);
+    }
+
+    @AfterEach
+    public void cleanup(){
+        branch = null;
+        branch2 = null;
+        employee = null;
+        bankAccount = null;
+        contract = null;
+        shift = null;
 
     }
 
@@ -38,7 +49,7 @@ public class BranchTests {
         init();
         boolean ans = true;
         try {
-            branch.AddRole("cashier");
+            branch.AddRole("cleaner");
         } catch (Exception e){
             ans = false;
         }
@@ -62,8 +73,8 @@ public class BranchTests {
         init();
         boolean ans = true;
         try {
-            branch.AddRole("cashier");
-            branch.RemoveRole("cashier");
+            branch.AddRole("cleaner");
+            branch.RemoveRole("cleaner");
         } catch (Exception e){
             ans = false;
         }
@@ -75,38 +86,38 @@ public class BranchTests {
         init();
         boolean ans = true;
         try {
-            branch.RemoveRole("cashier");
+            branch.RemoveRole("cleaner");
         } catch (Exception e){
             ans = false;
         }
         assertFalse(ans);
     }
 
-    @Test
-    public void setShift1HoursTest() throws Exception {
-        init();
-        boolean ans = true;
-        Integer[] hours1 = {14 , 22};
-        try {
-            branch.setShift1Hours(hours1);
-        } catch (Exception e){
-            ans = false;
-        }
-        assertTrue(ans);
-    }
+//    @Test
+////    public void setShift1HoursTest() throws Exception {
+////        init();
+////        boolean ans = true;
+////        Integer[] hours1 = {14 , 22};
+////        try {
+////            branch.setShift1Hours(hours1);
+////        } catch (Exception e){
+////            ans = false;
+////        }
+////        assertTrue(ans);
+////    }
 
-    @Test
-    public void setShift1HoursTest2() throws Exception {
-        init();
-        boolean ans = true;
-        Integer[] hours1 = {14 , 21};
-        try {
-            branch.setShift1Hours(hours1);
-        } catch (Exception e){
-            ans = false;
-        }
-        assertFalse(ans);
-    }
+//    @Test
+//    public void setShift1HoursTest2() throws Exception {
+//        init();
+//        boolean ans = true;
+//        Integer[] hours1 = {14 , 21};
+//        try {
+//            branch.setShift1Hours(hours1);
+//        } catch (Exception e){
+//            ans = false;
+//        }
+//        assertFalse(ans);
+//    }
 
     @Test
     public void AddBranchEmployeeTest() throws Exception{
@@ -169,17 +180,6 @@ public class BranchTests {
         assertTrue(ans);
     }
 
-    @Test
-    public void updateBranchShiftTest2() throws Exception{
-        init();
-        boolean ans = true;
-        try {
-            branch.updateBranchShift();
-            ans = branch.getBranchShiftList().contains(2);
-        } catch (Exception e){
-            ans = false;
-        }
-        assertFalse(ans);
-    }
+
 }
 

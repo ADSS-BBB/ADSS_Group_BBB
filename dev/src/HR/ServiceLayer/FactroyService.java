@@ -23,6 +23,11 @@ public class FactroyService {
         return "";
     }
 
+    public String getRoles(Integer id) throws Exception{
+        System.out.println(branchService.getRoles(id));
+        return "";
+    }
+
     public String removebranch(Integer id) throws Exception{
         System.out.println(branchService.removeBranch(id));
         return "";
@@ -48,16 +53,16 @@ public class FactroyService {
         return "";
     }
 
-    public String setShift1Hours(Integer branchid, Integer[] shift1Hours) throws Exception{
-        System.out.println(branchService.setShift1Hours(branchid, shift1Hours));
-        return "";
-    }
-
-
-    public String setShift2Hours(Integer branchid, Integer[] shift2Hours) throws Exception{
-        System.out.println(branchService.setShift2Hours(branchid, shift2Hours));
-        return "";
-    }
+//    public String setShift1Hours(Integer branchid, Integer[] shift1Hours) throws Exception{
+//        System.out.println(branchService.setShift1Hours(branchid, shift1Hours));
+//        return "";
+//    }
+//
+//
+//    public String setShift2Hours(Integer branchid, Integer[] shift2Hours) throws Exception{
+//        System.out.println(branchService.setShift2Hours(branchid, shift2Hours));
+//        return "";
+//    }
 
     public String updateBranchShifts(Integer id) throws Exception{
         System.out.println(branchService.updateBranchShift(id));

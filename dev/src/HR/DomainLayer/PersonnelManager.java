@@ -1,10 +1,12 @@
 package HR.DomainLayer;
 
+import HR.DomainLayer.BranchPackage.BranchController;
 import HR.DomainLayer.EmployeePackage.Employee;
 import HR.DomainLayer.EmployeePackage.EmployeeController;
 import HR.DomainLayer.ShiftPackage.Shift;
 import HR.DomainLayer.ShiftPackage.ShiftController;
 import HR.LocalDateAdapter;
+import HR.ServiceLayer.FactroyService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -18,6 +20,7 @@ public class PersonnelManager {
     private String name;
     private HashMap<Integer, LinkedList<Integer>> availableEmployees;
     private HashMap<Integer, HashMap<Integer,String>> schedule;
+    private FactroyService factroyService;
 
     public PersonnelManager(String name) {
         Employees = new HashMap<>();
@@ -25,6 +28,7 @@ public class PersonnelManager {
         this.name = name;
         availableEmployees = new HashMap<>();
         schedule = new HashMap<>();
+        factroyService = new FactroyService();
     }
 
     public String getName() {
@@ -94,7 +98,9 @@ public class PersonnelManager {
     public String buildShift(Integer shiftid , String role) throws Exception{
         HashMap<Integer,Employee> employees = EmployeeController.getInstance().getEmployees();
         for (Employee employee : employees.values()){
-            if (employee.getWeeklyAvailableShifts().contains(shiftid) && employee.getRoles().contains(role)){
+            if (employee.getWeeklyAvailableShifts().contains(shiftid) && employee.getRoles().contains(role)
+                    && BranchController.getInstance().getRoles(ShiftController.getInstance().getShift(shiftid).getBranchId()).contains(role)
+                    && (schedule.isEmpty() || !schedule.get(shiftid).containsKey(employee.getEmployeeID()))){
                 if (!schedule.containsKey(shiftid)){
                     HashMap<Integer, String> employeesinShift = new HashMap<>();
                     employeesinShift.put(employee.getEmployeeID(), role);
@@ -110,6 +116,14 @@ public class PersonnelManager {
             }
         }
         return "";
+    }
+
+    public String unbuildShift(Integer shiftid , Integer employeeid) throws Exception{
+        if (!schedule.isEmpty() && schedule.containsKey(shiftid) && schedule.get(shiftid).containsKey(employeeid)){
+            schedule.get(shiftid).remove(employeeid);
+            ShiftController.getInstance().removeEmployee(shiftid,employeeid);
+        }
+        return  "";
     }
 
     public String scheduleShifts() throws Exception{

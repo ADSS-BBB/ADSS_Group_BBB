@@ -13,6 +13,8 @@ import java.util.LinkedList;
 public class EmployeeController {
     private HashMap<Integer, Employee> employees = new HashMap<>();
     private static EmployeeController instance;
+
+
     public static EmployeeController getInstance() {
         if (instance == null) {
             instance = new EmployeeController();
@@ -208,5 +210,12 @@ public class EmployeeController {
             throw new Exception("Employee is not existed");
         }
         return employees.get(id).getWeeklyAvailableShifts();
+    }
+
+    //for testing
+
+
+    public static void setInstancetonull(EmployeeController instance) {
+        EmployeeController.instance = null;
     }
 }

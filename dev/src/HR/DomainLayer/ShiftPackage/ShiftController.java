@@ -59,6 +59,8 @@ public class ShiftController {
         return shifts.get(ShiftId).RemoveEmployee(WorkerId);
     }
 
+
+
     public String addCancellation(Integer transictionId, Integer ShiftId) throws Exception {
         if (ShiftId == null || ShiftId < 0){
             throw new Exception("ShiftId is null");
@@ -76,7 +78,7 @@ public class ShiftController {
         if (shifts.containsKey(ShiftId)){
             throw new Exception("Shift already exist");
         }
-        if (time == null){
+        if (time == null || time.isBefore(LocalDate.now())){
             throw new Exception("time is null");
         }
         if (ShiftManagerId == null || ShiftManagerId < 0){
@@ -97,6 +99,13 @@ public class ShiftController {
         if (BranchId == null || BranchId < 0){
             throw new Exception("BranchId is null");
         }
+        if (!shifts.isEmpty()){
+            for (Shift shift : shifts.values()){
+                if (shift.getTime().equals(time) && shift.getType().equals(Type)){
+                    throw new Exception("shift already exist in this day and type");
+                }
+            }
+        }
         if (!BranchController.getInstance().getBranches().containsKey(BranchId)){
             throw new Exception("Branch is not existed");
         }
@@ -104,5 +113,10 @@ public class ShiftController {
         return "Shift added successfully";
     }
 
+    //for testing
 
+
+    public static void setInstancetonull(ShiftController instance) {
+        ShiftController.instance = null;
+    }
 }

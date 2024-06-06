@@ -13,7 +13,7 @@ import java.util.LinkedList;
 
 public class Employee {
     private Integer EmployeeID;
-    private String Username;
+    private String name;
     private Contract Dealdetails;
     private BankAccount BankAccount;
     private LinkedList<Integer> WeeklyAvailableShifts;
@@ -22,9 +22,9 @@ public class Employee {
     private Integer BranchId;
 
 
-    public Employee(Integer EmployeeID , String Username, Contract Dealdetails, BankAccount BankAccount) throws Exception{
+    public Employee(Integer EmployeeID , String name, Contract Dealdetails, BankAccount BankAccount) throws Exception{
         this.EmployeeID = EmployeeID;
-        this.Username = Username;
+        this.name = name;
         this.Dealdetails = Dealdetails;
         this.BankAccount = BankAccount;
         WeeklyAvailableShifts = new LinkedList<>();
@@ -32,12 +32,11 @@ public class Employee {
         roles = new LinkedList<>();
         this.BranchId = Dealdetails.getBranchId();
         EmployeeController.getInstance().getEmployees().put(EmployeeID,this);
-        HashMap<Integer , Employee> employees = EmployeeController.getInstance().getEmployees();
         BranchController.getInstance().addEmployee(EmployeeID , Dealdetails.getBranchId());
     }
 
     public String getUsername() {
-        return Username;
+        return name;
     }
 
     public BankAccount getBankAccount() {
@@ -158,6 +157,9 @@ public class Employee {
         }
         if (!ShiftController.getInstance().getShifts().containsKey(ShiftId)){
             throw new Exception("no such shift");
+        }
+        if (Dealdetails.getStartDate().isAfter(ShiftController.getInstance().getShift(ShiftId).getTime())){
+            throw new Exception("shift date is after start date");
         }
         WeeklyAvailableShifts.add(ShiftId);
         return "employee added an available day";

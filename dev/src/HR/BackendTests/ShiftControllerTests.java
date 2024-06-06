@@ -7,6 +7,7 @@ import HR.DomainLayer.EmployeePackage.Employee;
 import HR.DomainLayer.ShiftPackage.Shift;
 import HR.DomainLayer.ShiftPackage.ShiftController;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.time.LocalDate;
@@ -36,6 +37,19 @@ public class ShiftControllerTests {
         employee1 = new Employee(1, "Atheel", contract, bankAccount);
         employee2 = new Employee(3, "Essa", contract2, bankAccount2);
 
+    }
+
+    @AfterEach
+    public void cleanUp(){
+        ShiftController.setInstancetonull(shiftController);
+        contract = null;
+        branch = null;
+        employee1 = null;
+        employee2 = null;
+        bankAccount = null;
+        contract2 = null;
+        bankAccount2 = null;
+        shift = null;
     }
 
     @Test

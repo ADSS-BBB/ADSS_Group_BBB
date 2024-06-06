@@ -5,6 +5,7 @@ import HR.DomainLayer.BranchPackage.Branch;
 import HR.DomainLayer.Contract;
 import HR.DomainLayer.EmployeePackage.Employee;
 import HR.DomainLayer.EmployeePackage.EmployeeController;
+import HR.DomainLayer.PersonnelManager;
 import HR.DomainLayer.ShiftPackage.Shift;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,7 @@ public class ShiftTests {
     Employee employee1;
     Employee employee2;
     EmployeeController employeeController;
+    PersonnelManager manager;
 
     @BeforeEach
     public void init() throws Exception{
@@ -28,8 +30,9 @@ public class ShiftTests {
         Branch branch1 = new Branch("tel aviv", 1);
         employee1 = new Employee(1, "Atheel", contract, bankAccount);
         employee2 = new Employee(3, "Essa", contract, bankAccount);
-        shift = new Shift(1, LocalDate.of(2022,1,12),2, 2, "full", 1);
+        shift = new Shift(1, LocalDate.of(2024,6,12),2, 2, "full", 1);
         employeeController = EmployeeController.getInstance();
+        manager = new PersonnelManager("essa");
     }
 
     @Test
@@ -65,8 +68,8 @@ public class ShiftTests {
         boolean ans = true;
         try {
             employee1.addShiftToWeek(1);
-            employee2.addShiftToWeek(1);
-            employeeController.schedulingShifts(1);
+            employee1.addRole("cashier");
+            manager.buildShift(1,"cashier");
             shift.RemoveEmployee(employee1.getEmployeeID());
         }
         catch (Exception e){

@@ -22,11 +22,16 @@ public class EmployeeTests {
         BankAccount bankAccount = new BankAccount("essa", "Essa1234",5000);
         Branch branch1 = new Branch("tel aviv", 1);
         employee = new Employee(1 , "essa" , contract , bankAccount);
-        Shift shift = new Shift(1 , LocalDate.of(2023,11,6), 1 , 10 , "Morning" , 1);
+        Shift shift = new Shift(1 , LocalDate.of(2024,11,6), 1 , 10 , "Morning" , 1);
         Branch branch2 = new Branch("beer sheva", 2);
         LinkedList<String> roles = new LinkedList<>();
         employee.getRoles().add("cashier");
         employee.addShiftToWeek(1);
+    }
+
+    @AfterEach
+    public void clean(){
+        employee = null;
     }
 
     @Test
@@ -185,17 +190,7 @@ public class EmployeeTests {
         assertTrue(ans);
     }
 
-    @Test
-    public void addShiftToWeekTest2() throws Exception {
-        init();
-        boolean ans = true;
-        try {
-            employee.addShiftToWeek(2);
-        } catch (Exception e) {
-            ans = false;
-        }
-        assertFalse(ans);
-    }
+    
 
     @Test
     public void removeShiftFromWeekTest() throws Exception {

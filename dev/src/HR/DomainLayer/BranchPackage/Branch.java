@@ -10,8 +10,6 @@ import java.util.LinkedList;
 public class Branch {
     private String Location;
     private Integer BranchId;
-    private Integer[] Shift1Hours;
-    private Integer[] Shift2Hours;
     private LinkedList<String> roles;
     private LinkedList<Integer> BranchEmployees;
     private LinkedList<Integer> BranchShiftList;
@@ -19,9 +17,10 @@ public class Branch {
     public Branch(String Location, Integer BranchId) {
         this.Location = Location;
         this.BranchId = BranchId;
-        this.Shift1Hours = new Integer[]{7 , 15};
-        this.Shift2Hours = new Integer[]{15 , 23};
         roles = new LinkedList<>();
+        roles.add("Shift Manager");
+        roles.add("cashier");
+        roles.add("storekeeper");
         BranchEmployees = new LinkedList<>();
         BranchShiftList = new LinkedList<>();
         BranchController.getInstance().getBranches().put(BranchId,this);
@@ -39,12 +38,6 @@ public class Branch {
     public Integer getBranchId() {
         return BranchId;
     }
-    public Integer[] getShift1Hours() {
-        return Shift1Hours;
-    }
-    public Integer[] getShift2Hours() {
-        return Shift2Hours;
-    }
     public LinkedList<String> getRoles() {
         return roles;
     }
@@ -59,33 +52,33 @@ public class Branch {
     }
 
 
-    public String setShift1Hours(Integer[] Shift1Hours) throws Exception {
-        if (Shift1Hours == null || Shift1Hours.length != 2) {
-            throw new Exception("Number of Shift1Hours must be equal to 2");
-        }
-        if (Shift1Hours[0] > Shift1Hours[1]) {
-            throw new Exception("Shift1Hours[0] must be less than Shift1Hours[1]");
-        }
-        if (Shift1Hours[1] - Shift1Hours[0] != 8) {
-            throw new Exception("Shift must be exactly 8 hours");
-        }
-        this.Shift1Hours=Shift1Hours;
-        return "Shift1Hours set Successfully";
-
-    }
-    public String setShift2Hours(Integer[] Shift2Hours) throws Exception {
-        if (Shift2Hours.length != 2) {
-            throw new Exception("Number of Shift2Hours must be equal to 2");
-        }
-        if (Shift2Hours[0] > Shift2Hours[1]) {
-            throw new Exception("Shift2Hours[0] must be less than Shift2Hours[1]");
-        }
-        if (Shift2Hours[1] - Shift2Hours[0] != 8) {
-            throw new Exception("Shift must be exactly 8 hours");
-        }
-        this.Shift2Hours=Shift2Hours;
-        return "Shift2Hours set Successfully";
-    }
+//    public String setShift1Hours(Integer[] Shift1Hours) throws Exception {
+//        if (Shift1Hours == null || Shift1Hours.length != 2) {
+//            throw new Exception("Number of Shift1Hours must be equal to 2");
+//        }
+//        if (Shift1Hours[0] > Shift1Hours[1]) {
+//            throw new Exception("Shift1Hours[0] must be less than Shift1Hours[1]");
+//        }
+//        if (Shift1Hours[1] - Shift1Hours[0] != 8) {
+//            throw new Exception("Shift must be exactly 8 hours");
+//        }
+//        this.Shift1Hours=Shift1Hours;
+//        return "Shift1Hours set Successfully";
+//
+//    }
+//    public String setShift2Hours(Integer[] Shift2Hours) throws Exception {
+//        if (Shift2Hours.length != 2) {
+//            throw new Exception("Number of Shift2Hours must be equal to 2");
+//        }
+//        if (Shift2Hours[0] > Shift2Hours[1]) {
+//            throw new Exception("Shift2Hours[0] must be less than Shift2Hours[1]");
+//        }
+//        if (Shift2Hours[1] - Shift2Hours[0] != 8) {
+//            throw new Exception("Shift must be exactly 8 hours");
+//        }
+//        this.Shift2Hours=Shift2Hours;
+//        return "Shift2Hours set Successfully";
+//    }
 
 
     public String AddRole(String Role) throws Exception{

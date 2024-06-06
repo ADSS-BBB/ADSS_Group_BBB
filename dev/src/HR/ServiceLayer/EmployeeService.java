@@ -4,8 +4,11 @@ import HR.DomainLayer.BankAccount;
 import HR.DomainLayer.Contract;
 import HR.DomainLayer.EmployeePackage.Employee;
 import HR.DomainLayer.EmployeePackage.EmployeeController;
+import HR.LocalDateAdapter;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.time.LocalDate;
 import java.util.LinkedList;
 
 public class EmployeeService {
@@ -28,7 +31,7 @@ public class EmployeeService {
     public String getEmployee(Integer employeeId) throws Exception{
         try {
             Employee result = employeeController.getEmployee(employeeId);
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
             String json = gson.toJson(result);
             return json;
         } catch (Exception e) {

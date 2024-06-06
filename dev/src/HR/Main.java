@@ -49,35 +49,31 @@ public class Main {
         while (true) {
             System.out.println("1. Add Branch");
             System.out.println("2. Remove Branch");
-            System.out.println("3. Edit Shift 1 Hours");
-            System.out.println("4. Edit Shift 2 Hours");
-            System.out.println("5. Add Employee To Branch");
-            System.out.println("6. Remove Employee From Branch");
-            System.out.println("7. Add Role To Branch");
-            System.out.println("8. Remove Role From Branch");
-            System.out.println("9. Update Branch Shift");
-            System.out.println("10. Get Employee");
-            System.out.println("11. Add Employee To System");
-            System.out.println("12. Remove Employee From System");
-            System.out.println("13. Add Employee Role");
-            System.out.println("14. Remove Employee Role");
-            System.out.println("15. Increase Salary");
-            System.out.println("16. Decrease Salary");
-            System.out.println("17. Change Branch");
-            System.out.println("18. Set Employment Type");
-            System.out.println("19. Show Available Shifts");
-            System.out.println("20. build shift with role");
-            System.out.println("21. show schedule");
-            System.out.println("22. get Shifts history");
-            System.out.println("23. Update Employee History");
-            System.out.println("24. Add Shift To System");
-            System.out.println("25. Add Employee To Shift");
-            System.out.println("26. Remove Employee From Shift");
-            System.out.println("27. Set Shift Minimum Workers");
-            System.out.println("28. Show Available Employees");
-            System.out.println("29. Show all the employees in the market");
-            System.out.println("30. go back to menu page");
-            System.out.println("31. Exit");
+            System.out.println("3. get Branch roles");
+            System.out.println("4. Add Role To Branch");
+            System.out.println("5. Remove Role From Branch");
+            System.out.println("6. Update Branch Shift");
+            System.out.println("7. Get Employee");
+            System.out.println("8. Add Employee To System");
+            System.out.println("9. Remove Employee From System");
+            System.out.println("10. Add Employee Role");
+            System.out.println("11. Remove Employee Role");
+            System.out.println("12. Increase Salary");
+            System.out.println("13. Decrease Salary");
+            System.out.println("14. Change Branch");
+            System.out.println("15. Set Employment Type");
+            System.out.println("16. Show Available Shifts");
+            System.out.println("17. build shift with role");
+            System.out.println("18. remove employee from shift");
+            System.out.println("19. show schedule");
+            System.out.println("20. get Shifts history");
+            System.out.println("21. Update Employee History");
+            System.out.println("22. Add Shift To System");
+            System.out.println("23. Set Shift Minimum Workers");
+            System.out.println("24. Show Available Employees");
+            System.out.println("25. Show all the employees in the market");
+            System.out.println("26. go back to menu page");
+            System.out.println("27. Exit");
             try {
                 input = scanner.nextLine();
                 switch (Integer.parseInt(input)) {
@@ -88,90 +84,78 @@ public class Main {
                         removeBranch();
                         break;
                     case 3:
-                        setShift1Hours();
+                        getRoles();
                         break;
                     case 4:
-                        setShift2Hours();
-                        break;
-                    case 5:
-                        addEmployeetoBranch();
-                        break;
-                    case 6:
-                        removeEmployeefromBranch();
-                        break;
-                    case 7:
                         addroleToBranch();
                         break;
-                    case 8:
+                    case 5:
                         removeRoleFromBranch();
                         break;
-                    case 9:
+                    case 6:
                         updateBranchShifts();
                         break;
-                    case 10:
+                    case 7:
                         getEmployee();
                         break;
-                    case 11:
+                    case 8:
                         addEmployee();
                         break;
-                    case 12:
+                    case 9:
                         removeEmployee();
                         break;
-                    case 13:
+                    case 10:
                         addEmployeeRole();
                         break;
-                    case 14:
+                    case 11:
                         removeEmployeeRole();
                         break;
-                    case 15:
+                    case 12:
                         IncreaseSalary();
                         break;
-                    case 16:
+                    case 13:
                         decreaseSalary();
                         break;
-                    case 17:
+                    case 14:
                         changeBranch();
                         break;
-                    case 18:
+                    case 15:
                         setEmploymentType();
                         break;
-                    case 19:
+                    case 16:
                         showAvailableShifts();
                         break;
-                    case 20:
+                    case 17:
                         buildShift();
                         break;
-                    case 21:
+                    case 18:
+                        unbuildShift();
+                        break;
+                    case 19:
                         getSchedule();
                         break;
-                    case 22:
+                    case 20:
                         HRgetShiftsHistory();
                         break;
-                    case 23:
+                    case 21:
                         updateEmployeeHistory();
                         break;
-                    case 24:
+                    case 22:
                         addShift();
                         break;
-                    case 25:
-                        AddEmployeeToShift();
-                        break;
-                    case 26:
-                        removeEmployeeFromShift();
-                        break;
-                    case 27:
+                    case 23:
                         setMinWorkers();
                         break;
-                    case 28:
+                    case 24:
                         ShowAvailableEmployees();
                         break;
-                    case 29:
+                    case 25:
                         HRgetEmployess();
                         break;
-                    case 30:
+                    case 26:
                         MenuPage();
                         break;
-                    case 31:
+                    case 27:
                         System.exit(0);
                         break;
                     default:
@@ -305,6 +289,34 @@ public class Main {
         }
     }
 
+    private static void unbuildShift() throws Exception{
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        String input2;
+        System.out.println("Enter Shift id");
+        input = scanner.nextLine();
+        System.out.println("Enter employee id");
+        input2 = scanner.nextLine();
+        try {
+            manager.unbuildShift(Integer.parseInt(input), Integer.parseInt(input2));
+        } catch (Exception e) {
+            System.out.println("invalid input");
+        }
+    }
+
+
+    public static void getRoles() throws Exception{
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        System.out.println("Enter branch id");
+        input = scanner.nextLine();
+        try {
+            factroyService.getRoles(Integer.parseInt(input));
+        } catch (Exception e) {
+            System.out.println("invalid input");
+        }
+    }
+
     private static void AddAvailableShift() throws Exception {
         Scanner scanner = new Scanner(System.in);
         String input;
@@ -402,71 +414,71 @@ public class Main {
         }
     }
 
-    private static void setShift1Hours() throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        String input;
-        String input2;
-        System.out.println("Enter Branch Id");
-        input = scanner.nextLine();
-        System.out.println("Enter Shift 1 Hours in <StartHour EndHour> in this form");
-        input2 = scanner.nextLine();
-        String[] hours = input2.split(" ");
-        if (hours.length != 2) throw new Exception("Invalid input");
-        try {
-            Integer[] hours1 = {Integer.parseInt(hours[0]), Integer.parseInt(hours[1])};
-            factroyService.setShift1Hours(Integer.parseInt(input), hours1);
-        } catch (Exception e) {
-            System.out.println("Invalid input");
-        }
-    }
+//    private static void setShift1Hours() throws Exception {
+//        Scanner scanner = new Scanner(System.in);
+//        String input;
+//        String input2;
+//        System.out.println("Enter Branch Id");
+//        input = scanner.nextLine();
+//        System.out.println("Enter Shift 1 Hours in <StartHour EndHour> in this form");
+//        input2 = scanner.nextLine();
+//        String[] hours = input2.split(" ");
+//        if (hours.length != 2) throw new Exception("Invalid input");
+//        try {
+//            Integer[] hours1 = {Integer.parseInt(hours[0]), Integer.parseInt(hours[1])};
+//            factroyService.setShift1Hours(Integer.parseInt(input), hours1);
+//        } catch (Exception e) {
+//            System.out.println("Invalid input");
+//        }
+//    }
 
-    private static void setShift2Hours() throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        String input;
-        String input2;
-        System.out.println("Enter Branch Id");
-        input = scanner.nextLine();
-        System.out.println("Enter Shift 2 Hours in <StartHour EndHour> in this form");
-        input2 = scanner.nextLine();
-        String[] hours = input2.split(" ");
-        if (hours.length != 2) throw new Exception("Invalid input");
-        try {
-            Integer[] hours1 = {Integer.parseInt(hours[0]), Integer.parseInt(hours[1])};
-            factroyService.setShift2Hours(Integer.parseInt(input), hours1);
-        } catch (Exception e) {
-            System.out.println("Invalid input");
-        }
-    }
+//    private static void setShift2Hours() throws Exception {
+//        Scanner scanner = new Scanner(System.in);
+//        String input;
+//        String input2;
+//        System.out.println("Enter Branch Id");
+//        input = scanner.nextLine();
+//        System.out.println("Enter Shift 2 Hours in <StartHour EndHour> in this form");
+//        input2 = scanner.nextLine();
+//        String[] hours = input2.split(" ");
+//        if (hours.length != 2) throw new Exception("Invalid input");
+//        try {
+//            Integer[] hours1 = {Integer.parseInt(hours[0]), Integer.parseInt(hours[1])};
+//            factroyService.setShift2Hours(Integer.parseInt(input), hours1);
+//        } catch (Exception e) {
+//            System.out.println("Invalid input");
+//        }
+//    }
 
-    private static void addEmployeetoBranch() throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        String input;
-        String input2;
-        System.out.println("Enter employee Id");
-        input = scanner.nextLine();
-        System.out.println("Enter branch Id");
-        input2 = scanner.nextLine();
-        try {
-            factroyService.addemployee(Integer.parseInt(input), Integer.parseInt(input2));
-        } catch (Exception e) {
-            System.out.println("Invalid input");
-        }
-    }
+//    private static void addEmployeetoBranch() throws Exception {
+//        Scanner scanner = new Scanner(System.in);
+//        String input;
+//        String input2;
+//        System.out.println("Enter employee Id");
+//        input = scanner.nextLine();
+//        System.out.println("Enter branch Id");
+//        input2 = scanner.nextLine();
+//        try {
+//            factroyService.addemployee(Integer.parseInt(input), Integer.parseInt(input2));
+//        } catch (Exception e) {
+//            System.out.println("Invalid input");
+//        }
+//    }
 
-    private static void removeEmployeefromBranch() throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        String input;
-        String input2;
-        System.out.println("Enter Employee Id");
-        input = scanner.nextLine();
-        System.out.println("Enter branch Id");
-        input2 = scanner.nextLine();
-        try {
-            factroyService.removeemployee(Integer.parseInt(input), Integer.parseInt(input2));
-        } catch (Exception e) {
-            System.out.println("Invalid input");
-        }
-    }
+//    private static void removeEmployeefromBranch() throws Exception {
+//        Scanner scanner = new Scanner(System.in);
+//        String input;
+//        String input2;
+//        System.out.println("Enter Employee Id");
+//        input = scanner.nextLine();
+//        System.out.println("Enter branch Id");
+//        input2 = scanner.nextLine();
+//        try {
+//            factroyService.removeemployee(Integer.parseInt(input), Integer.parseInt(input2));
+//        } catch (Exception e) {
+//            System.out.println("Invalid input");
+//        }
+//    }
 
     private static void addroleToBranch() throws Exception {
         Scanner scanner = new Scanner(System.in);
@@ -716,7 +728,7 @@ public class Main {
         String input6;
         System.out.println("Enter Shift Id");
         input = scanner.nextLine();
-        System.out.println("Enter date in YYYY-MM_DD format");
+        System.out.println("Enter date in YYYY-MM-DD format");
         input6 = scanner.nextLine();
         String[] date = input6.split("-");
         if ( date.length != 3){
@@ -738,35 +750,35 @@ public class Main {
         }
     }
 
-    private static void AddEmployeeToShift() throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        String input;
-        String input2;
-        System.out.println("Enter Shift Id");
-        input = scanner.nextLine();
-        System.out.println("Enter Employee Id");
-        input2 = scanner.nextLine();
-        try {
-            factroyService.addEmployee(Integer.parseInt(input),Integer.parseInt(input2));
-        } catch (Exception e) {
-            System.out.println("Invalid input");
-        }
-    }
+//    private static void AddEmployeeToShift() throws Exception {
+//        Scanner scanner = new Scanner(System.in);
+//        String input;
+//        String input2;
+//        System.out.println("Enter Shift Id");
+//        input = scanner.nextLine();
+//        System.out.println("Enter Employee Id");
+//        input2 = scanner.nextLine();
+//        try {
+//            factroyService.addEmployee(Integer.parseInt(input),Integer.parseInt(input2));
+//        } catch (Exception e) {
+//            System.out.println("Invalid input");
+//        }
+//    }
 
-    private static void removeEmployeeFromShift() throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        String input;
-        String input2;
-        System.out.println("Enter Shift Id");
-        input = scanner.nextLine();
-        System.out.println("Enter Employee Id");
-        input2 = scanner.nextLine();
-        try {
-            factroyService.removeEmployee(Integer.parseInt(input), Integer.parseInt(input2));
-        } catch (Exception e) {
-            System.out.println("Invalid input");
-        }
-    }
+//    private static void removeEmployeeFromShift() throws Exception {
+//        Scanner scanner = new Scanner(System.in);
+//        String input;
+//        String input2;
+//        System.out.println("Enter Shift Id");
+//        input = scanner.nextLine();
+//        System.out.println("Enter Employee Id");
+//        input2 = scanner.nextLine();
+//        try {
+//            factroyService.removeEmployee(Integer.parseInt(input), Integer.parseInt(input2));
+//        } catch (Exception e) {
+//            System.out.println("Invalid input");
+//        }
+//    }
 
     private static void setMinWorkers() throws Exception {
         Scanner scanner = new Scanner(System.in);

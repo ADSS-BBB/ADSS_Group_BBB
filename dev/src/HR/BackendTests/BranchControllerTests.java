@@ -7,6 +7,7 @@ import HR.DomainLayer.Contract;
 import HR.DomainLayer.EmployeePackage.Employee;
 import HR.DomainLayer.ShiftPackage.Shift;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.time.LocalDate;
@@ -30,6 +31,16 @@ public class BranchControllerTests {
        employee = new Employee(1,"essa" , contract ,bankAccount);
        employee.addRole("Shift Manager");
        shift = new Shift(1, LocalDate.of(2024,12,4),1,2,"Morning",1);
+   }
+
+   @AfterEach
+   public void cleanup(){
+       BranchController.setInstancetonull(branchController);
+       branch = null;
+       bankAccount = null;
+       contract = null;
+       shift = null;
+       employee = null;
    }
 
     @Test
