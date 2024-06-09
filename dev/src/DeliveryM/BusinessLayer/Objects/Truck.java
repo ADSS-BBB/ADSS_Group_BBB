@@ -15,7 +15,7 @@ public class Truck{
 		this.truckWeight=truckWeight;
 		this.maxWeight=maxWeight;
 		this.availableweight=maxWeight-truckWeight;
-		this.isAvailable=false;
+		this.isAvailable=true;
 
 	}
 	public int getNumber() {
