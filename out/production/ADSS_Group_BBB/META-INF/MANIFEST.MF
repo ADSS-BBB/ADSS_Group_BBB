@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: C:\Users\basha\Desktop\ADSS1\ADSS_Group_BBB\dev\src\Delivery
+ M\Main.java
+

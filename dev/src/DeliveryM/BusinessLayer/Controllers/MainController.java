@@ -1,179 +1,216 @@
 package DeliveryM.BusinessLayer.Controllers;
+
 import DeliveryM.BusinessLayer.Objects.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+
+import static java.lang.Thread.sleep;
 
 public class MainController {
-    private DriverController driverController;
-    private DeliveryController deliveryController;
-    private TruckController truckController;
-    private ItemsController itemsController;
-
-
-    public MainController(DriverController driverController, DeliveryController deliveryController, TruckController truckController, ItemsController itemsController) {
-        this.deliveryController=deliveryController;
-        this.driverController=driverController;
-        this.truckController=truckController;
-        this.itemsController = itemsController;
-
-
+    private final DriverController driverController;
+    private final DeliveryController deliveryController;
+    private final TruckController truckController;
+    private final LocationController locationController;
+    private int docID;
+    // Constructor
+    public MainController(DriverController driverController, DeliveryController deliveryController, TruckController truckController, LocationController locationController) {
+        this.driverController = driverController;
+        this.deliveryController = deliveryController;
+        this.truckController = truckController;
+        this.locationController = locationController;
+        docID=0;
     }
-    // public String prepareDelivery(Map<Item, List<Location>>itemsToDel){
-    //map1: area, destenations map2: destenation, items
-//    public String prepareDelivery(Map<String, List<Location>>areas,Map<Location,List<Item>> items) {
-//        //deliveryController.createDelievries(areas,items);
-//        for (Map.Entry<String, List<Location>> entry : areas.entrySet()) {
-//            String area = entry.getKey();
-//            List<Location> dests = entry.getValue();
-//            while (!dests.isEmpty()) {
-//                Location currentLoc = dests.getFirst();
-//                List<Item> itemsList = items.get(currentLoc);
-//                int sum = 0;
-//                while (!itemsList.isEmpty()) {
-//                    sum += itemsList.getFirst().getItemWeight();
-//                    itemsList.removeFirst();
-//                }
-//                //must find a truck here && sutable driver
-//                Truck truck = truckController.findTruck(sum);
-//                Driver driver = driverController.findDriver(truck.getModel());//must change it
-//                //must check if its null and update is avalibale
-//                if (truck == null || driver == null) {
-//                    //notaficate there is no delievry
-//                } else
-//                    deliveryController.createDelievries();
-//                dests.removeFirst();
-//            }
-//            //then foreach area must create a delivery
-//
-//        }
-//        return "";
-//    }
-    public Response prepareDeliveries(){
-        Response response=new Response();
-        List<Delivery> deliveries= new LinkedList<>();
-        Map<String,List<Item>> itemsByArea=this.itemsController.getItemsToDeliver();
-        //for each one must create a delivery
-        for (Map.Entry<String, List<Item>> entry : itemsByArea.entrySet()) {
-            String area = entry.getKey();
-            List<Item> items = entry.getValue();
-            //must get all the des in this area
-            List<Location> dests=this.itemsController.getDestinationsByArea(area);
-            //getting the sum of the items
-            int itemsWeight= itemsController.getWeightOfItems(items);
-            //find a truck and driver for that delivery
-            Truck truck=this.truckController.findTruck(itemsWeight);
-            //check
-            if(truck!= null&&truck.getTruckWeight()+itemsWeight>truck.getMaxWeight()){
 
-                //found a suitable truck and must find a driver
-                Driver driver=driverController.findDriver(itemsWeight);
-                if(driver != null)
-                {
-                    Location src=itemsController.addSourceLoc("here","000","blah","here");
-                    Delivery singleOne=this.deliveryController.addDelivery(new Date(),src,
-                            dests,driver.getIdDriver(),truck.getNumber(),truck.getTruckWeight(),items);
-                    //must send a doc for the driver
-                    driverController.createSendDoc(singleOne,driver.getIdDriver());
+    //            System.out.println("1: Add Driver");
+//            System.out.println("2: Add Location");
+//            System.out.println("3: Add Truck");
+//            System.out.println("4: Add documents");
+//            System.out.println("5: Add Delivery");
+//            System.out.println("6: Remove Driver");
+//            System.out.println("7: Remove truck");
+//            System.out.println("8: Remove Delivery");
+//            System.out.println("9: Remove Location");
+//            System.out.println("10: Change Location");
+//            System.out.println("11: Print All Drivers");
+//            System.out.println("12: Print All Trucks");
+//            System.out.println("13: Print All Locations");
+//            System.out.println("14: Print All deliveries");
+//            System.out.println("15:Exit");
+    public void addDriver(Driver driver)  {
+        driverController.addDriver(driver);
+    }
+    public void addTruck(Truck truck){
+        truckController.addTruck(truck);
+    }
+    public void addLocation(String address,String contactnumber,String contactname,String area){
+        locationController.addLocation(address,contactnumber,contactname,area);
+    }
+
+    public void addDoc(HashMap<Item,Integer> toadd,int deliveryid,Location l) throws InterruptedException {
+
+        deliveryController.getDeliveryById(deliveryid).addDestinationAndItems(docID,l,toadd);
+        checkWeight(deliveryid);
+        docID++;
+    }
+    //public void addDocument()
+    public void checkWeight(int deliveryid) throws InterruptedException {
+        int currWeight =deliveryController.getAllDeliveries().get(deliveryid).getWeightDelivery()+deliveryController.getDeliveryById(deliveryid).getTruck().getTruckWeight();
+        int maxWeight =deliveryController.getAllDeliveries().get(deliveryid).getTruck().getMaxWeight();
+
+        if (currWeight > maxWeight) {
+            System.out.println("1) Remove destination");
+            System.out.println("2) Change destination");
+            System.out.println("3) Change truck");
+            System.out.println("4) Delete items");
+            System.out.print("Choose an option: ");
+
+            Scanner scanner = new Scanner(System.in);
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("which doc you want to remove: ");
+                    int docToRemove = scanner.nextInt();
+                    LocItemDoc doc=deliveryController.getDeliveryById(deliveryid).getdocusingIdofDoc(docToRemove);
+                    Location l=new Location(docToRemove,doc.getAddressLoc(),doc.getContactNumber(),doc.getContactName(),"area");
+                    deliveryController.getDeliveryById(deliveryid).deleteDestinationById(l.getLocationId(),docToRemove);
+                    checkWeight(deliveryid);
+                    System.out.println("Destination removed.");
+                    break;
+                case 2:
+
+                    System.out.println("Which destination do you want to remove?");
+                    int destToRemove1 = scanner.nextInt();
+                    System.out.println("Which document do you want to remove?");
+                    int docToRemove1 = scanner.nextInt();
+                    System.out.println("From which delivery do you want to take?");
+                    int delivery = scanner.nextInt();
+                    System.out.println("Which destination do you want to add?");
+                    int destToAdd = scanner.nextInt();
+                    System.out.println("Which document do you want to add?");
+                    int docToAdd = scanner.nextInt();
+
+                    LocItemDoc toRemove = deliveryController.getDeliveryById(deliveryid).getdocusingIdofDoc(docToRemove1);
+                    LocItemDoc toAdd = deliveryController.getDeliveryById(delivery).getdocusingIdofDoc(docToAdd);
+
+                    if (toRemove == null) {
+                        System.out.println("Document to remove not found.");
+                        return;
+                    }
+                    if (toAdd == null) {
+                        System.out.println("Document to add not found.");
+                        return;
+                    }
 
 
-                }
+                    Location added = new Location(destToAdd, toAdd.getAddressLoc(), toAdd.getContactNumber(), toAdd.getContactName(), "area");
+                    Location changed = new Location(destToRemove1, toRemove.getAddressLoc(), toRemove.getContactNumber(), toRemove.getContactName(), "area");
+
+                    deliveryController.getDeliveryById(deliveryid).addDestinationAndItems(docToAdd, added, toAdd.getLocItems());
+
+                    deliveryController.getDeliveryById(delivery).addDestinationAndItems(docToRemove1, changed, toRemove.getLocItems());
+
+                    deliveryController.getDeliveryById(deliveryid).deleteDestinationById(destToRemove1, docToRemove1);
+
+                    deliveryController.getDeliveryById(delivery).deleteDestinationById(destToAdd, docToAdd);
+
+                    System.out.println("Destination changed.");
+
+                    System.out.println("Destination changed.");
+
+                    break;
+                case 3:
+                    deliveryController.getAllDeliveries().get(deliveryid).getTruck().setAvailable();
+                    Truck t=truckController.getSuitTruck(currWeight);
+                    if(deliveryController.getAllDeliveries().get(deliveryid).changeTruck(t)) {
+                        t.setAvailable();
+
+                    }
+                    checkWeight(deliveryid);
+                    System.out.println("Truck changed.");
+                    break;
+                case 4:
+                    if(deliveryController.removeItems(deliveryid)){
+                        System.out.println("Item deleted.");
+                    }else System.out.println("there is a problem i cant delete items");
+                    break;
+                default:
+                    System.out.println("Invalid option.");
+                    break;
             }
-
-            else {
-                System.out.println("We have an issue with the delivery \nPlease choose a option :");
-                System.out.println("1)delete destination.");
-                System.out.println("1)change destination.");
-                System.out.println("1)change truck.");
-                System.out.println("1)delete items.");
-
-
-
-
-            }
-
-
-            //now we create a single delivery-> after getting the truck and the driver
-            //Delivery singleOne=this.deliveryController.addDelivery(new Date(),itemsController.addSourceLoc("here","blah","here"),dests,);
-
-
+        }else {
+            System.out.println("The delivery weight is within the truck's capacity.");
         }
-
-        return response;
-    }
-    //int deliveryid,int docid,String addressloc,Map<Integer,Integer> locItems,int truckweight,String contactName,String contactNumber){
-
-    //1)
-    //review destinations to choose which one
-
-    public boolean deleteDest(int deliveryId,int destId){
-        //check if exist at the objects better
-        Delivery deliveryRelatedDest=this.deliveryController.getDeliveries().get(deliveryId);
-        List<Location> L=deliveryRelatedDest.getDestinations();
-        Location toDel=new Location(-1,"","","","");
-        for(Location l:L){
-            if(l.getlocationid()==destId)
-                toDel=l;
-        }
-        if(toDel.getlocationid()==-1)return false;
-        List<Item> currentItems=deliveryRelatedDest.getItems();
-
-        List<Item> itemToDel=new LinkedList<>();
-        for(Item a: currentItems) {
-            if(a.getDestinationid()==destId){
-                this.itemsController.deleteItemsWithoutItsLoc(a.getIdItem());
-            }
-        }
-        deliveryRelatedDest.removeDest(toDel);
-        return true;
-    }
-    //2)
-    //int delId, List<Location> dests, int truckWeight,List<Item> items
-    //
-    public boolean changeDest(int deliveryid,int prevdest,int newdest,String address,String contactName,String contactNumber,String area,List<Item> itemsToAdd){
-
-        //there is any function to add destination!
-        Delivery deliveryRelatedDest=this.deliveryController.getDeliveries().get(deliveryid);
-        List<Location> L=deliveryRelatedDest.getDestinations();
-        L.add(new Location(newdest,address,contactNumber,contactName,area));
-
-        if(deleteDest(deliveryid,prevdest)){
-            if(this.deliveryController.getDeliveries().get(deliveryid)!=null){
-                for(int i=0;i<itemsToAdd.size();i++){
-                    this.itemsController.addItem(itemsToAdd.get(i).getNameItem(),itemsToAdd.get(i).getItemWeight(),itemsToAdd.get(i).getQuantity(),address,contactNumber,contactName,area);
-
-                }
-            }else return false;//this del not exist
-
-            return true;
-        }
-        return  false;
-    }
-    //REVIEW ALL TRUCK WITH MORE WIEGHT
-    public boolean changeTruck(int deliveryid,int weight,int truckId){
-
-
-        return false;
     }
 
-    public boolean deleteItem(int deliveryId,int weight){
-        return false;
+    public void removeLocation(String address){
+        locationController.removeLocation(address);
     }
 
 
-    public boolean deleteDeliveryAll(int delievryId){
-        Delivery toDel=this.deliveryController.getDelievryById(delievryId);
-        if(this.deliveryController.removeDelivery(delievryId)) {
-            for (int i = 0; i < toDel.getItems().size(); i++)
-                this.itemsController.deleteItemsWithoutItsLoc(toDel.getItems().get(i).getIdItem());
-            int truckNum=toDel.getTruckNumber();
-            int driverId= toDel.getDriverId();
-            truckController.updateIsAvaliable(truckNum);
-            driverController.updateIsAvalible(driverId);
-            driverController.deleteDoc(driverId,delievryId);
-            return true;
-        }
-        return false;
+
+
+    public boolean removeDeliveryById(int deliveryId) {
+        return deliveryController.deleteDeliveryById(deliveryId);
     }
+
+
+    public HashMap<Item,Integer> getDocOfDestUsingLocation(int deliveryId, Location dest) throws Exception {
+        return deliveryController.getDocOfDestUsingLocation(deliveryId, dest);
+    }
+
+
+
+
+    public Driver getDriverById(int driverId) {
+        return driverController.getDriverById(driverId);
+    }
+
+    public boolean updateDriverAvailability(int driverId, boolean isAvailable) {
+        return driverController.updateDriverAvailability(driverId, isAvailable);
+    }
+
+    public boolean removeDriverById(int driverId) {
+        return driverController.removeDriver(driverId);
+    }
+
+
+
+
+    public Truck getTruckByNumber(int truckNumber) throws Exception {
+        return truckController.getTruckByNumber(truckNumber);
+    }
+
+    public boolean updateTruckAvailability(int truckNumber) throws Exception {
+        return truckController.updateTruckAvailability(truckNumber);
+    }
+
+
+    public boolean removeTruckByNumber(int truckNumber) throws Exception {
+        return truckController.removeTruckByNumber(truckNumber);
+    }
+
+
+    //printing
+    public void printAllDelivery(){
+        deliveryController.printAllDeliveries();
+    }
+    public void printAllDrivers(){
+        driverController.printAllDrivers();
+    }
+    public void printAllTruck(){
+        truckController.printAllTruck();
+    }
+    public void printAllLocations(){locationController.printAllLocations();}
+    public void printallDoc(int delivery){deliveryController.printall(delivery);}
+
+
+
+
+
     public DeliveryController getDeliveryController(){
         return this.deliveryController;
     }
@@ -184,4 +221,12 @@ public class MainController {
         return this.truckController;
     }
 
+    public Location getLocation(int id) {
+        return locationController.getLocation(id);
+    }
+    public Location getLocationbyADD(String address) {
+        return locationController.getLocationbyADD(address);
+    }
+
+    //public void printall()
 }

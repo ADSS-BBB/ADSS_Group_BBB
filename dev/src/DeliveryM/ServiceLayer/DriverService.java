@@ -2,6 +2,7 @@ package DeliveryM.ServiceLayer;
 
 
 import DeliveryM.BusinessLayer.Controllers.DriverController;
+import DeliveryM.BusinessLayer.Objects.Driver;
 
 public class DriverService {
     private DriverController driverController;
@@ -9,21 +10,10 @@ public class DriverService {
         this.driverController=driverController;
     }
 
-    public void addDriver(int humanId,String name,String licenseType) {
-//        String msg;
-//        Response res;
-//        try {
-//
-//            boolean result = driverController.addDriver(name, licenseType);
-//            if (result) {
-//
-//                res = new Response();
-//            } else res = new Response("could not delete the board", null);
-//        } catch (Exception exception) {
-//            res = new Response(exception.getMessage(), null);
-//        }
-//       //must find a way to work with json
+    public void addDriver(int id,String name,String licenseType) throws Exception {
+        driverController.addDriver(new Driver(id,name, licenseType));
     }
-    public void deleteDriver(int humanId){
+    public void deleteDriver(int id) {
+        driverController.removeDriver(id);
     }
 }

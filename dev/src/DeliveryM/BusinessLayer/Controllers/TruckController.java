@@ -1,81 +1,91 @@
 package DeliveryM.BusinessLayer.Controllers;
 
-import DeliveryM.BusinessLayer.Objects.Driver;
 import DeliveryM.BusinessLayer.Objects.Truck;
 
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class TruckController {
-    private List<Truck> trucks;//id , truck itself
-    private int truckId;
-    public TruckController(){
-        this.trucks=new LinkedList<>();
+    private List<Truck> trucks;
+
+    public TruckController() {
+        this.trucks = new LinkedList<>();
     }
-    public void addTruck(int number,String model,int truckWeight,int maxWeight) throws Exception{
-        //if number exists
-        for (int i=0;i<trucks.size();i++) {
-            if(trucks.get(i).getNumber()== number)
-              throw new Exception("truck already exists!");
+
+    public void addTruck(Truck truck) {
+        boolean exists = false;
+        for (Truck t : trucks) {
+            if (t.getNumber()==(truck.getNumber())) {
+                exists = true;
+                break;
+            }
         }
 
-        Truck toAdd= new Truck(number, model,truckWeight,maxWeight,true);
-        trucks.add(toAdd);
-    }
-    public boolean updateIsAvaliable(int number){
-        for (int i=0;i<trucks.size();i++){
-            if(trucks.get(i).getNumber()==number) {
-                trucks.get(i).setIsAvailableTruck();
-                return true;
-            }
+        if (!exists) {
+            trucks.add(truck);
+        } else {
+            System.out.println("Truck with the same ID already exists.");
         }
-        return false;
     }
-    private boolean checkAvaliable(int number) {
-        for (int i = 0; i < trucks.size(); i++) {
-            if (trucks.get(i).getNumber() == number) {
-                return trucks.get(i).getIsAvailableTruck();
-            }
-        }
-        return false;
-    }
-    private boolean checkSum(int number, int sum){
-            for (int i = 0; i < trucks.size(); i++) {
-                if (trucks.get(i).getNumber() == number) {
-                    return trucks.get(i).getMaxWeight() <= sum;
+
+    public boolean  removeTruckByNumber(int number) {
+        try{
+            Iterator<Truck> iterator = trucks.iterator();
+            while (iterator.hasNext()) {
+                Truck truck = iterator.next();
+                if (truck.getNumber() == number) {
+                    iterator.remove();
+                    return true;
                 }
             }
-            return false;
-
-    }
-    public boolean isExist(int number){
-        for (int i = 0; i < trucks.size(); i++) {
-            if (trucks.get(i).getNumber() == number)
-                return true;
+        }catch (Exception e){
+            System.out.println("cant remove truck" + e.getMessage());
         }
-            return false;
+        return false;
     }
-    public Truck findTruck(int sum){
-        for (int i = 0; i < trucks.size(); i++) {
-            Truck truck=trucks.get(i);
-            if (checkAvaliable(truck.getNumber()) && checkSum(truck.getNumber(), sum)) {
-                //must update is avaliable truck in main
+
+    public Truck getTruckByNumber(int number) {
+        try{for (Truck truck : trucks) {
+            if (truck.getNumber() == number) {
                 return truck;
             }
-
         }
+        }catch (Exception e){
+            System.out.println("the truck not exist");
+        }
+
         return null;
-
     }
-    public boolean deleteTruck(int number){
-        if(!isExist(number)) return false;
-        for (int i = 0; i < trucks.size(); i++) {
-            if(trucks.get(i).getNumber()==number)
-                trucks.remove(i);
-            return true;
+
+    public List<Truck> getAllTrucks() {
+        return trucks;
+    }
+    public Truck getSuitTruck(int currweight){
+        try{for(Truck t:trucks){
+            if(t.getMaxWeight()>currweight) return t;
+        }}catch (Exception e){System.out.println("the truck is empty");}
+        return null;
+    }
+    public boolean updateTruckAvailability(int number) {
+        try{
+            Truck truck = getTruckByNumber(number);
+            if (truck != null) {
+                truck.setAvailable();
+                return true;
+            }}catch (Exception e){
+            System.out.println("truck not exist");
         }
-        return false;//truck does not exist
+        return false;
+    }
+
+    public void printAllTruck(){
+        for(Truck t:trucks){
+            System.out.println("Truck Number: " + t.getNumber() +
+                    ", Model: " + t.getModel() +
+                    ", Truck Weight: " + t.getTruckWeight() +
+                    ", Max Weight: " + t.getMaxWeight() +
+                    ", Is Available: " + t.isAvailable());
+        }
     }
 }
