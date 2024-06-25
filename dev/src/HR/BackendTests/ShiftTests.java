@@ -30,7 +30,7 @@ public class ShiftTests {
         Branch branch1 = new Branch("tel aviv", 1);
         employee1 = new Employee(1, "Atheel", contract, bankAccount);
         employee2 = new Employee(3, "Essa", contract, bankAccount);
-        shift = new Shift(1, LocalDate.of(2024,6,12),2, 2, "full", 1);
+        shift = new Shift(1, LocalDate.of(2024,6,12), 2, "full", 1);
         employeeController = EmployeeController.getInstance();
         manager = new PersonnelManager("essa");
     }

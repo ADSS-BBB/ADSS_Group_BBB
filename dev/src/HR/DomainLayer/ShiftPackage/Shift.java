@@ -10,7 +10,6 @@ import java.util.LinkedList;
 public class Shift {
     private Integer ShiftId;
     private LocalDate Time;
-    private Integer ShiftManagerId;
     private LinkedList<Integer> Employees;
     private LinkedList<Integer> Cancelations;
     private Integer MinWorkers;
@@ -18,10 +17,9 @@ public class Shift {
     private Integer BranchId;
 
 
-    public Shift(Integer ShiftId, LocalDate time, Integer ShiftManagerId , Integer MinWorkers, String Type, Integer BranchId) {
+    public Shift(Integer ShiftId, LocalDate time, Integer MinWorkers, String Type, Integer BranchId) {
         this.ShiftId = ShiftId;
         this.Time = time;
-        this.ShiftManagerId = ShiftManagerId;
         this.MinWorkers = MinWorkers;
         Employees = new LinkedList<>();
         Cancelations = new LinkedList<>();
@@ -38,9 +36,6 @@ public class Shift {
     }
     public LocalDate getTime() {
         return Time;
-    }
-    public Integer getShiftManagerId() {
-        return ShiftManagerId;
     }
     public String getType() {
         return Type;

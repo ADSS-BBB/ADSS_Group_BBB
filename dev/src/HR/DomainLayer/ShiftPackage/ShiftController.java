@@ -19,11 +19,15 @@ public class ShiftController {
     }
 
     public Shift getShift(Integer ShiftId) throws Exception {
+        if (ShiftId == null) {
+            throw new Exception("Shift ID is null");
+        }
         if (shifts.containsKey(ShiftId)){
             return shifts.get(ShiftId);
         }
         throw new Exception("Shift is not existed");
     }
+
 
     public HashMap<Integer, Shift> getShifts(){
         return shifts;
@@ -71,7 +75,7 @@ public class ShiftController {
         return shifts.get(ShiftId).AddCancelation(transictionId);
     }
 
-    public String addShift(Integer ShiftId, LocalDate time, Integer ShiftManagerId , Integer MinWorkers, String Type, Integer BranchId) throws Exception {
+    public String addShift(Integer ShiftId, LocalDate time , Integer MinWorkers, String Type, Integer BranchId) throws Exception {
         if (ShiftId == null || ShiftId < 0){
             throw new Exception("ShiftId is null");
         }
@@ -80,12 +84,6 @@ public class ShiftController {
         }
         if (time == null || time.isBefore(LocalDate.now())){
             throw new Exception("time is null");
-        }
-        if (ShiftManagerId == null || ShiftManagerId < 0){
-            throw new Exception("ShiftManagerId is null");
-        }
-        if (!EmployeeController.getInstance().getEmployee(ShiftManagerId).getRoles().contains("Shift Manager")){
-            throw new Exception("Employee is not a Shift Manager");
         }
         if (MinWorkers == null || MinWorkers < 0){
             throw new Exception("MinWorkers is null");
@@ -109,7 +107,7 @@ public class ShiftController {
         if (!BranchController.getInstance().getBranches().containsKey(BranchId)){
             throw new Exception("Branch is not existed");
         }
-        shifts.put(ShiftId, new Shift(ShiftId , time , ShiftManagerId, MinWorkers, Type, BranchId));
+        shifts.put(ShiftId, new Shift(ShiftId , time, MinWorkers, Type, BranchId));
         return "Shift added successfully";
     }
 

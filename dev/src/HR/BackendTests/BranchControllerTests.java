@@ -30,7 +30,7 @@ public class BranchControllerTests {
        contract = new Contract(1 , 12000 , 1 , "full", LocalDate.of(2024,6,5));
        employee = new Employee(1,"essa" , contract ,bankAccount);
        employee.addRole("Shift Manager");
-       shift = new Shift(1, LocalDate.of(2024,12,4),1,2,"Morning",1);
+       shift = new Shift(1, LocalDate.of(2024,12,4),2,"Morning",1);
    }
 
    @AfterEach

@@ -53,16 +53,6 @@ public class FactroyService {
         return "";
     }
 
-//    public String setShift1Hours(Integer branchid, Integer[] shift1Hours) throws Exception{
-//        System.out.println(branchService.setShift1Hours(branchid, shift1Hours));
-//        return "";
-//    }
-//
-//
-//    public String setShift2Hours(Integer branchid, Integer[] shift2Hours) throws Exception{
-//        System.out.println(branchService.setShift2Hours(branchid, shift2Hours));
-//        return "";
-//    }
 
     public String updateBranchShifts(Integer id) throws Exception{
         System.out.println(branchService.updateBranchShift(id));
@@ -151,8 +141,8 @@ public class FactroyService {
 
 
 //shift service
-    public String addShift(Integer id, LocalDate time , Integer shiftmanagerid, Integer minworkers, String type, Integer branchid) throws Exception{
-        System.out.println(shiftService.addShift(id, time,shiftmanagerid, minworkers, type, branchid));
+    public String addShift(Integer id, LocalDate time, Integer minworkers, String type, Integer branchid) throws Exception{
+        System.out.println(shiftService.addShift(id, time, minworkers, type, branchid));
         return "";
     }
 
@@ -173,6 +163,11 @@ public class FactroyService {
 
     public String setShiftMinWorker(Integer shiftid, Integer minworkers) throws Exception{
         System.out.println(shiftService.setMinWorkers(shiftid, minworkers));
+        return "";
+    }
+
+    public String getShift(Integer shiftid) throws Exception{
+        System.out.println(shiftService.getShift(shiftid));
         return "";
     }
 

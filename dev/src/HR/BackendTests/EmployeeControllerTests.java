@@ -26,7 +26,7 @@ public class EmployeeControllerTests {
         Branch branch = new Branch("beer sheva", 1);
         Contract contract = new Contract(1, 10000, 1, "full",LocalDate.of(2024,4,23));
         BankAccount bankAccount = new BankAccount("Atheel", "atheel12", 7000);
-        Shift shift = new Shift(1, LocalDate.of(2024,10,9), 2, 2, "Morning", 1);
+        Shift shift = new Shift(1, LocalDate.of(2024,10,9),  2, "Morning", 1);
         Contract contract2 = new Contract(2, 5000, 1, "full",LocalDate.of(2024,2,23));
         BankAccount bankAccount2 = new BankAccount("essa", "essa12", 9000);
         employee = new Employee(1, "Atheel", contract, bankAccount);

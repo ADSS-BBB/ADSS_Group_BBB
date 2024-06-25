@@ -70,8 +70,9 @@ public class Application {
             System.out.println("23. Set Shift Minimum Workers");
             System.out.println("24. Show Available Employees");
             System.out.println("25. Show all the employees in the market");
-            System.out.println("26. go back to menu page");
-            System.out.println("27. Exit");
+            System.out.println("26. Get Shift From System");
+            System.out.println("27. go back to menu page");
+            System.out.println("28. Exit");
             try {
                 input = scanner.nextLine();
                 switch (Integer.parseInt(input)) {
@@ -151,9 +152,12 @@ public class Application {
                         HRgetEmployess();
                         break;
                     case 26:
-                        MenuPage();
+                        getShift();
                         break;
                     case 27:
+                        MenuPage();
+                        break;
+                    case 28:
                         System.exit(0);
                         break;
                     default:
@@ -179,8 +183,9 @@ public class Application {
             System.out.println("4. Update History");
             System.out.println("5. Add Cancellation");
             System.out.println("6. schedule");
-            System.out.println("7. go back to menu page");
-            System.out.println("8. Exit");
+            System.out.println("7. Get Shift From System");
+            System.out.println("8. go back to menu page");
+            System.out.println("9. Exit");
 
             try {
                 input = scanner.nextLine();
@@ -204,9 +209,12 @@ public class Application {
                         getSchedule();
                         break;
                     case 7:
-                        MenuPage();
+                        getShift();
                         break;
                     case 8:
+                        MenuPage();
+                        break;
+                    case 9:
                         System.exit(0);
                         break;
                     default:
@@ -532,6 +540,18 @@ public class Application {
         }
     }
 
+    private void getShift() throws Exception {
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        System.out.println("Enter Shift Id");
+        input = scanner.nextLine();
+        try {
+            factroyService.getShift(Integer.parseInt(input));
+        } catch (Exception e) {
+            System.out.println("Invalid input");
+        }
+    }
+
     private void addEmployee() throws Exception {
         Scanner scanner = new Scanner(System.in);
         String input;
@@ -733,8 +753,6 @@ public class Application {
             throw new Exception("invalid input");
         }
         LocalDate Date = LocalDate.of(Integer.parseInt(date[0]),Integer.parseInt(date[1]),Integer.parseInt(date[2]));
-        System.out.println("Enter Shift manager Id");
-        input2 = scanner.nextLine();
         System.out.println("Enter Min workers");
         input3 = scanner.nextLine();
         System.out.println("Enter Shift type Morning or Evening");
@@ -742,41 +760,11 @@ public class Application {
         System.out.println("Enter Branch Id");
         input5 = scanner.nextLine();
         try {
-            factroyService.addShift(Integer.parseInt(input), Date, Integer.parseInt(input2), Integer.parseInt(input3), input4, Integer.parseInt(input5));
+            factroyService.addShift(Integer.parseInt(input), Date,  Integer.parseInt(input3), input4, Integer.parseInt(input5));
         } catch (Exception e) {
             System.out.println("Invalid input");
         }
     }
-
-//    private void AddEmployeeToShift() throws Exception {
-//        Scanner scanner = new Scanner(System.in);
-//        String input;
-//        String input2;
-//        System.out.println("Enter Shift Id");
-//        input = scanner.nextLine();
-//        System.out.println("Enter Employee Id");
-//        input2 = scanner.nextLine();
-//        try {
-//            factroyService.addEmployee(Integer.parseInt(input),Integer.parseInt(input2));
-//        } catch (Exception e) {
-//            System.out.println("Invalid input");
-//        }
-//    }
-
-//    private void removeEmployeeFromShift() throws Exception {
-//        Scanner scanner = new Scanner(System.in);
-//        String input;
-//        String input2;
-//        System.out.println("Enter Shift Id");
-//        input = scanner.nextLine();
-//        System.out.println("Enter Employee Id");
-//        input2 = scanner.nextLine();
-//        try {
-//            factroyService.removeEmployee(Integer.parseInt(input), Integer.parseInt(input2));
-//        } catch (Exception e) {
-//            System.out.println("Invalid input");
-//        }
-//    }
 
     private  void setMinWorkers() throws Exception {
         Scanner scanner = new Scanner(System.in);

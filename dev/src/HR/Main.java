@@ -13,17 +13,30 @@ import java.util.Scanner;
 public class Main {
     public static FactroyService factroyService = new FactroyService();
     public static PersonnelManager manager = new PersonnelManager("Firas");
-    public static Application application= new Application(factroyService,manager);
+    public static Application application = new Application(factroyService, manager);
 
     public static void main(String[] args) throws Exception {
-        factroyService.addbranch(1,"Beer sheva");
-        factroyService.addEmployee(1,"essa",1,12000,1,"full","essa","essa12",15000,LocalDate.of(2023,8,2));
-        factroyService.addEmployee(2,"athel",2,12000,1,"full","athel","athel12",15000,LocalDate.of(2023,8,2));
-        factroyService.addEmployeeRole(1,"Shift Manager");
-        factroyService.addEmployeeRole(2,"cashier");
-        factroyService.addShift(1,LocalDate.of(2024,6,10),1,2,"Morning",1);
-        application.MenuPage();
+        Scanner sc = new Scanner(System.in);
+        String input;
+        System.out.println("Welcome to SuperLee");
+        System.out.println("1. With Data");
+        System.out.println("2. WithOut Data");
+        input = sc.nextLine();
+        switch (Integer.parseInt(input)) {
+            case 1:
+                factroyService.addbranch(1, "Beer sheva");
+                factroyService.addEmployee(1, "essa", 1, 12000, 1, "full", "essa", "essa12", 15000, LocalDate.of(2023, 8, 2));
+                factroyService.addEmployee(2, "athel", 2, 12000, 1, "full", "athel", "athel12", 15000, LocalDate.of(2023, 8, 2));
+                factroyService.addEmployeeRole(1, "Shift Manager");
+                factroyService.addEmployeeRole(2, "cashier");
+                factroyService.addShift(1, LocalDate.of(2024, 10, 10), 2, "Morning", 1);
+                application.MenuPage();
+            case 2:
+                application.MenuPage();
+            default:
+                System.out.println("Invalid input");
+        }
+
+
     }
-
-
-   }
+}
