@@ -2,18 +2,19 @@ package HR.DataAccessLayer.HRData;
 
 import java.sql.Connection;
 
-public class BranchDAO {
-    private static BranchDAO instance;
+public class RolesDAO {
+    private static RolesDAO instance;
     private Connection connection;
 
-    public static BranchDAO getInstance() {
+    public static RolesDAO getInstance() {
         if (instance == null){
-            instance = new BranchDAO();
+            instance = new RolesDAO();
         }
         return instance;
     }
 
-    public BranchDAO() {
+    public RolesDAO() {
         this.connection = SuperLeeDataController.getInstance().getConnection();
     }
+
 }

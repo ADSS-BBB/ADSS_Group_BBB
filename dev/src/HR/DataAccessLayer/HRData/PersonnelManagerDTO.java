@@ -1,14 +1,27 @@
 package HR.DataAccessLayer.HRData;
 
 import HR.DomainLayer.Contract;
+import HR.DomainLayer.PersonnelManager;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class PersonnelManagerDTO {
     private String name;
-    private HashMap<Integer , Contract> employees;
-    private LinkedList<Integer> shiftsHistory;
-    private HashMap<Integer , LinkedList<Integer>> availableEmployees;
-    private HashMap<Integer , HashMap<Integer, String>> schedule;
+
+    public PersonnelManagerDTO(String name){
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public PersonnelManager DTO2Object() {
+        return new PersonnelManager(name);
+    }
 }
