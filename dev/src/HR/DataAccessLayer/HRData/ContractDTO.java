@@ -2,16 +2,18 @@ package HR.DataAccessLayer.HRData;
 
 import HR.DomainLayer.Contract;
 
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 public class ContractDTO {
     private Integer contractID;
     private Integer branchID;
     private Integer salary;
     private String employmentType;
-    private LocalDate startDate;
+    private Date startDate;
 
-    public ContractDTO(Integer contractID, Integer branchID, Integer salary, String employmentType, LocalDate startDate){
+    public ContractDTO(Integer contractID, Integer branchID, Integer salary, String employmentType, java.sql.Date startDate){
         this.contractID = contractID;
         this.branchID = branchID;
         this.salary = salary;
@@ -35,7 +37,7 @@ public class ContractDTO {
         return employmentType;
     }
 
-    public LocalDate getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
@@ -55,11 +57,15 @@ public class ContractDTO {
         this.employmentType = employmentType;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
     public Contract DTO2Object() {
-        return new Contract(contractID, salary, branchID, employmentType, startDate);
+        LocalDate start = startDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        return new Contract(contractID, salary, branchID, employmentType, start);
     }
 }
