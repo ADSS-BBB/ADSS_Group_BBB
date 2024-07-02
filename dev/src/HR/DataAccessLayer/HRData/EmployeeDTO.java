@@ -14,11 +14,12 @@ public class EmployeeDTO {
     private Integer contractID;
     private Integer branchID;
 
-    public EmployeeDTO(Integer employeeID, String employeeName, String bankUsername, Integer contractID, Integer branchID, String role){
+    public EmployeeDTO(Integer employeeID, String employeeName, String bankUsername, Integer contractID, Integer branchID){
         this.employeeID = employeeID;
         this.employeeName = employeeName;
         this.bankUsername = bankUsername;
         this.contractID = contractID;
+
         this.branchID = branchID;
     }
 

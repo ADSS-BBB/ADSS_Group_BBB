@@ -2,7 +2,9 @@ package HR.DataAccessLayer.HRData;
 
 import HR.DomainLayer.ShiftPackage.Shift;
 
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.LinkedList;
 
 public class ShiftDTO {
@@ -10,9 +12,9 @@ public class ShiftDTO {
     private Integer branchID;
     private String type;
     private Integer minWorkers;
-    private LocalDate time;
+    private Date time;
 
-    public ShiftDTO(Integer shiftID, Integer branchID, String type, Integer minWorkers, LocalDate time){
+    public ShiftDTO(Integer shiftID, Integer branchID, String type, Integer minWorkers, Date time){
         this.shiftID = shiftID;
         this.branchID = branchID;
         this.type = type;
@@ -36,7 +38,7 @@ public class ShiftDTO {
         return minWorkers;
     }
 
-    public LocalDate getTime() {
+    public Date getTime() {
         return time;
     }
 
@@ -52,7 +54,7 @@ public class ShiftDTO {
         this.minWorkers = minWorkers;
     }
 
-    public void setTime(LocalDate time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 
@@ -61,6 +63,9 @@ public class ShiftDTO {
     }
 
     public Shift DTO2Object() {
-        return new Shift(shiftID,time,minWorkers,type,branchID);
+        LocalDate Date = time.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        return new Shift(shiftID,Date ,minWorkers,type,branchID);
     }
 }

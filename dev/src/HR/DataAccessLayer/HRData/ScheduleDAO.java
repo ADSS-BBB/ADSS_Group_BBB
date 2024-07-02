@@ -1,6 +1,9 @@
 package HR.DataAccessLayer.HRData;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ScheduleDAO {
     private static ScheduleDAO instance;
@@ -15,6 +18,61 @@ public class ScheduleDAO {
 
     public ScheduleDAO() {
         this.connection = SuperLeeDataController.getInstance().getConnection();
+    }
+
+    public void insert(ScheduleDTO schedule) throws SQLException {
+        String query = "INSERT INTO schedule (ShiftID, EmployeeID, BranchID, HRname, role) VALUES (?,?,?,?,?)";
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, schedule.getShiftID());
+            statement.setInt(2, schedule.getEmployeeID());
+            statement.setInt(3, schedule.getBranchID());
+            statement.setString(4, schedule.getHRname());
+            statement.setString(5, schedule.getRole());
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("failed to insert into schedule");
+        }
+    }
+
+    public void delete(Integer ShiftID, Integer EmployeeID) throws SQLException {
+        String query = "DELETE FROM schedule WHERE ShiftID = ? AND EmployeeID = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, ShiftID);
+            statement.setInt(2, EmployeeID);
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("failed to delete from schedule");
+        }
+    }
+
+    public ScheduleDTO getSchedule(Integer ShiftID, Integer EmployeeID) throws SQLException {
+        String query = "SELECT * FROM schedule WHERE ShiftID = ? AND EmployeeID = ?";
+        Integer BranchId = -1;
+        String HRname = "";
+        String role = "";
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, ShiftID);
+            statement.setInt(2, EmployeeID);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                BranchId = result.getInt("BranchID");
+                HRname = result.getString("HRname");
+                role = result.getString("role");
+            }
+            result.close();
+            connection.close();
+            return new ScheduleDTO(ShiftID, EmployeeID, BranchId, HRname, role);
+        } catch (SQLException e) {
+            System.out.println("failed to get schedule");
+        }
+        return null;
     }
 
 }

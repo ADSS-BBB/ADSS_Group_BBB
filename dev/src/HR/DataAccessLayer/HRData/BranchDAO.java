@@ -19,7 +19,7 @@ public class BranchDAO {
     }
 
     public void insert(BranchDTO branch) throws SQLException {
-        String query = "INSERT INTO branches (branchID, location)";
+        String query = "INSERT INTO branches (branchID, location) VALUES (?,?)";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, branch.getBranchID());
