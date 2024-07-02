@@ -59,6 +59,25 @@ public class BranchDAO {
         }
     }
 
+    public BranchDTO getBranch(Integer branchID) throws SQLException {
+        String query = "SELECT * FROM branches WHERE branchID = ?";
+        String location = "";
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, branchID);
+            ResultSet result = statement.executeQuery();
+            while (result.next()){
+                location = result.getString("location");
+            }
+            result.close();
+            connection.close();
+            return new BranchDTO(branchID, location);
+        } catch (SQLException e) {
+            System.out.println("failed in getting branch");
+        }
+        return null;
+    }
+
     public LinkedList<BranchDTO> Load() throws SQLException {
         String query = "SELECT * FROM branches";
         LinkedList<BranchDTO> branches = new LinkedList<>();
