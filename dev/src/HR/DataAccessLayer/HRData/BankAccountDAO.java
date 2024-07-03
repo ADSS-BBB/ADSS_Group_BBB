@@ -1,5 +1,8 @@
 package HR.DataAccessLayer.HRData;
 
+import HR.DomainLayer.BankAccount;
+import HR.DomainLayer.EmployeePackage.EmployeeController;
+
 import java.sql.*;
 import java.util.LinkedList;
 
@@ -19,12 +22,13 @@ public class BankAccountDAO {
     }
 
     public void insert(BankAccountDTO bank) throws SQLException {
-        String query = "INSERT INTO bankaccounts (username, password, balance) VALUES (?, ?, ?)";
+        String query = "INSERT INTO bankaccounts (employeeID, username, password, balance) VALUES (?, ?, ?, ?)";
         try {
             PreparedStatement statment = connection.prepareStatement(query);
-            statment.setString(1, bank.getUsername());
-            statment.setString(2, bank.getPassword());
-            statment.setInt(3, bank.getBalance());
+            statment.setInt(1, bank.getEmployeeID());
+            statment.setString(2, bank.getUsername());
+            statment.setString(3, bank.getPassword());
+            statment.setInt(4, bank.getBalance());
             statment.executeUpdate();
             statment.close();
             connection.close();
@@ -72,9 +76,33 @@ public class BankAccountDAO {
         }
     }
 
+    public BankAccountDTO getBankAccount(Integer employeeID) throws SQLException{
+        String query = "SELECT * FROM bankaccounts WHERE employeeID = ?";
+        String username;
+        String password;
+        Integer balance;
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, employeeID);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                username = result.getString("username");
+                password = result.getString("password");
+                balance = result.getInt("balance");
+                result.close();
+                connection.close();
+                return new BankAccountDTO(employeeID, username, password, balance);
+            }
+        } catch (SQLException e){
+            System.out.println("failed in getting bank account");
+        }
+        return null;
+    }
+
     public LinkedList<BankAccountDTO> Load() throws SQLException {
         String query = "SELECT * FROM bankaccounts";
         LinkedList<BankAccountDTO> bankAccounts = new LinkedList<>();
+        Integer employeeID;
         String username;
         String password;
         Integer balance;
@@ -82,10 +110,11 @@ public class BankAccountDAO {
             Statement statement = connection.createStatement();
             ResultSet result = statement.executeQuery(query);
             while (result.next()){
+                employeeID = result.getInt("employeeID");
                 username = result.getString("username");
                 password = result.getString("password");
                 balance = result.getInt("balance");
-                bankAccounts.add(new BankAccountDTO(username, password, balance));
+                bankAccounts.add(new BankAccountDTO(employeeID, username, password, balance));
             }
             result.close();
             connection.close();
@@ -94,5 +123,12 @@ public class BankAccountDAO {
             System.out.println("failed in loading bank account data");
         }
         return null;
+    }
+
+
+    public void LoadData() throws Exception {
+        for(BankAccountDTO bank : Load()){
+            EmployeeController.getInstance().getEmployee(bank.getEmployeeID()).setBankAccount(new BankAccount(bank.getUsername(), bank.getPassword(), bank.getBalance()));
+        }
     }
 }

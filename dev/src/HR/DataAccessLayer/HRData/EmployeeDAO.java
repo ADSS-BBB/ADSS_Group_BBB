@@ -1,11 +1,18 @@
 package HR.DataAccessLayer.HRData;
 
+import HR.DomainLayer.BankAccount;
+import HR.DomainLayer.Contract;
+import HR.DomainLayer.EmployeePackage.EmployeeController;
+
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.LinkedList;
 
 public class EmployeeDAO {
     private static EmployeeDAO instance;
     private Connection connection;
+
 
     public static EmployeeDAO getInstance() {
         if (instance == null){
@@ -101,6 +108,19 @@ public class EmployeeDAO {
             System.out.println("failed in loading employee");
         }
         return null;
+    }
+
+    public void LoadData() throws Exception{
+        for (EmployeeDTO employee : Load()){
+            ContractDTO contractDTO = ContractDAO.getInstance().getContract(employee.getEmployeeID());
+            LocalDate date = contractDTO.getStartDate().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            Contract contract = new Contract(contractDTO.getContractID(), contractDTO.getSalary(),contractDTO.getBranchID(), contractDTO.getEmploymentType(), date);
+            BankAccountDTO bankAccountDTO = BankAccountDAO.getInstance().getBankAccount(employee.getEmployeeID());
+            BankAccount bankAccount = new BankAccount(bankAccountDTO.getUsername(), bankAccountDTO.getPassword(), bankAccountDTO.getBalance());
+            EmployeeController.getInstance().addEmployee(employee.getEmployeeID(), employee.getEmployeeName(), contract, bankAccount);
+        }
     }
 
 

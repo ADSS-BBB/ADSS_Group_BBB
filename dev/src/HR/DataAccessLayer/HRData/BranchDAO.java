@@ -1,5 +1,7 @@
 package HR.DataAccessLayer.HRData;
 
+import HR.DomainLayer.BranchPackage.BranchController;
+
 import java.sql.*;
 import java.util.LinkedList;
 
@@ -98,6 +100,12 @@ public class BranchDAO {
             System.out.println("failed in branches load");
         }
         return null;
+    }
+
+    public void LoadData() throws Exception {
+        for (BranchDTO branch : Load()){
+            BranchController.getInstance().addBranch(branch.getBranchID(), branch.getLocation());
+        }
     }
 
 }

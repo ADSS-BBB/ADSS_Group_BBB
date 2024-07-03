@@ -8,6 +8,7 @@ import HR.DomainLayer.PersonnelManager;
 import HR.DomainLayer.ShiftPackage.Shift;
 import HR.DomainLayer.ShiftPackage.ShiftController;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -182,6 +183,11 @@ public class Employee {
     public String setEmploymentType(String newType) throws Exception{
         Dealdetails.setEmploymentType(newType);
         return "employment type changed successfully";
+    }
+
+    public String addDTOContract(Integer contractID, Integer branchID, Integer salary, String employmentType, LocalDate startdate){
+        Dealdetails = new Contract(contractID, branchID, salary, employmentType, startdate);
+        return "contract added succsfully";
     }
 
     public String updatehistory() throws Exception{

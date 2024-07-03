@@ -4,14 +4,24 @@ import HR.DomainLayer.BankAccount;
 
 
 public class BankAccountDTO {
+    private Integer employeeID;
     private String username;
     private String password;
     private Integer balance;
 
-    public BankAccountDTO(String username , String password , Integer balance){
+    public BankAccountDTO(Integer employeeID, String username , String password , Integer balance){
+        this.employeeID = employeeID;
         this.username = username;
         this.password = password;
         this.balance = balance;
+    }
+
+    public Integer getEmployeeID() {
+        return employeeID;
+    }
+
+    public void setEmployeeID(Integer employeeID) {
+        this.employeeID = employeeID;
     }
 
     public String getUsername() {

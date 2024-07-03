@@ -1,5 +1,6 @@
 package HR.DomainLayer;
 
+import HR.DataAccessLayer.HRData.ScheduleDTO;
 import HR.DomainLayer.BranchPackage.BranchController;
 import HR.DomainLayer.EmployeePackage.Employee;
 import HR.DomainLayer.EmployeePackage.EmployeeController;
@@ -22,6 +23,8 @@ public class PersonnelManager {
     private HashMap<Integer, HashMap<Integer,String>> schedule;
     private FactroyService factroyService;
 
+
+
     public PersonnelManager(String name) {
         Employees = new HashMap<>();
         ShiftsHistory = new LinkedList<>();
@@ -30,6 +33,7 @@ public class PersonnelManager {
         schedule = new HashMap<>();
         factroyService = new FactroyService();
     }
+
 
     public String getName() {
         return name;

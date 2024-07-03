@@ -1,5 +1,7 @@
 package HR.DataAccessLayer.HRData;
 
+import HR.DomainLayer.EmployeePackage.EmployeeController;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -73,6 +75,12 @@ public class RolesDAO {
             System.out.println("failed in loading roles");
         }
         return null;
+    }
+
+    public void LoadData() throws Exception{
+        for (RolesDTO role : Load()){
+            EmployeeController.getInstance().getEmployee(role.getEmployeeID()).addRole(role.getRole());
+        }
     }
 
 }

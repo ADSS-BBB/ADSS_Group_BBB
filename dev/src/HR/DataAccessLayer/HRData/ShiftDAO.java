@@ -1,8 +1,11 @@
 package HR.DataAccessLayer.HRData;
 
 import HR.DomainLayer.ShiftPackage.Shift;
+import HR.DomainLayer.ShiftPackage.ShiftController;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.LinkedList;
 
 public class ShiftDAO {
@@ -115,5 +118,14 @@ public class ShiftDAO {
             System.out.println("failed in loading shifts");
         }
         return null;
+    }
+
+    public void LoadData() throws Exception{
+        for (ShiftDTO shift : Load()){
+            LocalDate time = shift.getTime().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            ShiftController.getInstance().addShift(shift.getShiftID(), time, shift.getMinWorkers(),shift.getType(), shift.getBranchID());
+        }
     }
 }

@@ -1,6 +1,10 @@
 package HR.DataAccessLayer.HRData;
 
+import HR.DomainLayer.EmployeePackage.EmployeeController;
+
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.LinkedList;
 
 public class ContractDAO {
@@ -19,14 +23,15 @@ public class ContractDAO {
     }
 
     public void insert(ContractDTO contract) throws SQLException {
-        String query = "INERT INTO contracts (contractID, branchID, salary, employmentType, startDate) VALUES (?, ?, ?, ?, ?)";
+        String query = "INERT INTO contracts (employeeID, contractID, branchID, salary, employmentType, startDate) VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, contract.getContractID());
-            statement.setInt(2, contract.getBranchID());
-            statement.setInt(3, contract.getSalary());
-            statement.setString(4, contract.getEmploymentType());
-            statement.setDate(5, contract.getStartDate());
+            statement.setInt(1, contract.getEmployeeID());
+            statement.setInt(2, contract.getContractID());
+            statement.setInt(3, contract.getBranchID());
+            statement.setInt(4, contract.getSalary());
+            statement.setString(5, contract.getEmploymentType());
+            statement.setDate(6, contract.getStartDate());
             statement.executeUpdate();
             statement.close();
             connection.close();
@@ -35,11 +40,11 @@ public class ContractDAO {
         }
     }
 
-    public void delete(Integer branchID) throws SQLException {
-        String query = "DELETE FROM contracts WHERE branchID = ?";
+    public void delete(Integer contractID) throws SQLException {
+        String query = "DELETE FROM contracts WHERE contractID = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, branchID);
+            statement.setInt(1, contractID);
             statement.executeUpdate();
             statement.close();
             connection.close();
@@ -48,12 +53,12 @@ public class ContractDAO {
         }
     }
 
-    public void editEmploymentType(Integer branchID, String employmentType) throws SQLException {
-        String query = "UPDATE contracts SET employmentType = ? WHERE branchID = ?";
+    public void editEmploymentType(Integer contractID, String employmentType) throws SQLException {
+        String query = "UPDATE contracts SET employmentType = ? WHERE contractID = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, employmentType);
-            statement.setInt(2, branchID);
+            statement.setInt(2, contractID);
             statement.executeUpdate();
             statement.close();
             connection.close();
@@ -62,12 +67,12 @@ public class ContractDAO {
         }
     }
 
-    public void editSalary(Integer branchID, Integer salary) throws SQLException {
-        String query = "UPDATE contracts SET salary = ? WHERE branchID = ?";
+    public void editSalary(Integer contractID, Integer salary) throws SQLException {
+        String query = "UPDATE contracts SET salary = ? WHERE contractID = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, salary);
-            statement.setInt(2, branchID);
+            statement.setInt(2, contractID);
             statement.executeUpdate();
             statement.close();
             connection.close();
@@ -76,9 +81,37 @@ public class ContractDAO {
         }
     }
 
+    public ContractDTO getContract(Integer employeeID) throws SQLException{
+        String query = "SELECT * FROM contracts WHERE employeeID = ?";
+        Integer contratID;
+        Integer branchID;
+        Integer salary;
+        String employmentType;
+        Date startDate;
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, employeeID);
+            ResultSet result = statement.executeQuery();
+            while (result.next()){
+                contratID = result.getInt("contractID");
+                branchID = result.getInt("branchID");
+                salary = result.getInt("salary");
+                employmentType = result.getString("employmentType");
+                startDate = result.getDate("startDate");
+                result.close();
+                connection.close();
+                return new ContractDTO(employeeID, contratID, branchID, salary, employmentType, startDate);
+            }
+        } catch (SQLException e){
+            System.out.println("failed in getting contract");
+        }
+        return null;
+    }
+
     public LinkedList<ContractDTO> Load() throws SQLException {
         String query = "SELECT * FROM contracts";
         LinkedList<ContractDTO> contracts = new LinkedList<>();
+        Integer employeeID;
         Integer contratID;
         Integer branchID;
         Integer salary;
@@ -88,12 +121,13 @@ public class ContractDAO {
             Statement statement = connection.createStatement();
             ResultSet result = statement.executeQuery(query);
             while (result.next()){
+                employeeID = result.getInt("employeeID");
                 contratID = result.getInt("contractID");
                 branchID = result.getInt("branchID");
                 salary = result.getInt("salary");
                 employmentType =result.getString("employmentType");
                 startDate = result.getDate("startDate");
-                contracts.add(new ContractDTO(contratID, branchID, salary, employmentType, startDate));
+                contracts.add(new ContractDTO(employeeID, contratID, branchID, salary, employmentType, startDate));
             }
             result.close();
             connection.close();
@@ -102,5 +136,14 @@ public class ContractDAO {
             System.out.println("failed in contracts load");
         }
         return null;
+    }
+
+    public void LoadData() throws Exception{
+        for (ContractDTO contract : Load()){
+            LocalDate startDate = contract.getStartDate().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            EmployeeController.getInstance().getEmployee(contract.getEmployeeID()).addDTOContract(contract.getContractID(), contract.getBranchID(), contract.getSalary(), contract.getEmploymentType(), startDate);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package HR.DataAccessLayer.HRData;
 
+import HR.DomainLayer.EmployeePackage.EmployeeController;
+
 import java.sql.*;
 import java.util.LinkedList;
 
@@ -70,5 +72,11 @@ public class WeeklyShiftsDAO {
             System.out.println("failed in loading shifts history");
         }
         return null;
+    }
+
+    public void LoadData() throws Exception{
+        for (WeeklyShiftsDTO weeklyShifts : Load()){
+            EmployeeController.getInstance().addShiftToWeek(weeklyShifts.getShiftID(), weeklyShifts.getEmployeeID());
+        }
     }
 }

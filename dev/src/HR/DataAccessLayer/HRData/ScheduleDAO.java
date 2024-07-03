@@ -1,9 +1,9 @@
 package HR.DataAccessLayer.HRData;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import HR.DomainLayer.PersonnelManager;
+
+import java.sql.*;
+import java.util.LinkedList;
 
 public class ScheduleDAO {
     private static ScheduleDAO instance;
@@ -74,5 +74,35 @@ public class ScheduleDAO {
         }
         return null;
     }
+
+    public LinkedList<ScheduleDTO> Load() throws SQLException {
+        String query = "SELECT * FROM schedule";
+        LinkedList<ScheduleDTO> schedules = new LinkedList<>();
+        Integer ShiftID = -1;
+        Integer EmployeeID = -1;
+        Integer BranchID = -1;
+        String HRname = "";
+        String role = "";
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(query);
+            while (result.next()) {
+                ShiftID = result.getInt("ShiftID");
+                EmployeeID = result.getInt("EmployeeID");
+                BranchID = result.getInt("BranchID");
+                HRname = result.getString("HRname");
+                role = result.getString("role");
+                schedules.add(new ScheduleDTO(ShiftID, EmployeeID, BranchID, HRname, role));
+            }
+            result.close();
+            connection.close();
+            return schedules;
+        }catch (SQLException e) {
+            System.out.println("failed to load schedule");
+        }
+        return null;
+    }
+
+
 
 }
