@@ -7,15 +7,26 @@ public class ShiftsHistoryDAO {
     private static ShiftsHistoryDAO instance;
     private Connection connection;
 
-    public static ShiftsHistoryDAO getInstance() {
+    public static ShiftsHistoryDAO getInstance() throws Exception{
         if (instance == null){
             instance = new ShiftsHistoryDAO();
         }
         return instance;
     }
 
-    public ShiftsHistoryDAO() {
-        this.connection = SuperLeeDataController.getInstance().getConnection();
+    private static Connection toConnect() throws ClassNotFoundException {
+        String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
+        Connection connection=null;
+        try {
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+        return connection;
+    }
+
+    public ShiftsHistoryDAO() throws Exception{
+        this.connection = toConnect();
     }
 
     public void insert(ShiftsHistoryDTO shiftsHistory) throws SQLException{
@@ -50,16 +61,12 @@ public class ShiftsHistoryDAO {
     public LinkedList<ShiftsHistoryDTO> Load() throws SQLException {
         String query = "SELECT * FROM shiftshistory";
         LinkedList<ShiftsHistoryDTO> shiftsHistory = new LinkedList<>();
-        Integer EmployeeID = -1;
-        Integer BranchID = -1;
-        Integer ShiftID = -1;
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(query);
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet result = statement.executeQuery()){
             while (result.next()){
-                EmployeeID = result.getInt("EmploeeID");
-                BranchID = result.getInt("BranchID");
-                ShiftID = result.getInt("ShiftID");
+                Integer EmployeeID = result.getInt("EmploeeID");
+                Integer BranchID = result.getInt("BranchID");
+                Integer ShiftID = result.getInt("ShiftID");
                 shiftsHistory.add(new ShiftsHistoryDTO(EmployeeID, BranchID, ShiftID));
             }
             result.close();

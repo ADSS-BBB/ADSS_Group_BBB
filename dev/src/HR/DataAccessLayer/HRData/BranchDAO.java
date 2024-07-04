@@ -9,15 +9,26 @@ public class BranchDAO {
     private static BranchDAO instance;
     private Connection connection;
 
-    public static BranchDAO getInstance() {
+    public static BranchDAO getInstance() throws Exception{
         if (instance == null){
             instance = new BranchDAO();
         }
         return instance;
     }
 
-    public BranchDAO() {
-        this.connection = SuperLeeDataController.getInstance().getConnection();
+    private static Connection toConnect() throws ClassNotFoundException {
+        String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
+        Connection connection=null;
+        try {
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+        return connection;
+    }
+
+    public BranchDAO() throws Exception{
+        this.connection = toConnect();
     }
 
     public void insert(BranchDTO branch) throws SQLException {
@@ -83,14 +94,11 @@ public class BranchDAO {
     public LinkedList<BranchDTO> Load() throws SQLException {
         String query = "SELECT * FROM branches";
         LinkedList<BranchDTO> branches = new LinkedList<>();
-        Integer branchID;
-        String location;
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(query);
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet result = statement.executeQuery()){
             while (result.next()){
-                branchID = result.getInt("branchID");
-                location = result.getString("location");
+                Integer branchID = result.getInt("branchID");
+                String location = result.getString("location");
                 branches.add( new BranchDTO(branchID, location));
             }
             result.close();
@@ -104,7 +112,7 @@ public class BranchDAO {
 
     public void LoadData() throws Exception {
         for (BranchDTO branch : Load()){
-            BranchController.getInstance().addBranch(branch.getBranchID(), branch.getLocation());
+            BranchController.getInstance().addBranchfromDTO(branch.getBranchID(), branch.getLocation());
         }
     }
 

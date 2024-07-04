@@ -21,7 +21,7 @@ public class PersonnelManagerDTO {
         this.name = name;
     }
 
-    public PersonnelManager DTO2Object() {
+    public PersonnelManager DTO2Object() throws Exception{
         return new PersonnelManager(name);
     }
 }

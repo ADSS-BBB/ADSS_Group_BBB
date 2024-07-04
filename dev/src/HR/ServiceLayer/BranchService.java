@@ -10,7 +10,7 @@ import java.util.LinkedList;
 public class BranchService {
      BranchController branchController;
 
-     public BranchService(){
+     public BranchService() throws Exception {
          branchController=BranchController.getInstance();
      }
 

@@ -7,6 +7,7 @@ import HR.DomainLayer.EmployeePackage.EmployeeController;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 public class ShiftController {
@@ -14,7 +15,10 @@ public class ShiftController {
     private static ShiftController instance;
     private HashMap<Integer, Shift> shifts = new HashMap<>();
 
-    public static ShiftController getInstance() {
+    public ShiftController() throws Exception {
+    }
+
+    public static ShiftController getInstance() throws Exception {
         if (instance == null) {
             instance = new ShiftController();
         }
@@ -110,13 +114,16 @@ public class ShiftController {
                 }
             }
         }
-        if (!BranchController.getInstance().getBranches().containsKey(BranchId)){
-            throw new Exception("Branch is not existed");
-        }
         shifts.put(ShiftId, new Shift(ShiftId , time, MinWorkers, Type, BranchId));
-        Date date1 = Date.valueOf(time);
-        superLeeDataController.insertshift(ShiftId, BranchId, Type, MinWorkers, date1);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedDate = time.format(formatter);
+        superLeeDataController.insertshift(ShiftId, BranchId, Type, MinWorkers, formattedDate);
         return "Shift added successfully";
+    }
+
+    public String Dtoaddshift(Integer ShiftId, LocalDate time , Integer MinWorkers, String Type, Integer BranchId) throws Exception{
+        shifts.put(ShiftId, new Shift(ShiftId, time, MinWorkers, Type, BranchId));
+        return "succesfully added shift from data";
     }
     //this function is in progress and it should check if there is a storekeeper in the shift
     public String posibletodelivery(String deliverytime){

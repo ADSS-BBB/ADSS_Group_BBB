@@ -17,7 +17,7 @@ public class Shift {
     private Integer BranchId;
 
 
-    public Shift(Integer ShiftId, LocalDate time, Integer MinWorkers, String Type, Integer BranchId) {
+    public Shift(Integer ShiftId, LocalDate time, Integer MinWorkers, String Type, Integer BranchId) throws Exception {
         this.ShiftId = ShiftId;
         this.Time = time;
         this.MinWorkers = MinWorkers;

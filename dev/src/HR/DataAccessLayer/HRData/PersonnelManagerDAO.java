@@ -7,15 +7,26 @@ public class PersonnelManagerDAO {
     private static PersonnelManagerDAO instance;
     private Connection connection;
 
-    public static PersonnelManagerDAO getInstance() {
+    public static PersonnelManagerDAO getInstance() throws Exception{
         if (instance == null){
             instance = new PersonnelManagerDAO();
         }
         return instance;
     }
 
-    public PersonnelManagerDAO() {
-        this.connection = SuperLeeDataController.getInstance().getConnection();
+    private static Connection toConnect() throws ClassNotFoundException {
+        String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
+        Connection connection=null;
+        try {
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+        return connection;
+    }
+
+    public PersonnelManagerDAO() throws Exception{
+        this.connection = toConnect();
     }
 
     public void insert(PersonnelManagerDTO HRmanager) throws SQLException {
@@ -34,12 +45,10 @@ public class PersonnelManagerDAO {
     public LinkedList<PersonnelManagerDTO> Load() throws SQLException {
         String query = "SELECT * FROM HRmanagers";
         LinkedList<PersonnelManagerDTO> HRmanagers = new LinkedList<>();
-        String name;
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(query);
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet result = statement.executeQuery()){
             while (result.next()){
-                name = result.getString("name");
+                String name = result.getString("name");
                 HRmanagers.add(new PersonnelManagerDTO(name));
             }
             result.close();

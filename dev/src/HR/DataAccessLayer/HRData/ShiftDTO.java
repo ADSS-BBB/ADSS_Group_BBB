@@ -12,9 +12,9 @@ public class ShiftDTO {
     private Integer branchID;
     private String type;
     private Integer minWorkers;
-    private Date time;
+    private String time;
 
-    public ShiftDTO(Integer shiftID, Integer branchID, String type, Integer minWorkers, Date time){
+    public ShiftDTO(Integer shiftID, Integer branchID, String type, Integer minWorkers, String time){
         this.shiftID = shiftID;
         this.branchID = branchID;
         this.type = type;
@@ -38,7 +38,7 @@ public class ShiftDTO {
         return minWorkers;
     }
 
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 
@@ -54,7 +54,7 @@ public class ShiftDTO {
         this.minWorkers = minWorkers;
     }
 
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
@@ -62,10 +62,9 @@ public class ShiftDTO {
         this.type = type;
     }
 
-    public Shift DTO2Object() {
-        LocalDate Date = time.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
+    public Shift DTO2Object() throws Exception {
+        String[] date = time.split("-");
+        LocalDate Date = LocalDate.of(Integer.parseInt(date[2]),Integer.parseInt(date[1]),Integer.parseInt(date[0]));
         return new Shift(shiftID,Date ,minWorkers,type,branchID);
     }
 }

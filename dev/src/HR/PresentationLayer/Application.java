@@ -1,5 +1,6 @@
 package HR.PresentationLayer;
 
+import HR.DataAccessLayer.HRData.SuperLeeDataController;
 import HR.DomainLayer.PersonnelManager;
 import HR.ServiceLayer.FactroyService;
 
@@ -277,6 +278,22 @@ public class Application {
             manager.checktheEmployees();
         } catch (Exception e){
             System.out.println("failed while trying to get employess");
+        }
+    }
+
+    public void LoadData() throws Exception{
+        try {
+            SuperLeeDataController.getInstance().LoadData();
+        } catch (Exception e){
+            System.out.println("failed to load data");
+        }
+    }
+
+    public void DeleteData() throws Exception{
+        try {
+            SuperLeeDataController.getInstance().deleteData();
+        } catch (Exception e){
+            System.out.println("failed to delete data");
         }
     }
 

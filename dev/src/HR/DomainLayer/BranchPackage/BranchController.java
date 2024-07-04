@@ -11,7 +11,10 @@ public class BranchController {
     private static BranchController instance;
     private HashMap<Integer, Branch> branches = new HashMap<>();
 
-    public static BranchController getInstance() {
+    public BranchController() throws Exception {
+    }
+
+    public static BranchController getInstance() throws Exception{
         if (instance == null) {
             instance = new BranchController();
         }
@@ -95,6 +98,11 @@ public class BranchController {
         branches.put(branchId, new Branch(location, branchId));
         superLeeDataController.insertbranch(branchId, location);
         return "Branch added successfully";
+    }
+
+    public String addBranchfromDTO(Integer branchId, String location) throws Exception{
+        branches.put(branchId, new Branch(location, branchId));
+        return "succesfully added";
     }
 
     public String removeBranch(Integer branchId) throws Exception {

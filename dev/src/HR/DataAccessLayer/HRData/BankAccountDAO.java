@@ -10,15 +10,26 @@ public class BankAccountDAO {
     private static BankAccountDAO instance;
     private Connection connection;
 
-    public static BankAccountDAO getInstance() {
+    public static BankAccountDAO getInstance() throws Exception{
         if (instance == null) {
             instance = new BankAccountDAO();
         }
         return instance;
     }
 
-    public BankAccountDAO() {
-        this.connection = SuperLeeDataController.getInstance().getConnection();
+    public BankAccountDAO() throws Exception{
+        this.connection = toConnect();
+    }
+
+    private static Connection toConnect() throws ClassNotFoundException {
+        String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
+        Connection connection=null;
+        try {
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+        return connection;
     }
 
     public void insert(BankAccountDTO bank) throws SQLException {
@@ -102,18 +113,13 @@ public class BankAccountDAO {
     public LinkedList<BankAccountDTO> Load() throws SQLException {
         String query = "SELECT * FROM bankaccounts";
         LinkedList<BankAccountDTO> bankAccounts = new LinkedList<>();
-        Integer employeeID;
-        String username;
-        String password;
-        Integer balance;
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(query);
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet result = statement.executeQuery()){
             while (result.next()){
-                employeeID = result.getInt("employeeID");
-                username = result.getString("username");
-                password = result.getString("password");
-                balance = result.getInt("balance");
+                Integer employeeID = result.getInt("employeeID");
+                String username = result.getString("username");
+                String password = result.getString("password");
+                Integer balance = result.getInt("balance");
                 bankAccounts.add(new BankAccountDTO(employeeID, username, password, balance));
             }
             result.close();

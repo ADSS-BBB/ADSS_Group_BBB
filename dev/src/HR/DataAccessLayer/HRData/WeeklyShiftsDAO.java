@@ -9,20 +9,31 @@ public class WeeklyShiftsDAO {
     private static WeeklyShiftsDAO instance;
     private Connection connection;
 
-    public static WeeklyShiftsDAO getInstance() {
+    public static WeeklyShiftsDAO getInstance() throws Exception{
         if (instance == null){
             instance = new WeeklyShiftsDAO();
         }
         return instance;
     }
 
-    public WeeklyShiftsDAO() {
-        this.connection = SuperLeeDataController.getInstance().getConnection();
+    private static Connection toConnect() throws ClassNotFoundException {
+        String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
+        Connection connection=null;
+        try {
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+        return connection;
+    }
+
+    public WeeklyShiftsDAO() throws Exception{
+        this.connection = toConnect();
     }
 
 
     public void insert(WeeklyShiftsDTO weeklyShifts) throws SQLException {
-        String query = "INSERT INTO shiftshistory (EmployeeID, BranchID, ShiftID) VALUES (?, ?, ?)";
+        String query = "INSERT INTO weeklyShifts (EmployeeID, BranchID, ShiftID) VALUES (?, ?, ?)";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, weeklyShifts.getEmployeeID());
@@ -53,16 +64,12 @@ public class WeeklyShiftsDAO {
     public LinkedList<WeeklyShiftsDTO> Load() throws SQLException {
         String query = "SELECT * FROM weeklyShifts";
         LinkedList<WeeklyShiftsDTO> weeklyShifts = new LinkedList<>();
-        Integer EmployeeID = -1;
-        Integer BranchID = -1;
-        Integer ShiftID = -1;
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(query);
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet result = statement.executeQuery()){
             while (result.next()){
-                EmployeeID = result.getInt("EmploeeID");
-                BranchID = result.getInt("BranchID");
-                ShiftID = result.getInt("ShiftID");
+                Integer EmployeeID = result.getInt("EmploeeID");
+                Integer BranchID = result.getInt("BranchID");
+                Integer ShiftID = result.getInt("ShiftID");
                 weeklyShifts.add(new WeeklyShiftsDTO(EmployeeID, BranchID, ShiftID));
             }
             result.close();

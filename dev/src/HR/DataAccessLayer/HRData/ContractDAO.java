@@ -11,19 +11,29 @@ public class ContractDAO {
     private static ContractDAO instance;
     private Connection connection;
 
-    public static ContractDAO getInstance() {
+    public static ContractDAO getInstance() throws Exception{
         if (instance == null){
             instance = new ContractDAO();
         }
         return instance;
     }
+    private static Connection toConnect() throws ClassNotFoundException {
+        String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
+        Connection connection=null;
+        try {
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+        return connection;
+    }
 
-    public ContractDAO() {
-        this.connection = SuperLeeDataController.getInstance().getConnection();
+    public ContractDAO() throws Exception{
+        this.connection = toConnect();
     }
 
     public void insert(ContractDTO contract) throws SQLException {
-        String query = "INERT INTO contracts (employeeID, contractID, branchID, salary, employmentType, startDate) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO contracts (employeeID, contractID, branchID, salary, employmentType, startDate) VALUES (?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, contract.getEmployeeID());
@@ -31,7 +41,7 @@ public class ContractDAO {
             statement.setInt(3, contract.getBranchID());
             statement.setInt(4, contract.getSalary());
             statement.setString(5, contract.getEmploymentType());
-            statement.setDate(6, contract.getStartDate());
+            statement.setString(6, contract.getStartDate());
             statement.executeUpdate();
             statement.close();
             connection.close();
@@ -87,7 +97,7 @@ public class ContractDAO {
         Integer branchID;
         Integer salary;
         String employmentType;
-        Date startDate;
+        String startDate;
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, employeeID);
@@ -97,7 +107,7 @@ public class ContractDAO {
                 branchID = result.getInt("branchID");
                 salary = result.getInt("salary");
                 employmentType = result.getString("employmentType");
-                startDate = result.getDate("startDate");
+                startDate = result.getString("startDate");
                 result.close();
                 connection.close();
                 return new ContractDTO(employeeID, contratID, branchID, salary, employmentType, startDate);
@@ -111,22 +121,15 @@ public class ContractDAO {
     public LinkedList<ContractDTO> Load() throws SQLException {
         String query = "SELECT * FROM contracts";
         LinkedList<ContractDTO> contracts = new LinkedList<>();
-        Integer employeeID;
-        Integer contratID;
-        Integer branchID;
-        Integer salary;
-        String employmentType;
-        Date startDate;
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(query);
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet result = statement.executeQuery()){
             while (result.next()){
-                employeeID = result.getInt("employeeID");
-                contratID = result.getInt("contractID");
-                branchID = result.getInt("branchID");
-                salary = result.getInt("salary");
-                employmentType =result.getString("employmentType");
-                startDate = result.getDate("startDate");
+                Integer employeeID = result.getInt("employeeID");
+                Integer contratID = result.getInt("contractID");
+                Integer branchID = result.getInt("branchID");
+                Integer salary = result.getInt("salary");
+                String employmentType =result.getString("employmentType");
+                String startDate = result.getString("startDate");
                 contracts.add(new ContractDTO(employeeID, contratID, branchID, salary, employmentType, startDate));
             }
             result.close();
@@ -140,9 +143,8 @@ public class ContractDAO {
 
     public void LoadData() throws Exception{
         for (ContractDTO contract : Load()){
-            LocalDate startDate = contract.getStartDate().toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate();
+            String[] date = contract.getStartDate().split("-");
+            LocalDate startDate = LocalDate.of(Integer.parseInt(date[2]),Integer.parseInt(date[1]),Integer.parseInt(date[0]));
             EmployeeController.getInstance().getEmployee(contract.getEmployeeID()).addDTOContract(contract.getContractID(), contract.getBranchID(), contract.getSalary(), contract.getEmploymentType(), startDate);
         }
     }

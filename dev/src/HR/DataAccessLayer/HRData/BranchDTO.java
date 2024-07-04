@@ -29,7 +29,7 @@ public class BranchDTO {
         this.location = location;
     }
 
-    public Branch DTO2Object(){
+    public Branch DTO2Object() throws Exception {
         return new Branch(location, branchID);
     }
 }

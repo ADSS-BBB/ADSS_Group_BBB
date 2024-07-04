@@ -13,7 +13,7 @@ public class ShiftService {
 
     ShiftController shiftController;
 
-    public ShiftService() {
+    public ShiftService() throws Exception {
         shiftController = ShiftController.getInstance();
 
     }
@@ -28,9 +28,9 @@ public class ShiftService {
         }
     }
 
-    public String addEmployee(Integer shiftid, Integer workerid) throws Exception{
+    public String addEmployee(Integer shiftid, Integer workerid, String role) throws Exception{
         try {
-            String result = shiftController.addEmployee(shiftid, workerid);
+            String result = shiftController.addEmployee(shiftid, workerid, role);
             return result;
         }
         catch (Exception e){

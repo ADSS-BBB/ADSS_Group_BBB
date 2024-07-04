@@ -11,15 +11,26 @@ public class RolesDAO {
     private static RolesDAO instance;
     private Connection connection;
 
-    public static RolesDAO getInstance() {
+    public static RolesDAO getInstance() throws Exception{
         if (instance == null){
             instance = new RolesDAO();
         }
         return instance;
     }
 
-    public RolesDAO() {
-        this.connection = SuperLeeDataController.getInstance().getConnection();
+    private static Connection toConnect() throws ClassNotFoundException {
+        String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
+        Connection connection=null;
+        try {
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+        return connection;
+    }
+
+    public RolesDAO() throws Exception{
+        this.connection = toConnect();
     }
 
     public void insert(RolesDTO rolesDTO) throws SQLException {
@@ -56,16 +67,12 @@ public class RolesDAO {
     public LinkedList<RolesDTO> Load() throws SQLException {
         String query = "SELECT * FROM Roles";
         LinkedList<RolesDTO> roles = new LinkedList<>();
-        Integer EmployeeID = -1;
-        Integer BranchID = -1;
-        String role = "";
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(query);
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet result = statement.executeQuery()){
             while (result.next()) {
-                EmployeeID = result.getInt("EmployeeID");
-                BranchID = result.getInt("BranchId");
-                role = result.getString("role");
+                Integer EmployeeID = result.getInt("EmployeeID");
+                Integer BranchID = result.getInt("BranchId");
+                String role = result.getString("role");
                 roles.add(new RolesDTO(EmployeeID, BranchID, role));
             }
             result.close();

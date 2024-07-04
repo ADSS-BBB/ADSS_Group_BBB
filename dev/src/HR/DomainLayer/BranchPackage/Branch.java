@@ -14,7 +14,7 @@ public class Branch {
     private LinkedList<Integer> BranchEmployees;
     private LinkedList<Integer> BranchShiftList;
 
-    public Branch(String Location, Integer BranchId) {
+    public Branch(String Location, Integer BranchId) throws Exception {
         this.Location = Location;
         this.BranchId = BranchId;
         roles = new LinkedList<>();

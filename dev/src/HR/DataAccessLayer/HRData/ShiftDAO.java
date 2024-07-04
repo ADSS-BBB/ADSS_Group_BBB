@@ -12,15 +12,26 @@ public class ShiftDAO {
     private static ShiftDAO instance;
     private Connection connection;
 
-    public static ShiftDAO getInstance() {
+    public static ShiftDAO getInstance() throws Exception{
         if (instance == null){
             instance = new ShiftDAO();
         }
         return instance;
     }
 
-    public ShiftDAO() {
-        this.connection = SuperLeeDataController.getInstance().getConnection();
+    private static Connection toConnect() throws ClassNotFoundException {
+        String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
+        Connection connection=null;
+        try {
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+        return connection;
+    }
+
+    public ShiftDAO() throws Exception{
+        this.connection = toConnect();
     }
 
     public void insert(ShiftDTO shift) throws SQLException {
@@ -31,7 +42,7 @@ public class ShiftDAO {
             statement.setInt(2, shift.getBranchID());
             statement.setString(3, shift.getType());
             statement.setInt(4, shift.getMinWorkers());
-            statement.setDate(5, shift.getTime());
+            statement.setString(5, shift.getTime());
             statement.executeUpdate();
             statement.close();
             connection.close();
@@ -72,7 +83,7 @@ public class ShiftDAO {
         Integer branchID = -1;
         String type = "";
         Integer minWorkers= -1;
-        Date time = new Date(0);
+        String time = "";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, shiftID);
@@ -81,7 +92,7 @@ public class ShiftDAO {
                 branchID = result.getInt("branchID");
                 type = result.getString("type");
                 minWorkers = result.getInt("minWorkers");
-                time = result.getDate("time");
+                time = result.getString("time");
             }
             result.close();
             connection.close();
@@ -95,20 +106,14 @@ public class ShiftDAO {
     public LinkedList<ShiftDTO> Load() throws SQLException {
         String query = "SELECT * FROM shifts";
         LinkedList<ShiftDTO> shifts = new LinkedList<>();
-        Integer shiftID = -1;
-        Integer branchID = -1;
-        String type = "";
-        Integer minWorkers = -1;
-        Date time = new Date(0);
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(query);
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet result = statement.executeQuery()){
             while (result.next()){
-                shiftID = result.getInt("shiftID");
-                branchID = result.getInt("branchID");
-                type = result.getString("type");
-                minWorkers = result.getInt("minWorkers");
-                time = result.getDate("time");
+                Integer shiftID = result.getInt("shiftID");
+                Integer branchID = result.getInt("branchID");
+                String type = result.getString("type");
+                Integer minWorkers = result.getInt("minWorkers");
+                String time = result.getString("time");
                 shifts.add(new ShiftDTO(shiftID, branchID, type, minWorkers, time));
             }
             result.close();
@@ -122,10 +127,9 @@ public class ShiftDAO {
 
     public void LoadData() throws Exception{
         for (ShiftDTO shift : Load()){
-            LocalDate time = shift.getTime().toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate();
-            ShiftController.getInstance().addShift(shift.getShiftID(), time, shift.getMinWorkers(),shift.getType(), shift.getBranchID());
+            String[] date = shift.getTime().split("-");
+            LocalDate time = LocalDate.of(Integer.parseInt(date[2]),Integer.parseInt(date[1]),Integer.parseInt(date[0]));
+            ShiftController.getInstance().Dtoaddshift(shift.getShiftID(), time, shift.getMinWorkers(),shift.getType(), shift.getBranchID());
         }
     }
 }

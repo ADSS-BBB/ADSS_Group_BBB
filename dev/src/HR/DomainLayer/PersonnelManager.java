@@ -25,7 +25,7 @@ public class PersonnelManager {
 
 
 
-    public PersonnelManager(String name) {
+    public PersonnelManager(String name) throws Exception{
         Employees = new HashMap<>();
         ShiftsHistory = new LinkedList<>();
         this.name = name;
@@ -43,7 +43,7 @@ public class PersonnelManager {
         return Employees;
     }
 
-    public LinkedList<Integer> getShiftsHistory() {
+    public LinkedList<Integer> getShiftsHistory() throws Exception {
         updateShiftsHistory();
         Gson gson = new Gson();
         System.out.println(gson.toJson(ShiftsHistory));
@@ -56,7 +56,7 @@ public class PersonnelManager {
         return "";
     }
 
-    public String updateShiftsHistory() {
+    public String updateShiftsHistory() throws Exception {
         HashMap<Integer, Shift> shifts = ShiftController.getInstance().getShifts();
         for (Integer Id : shifts.keySet()) {
             if(!ShiftsHistory.contains(Id)) {
@@ -66,7 +66,7 @@ public class PersonnelManager {
         return "shifts history updated";
     }
 
-    public String checktheEmployees() {
+    public String checktheEmployees() throws Exception {
         HashMap<Integer, Employee> employees = EmployeeController.getInstance().getEmployees();
         for (Employee employee : employees.values()) {
             if(Employees.isEmpty() || !Employees.containsKey(employee.getEmployeeID())) {
@@ -79,7 +79,7 @@ public class PersonnelManager {
     }
 
 
-    public String showAvailableEmployees(){
+    public String showAvailableEmployees() throws Exception {
         HashMap<Integer, Employee> employees = EmployeeController.getInstance().getEmployees();
         for (Employee employee : employees.values()){
             LinkedList<Integer> shifts = employee.getWeeklyAvailableShifts();

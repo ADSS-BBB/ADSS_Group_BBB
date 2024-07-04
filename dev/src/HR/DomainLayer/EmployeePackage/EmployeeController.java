@@ -8,6 +8,7 @@ import HR.DomainLayer.Contract;
 import HR.DomainLayer.ShiftPackage.Shift;
 import HR.DomainLayer.ShiftPackage.ShiftController;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -16,8 +17,11 @@ public class EmployeeController {
     private HashMap<Integer, Employee> employees = new HashMap<>();
     private static EmployeeController instance;
 
+    public EmployeeController() throws Exception {
+    }
 
-    public static EmployeeController getInstance() {
+
+    public static EmployeeController getInstance() throws Exception {
         if (instance == null) {
             instance = new EmployeeController();
         }
@@ -193,8 +197,16 @@ public class EmployeeController {
         }
         employees.put(id, new Employee(id, username, contract, bankAccount));
         superLeeDataController.insertemployee(id, username, bankAccount.getUsername(), contract.getContractID(), employees.get(id).getBranchId());
+        superLeeDataController.insertbankaccount(id, username, bankAccount.getPassword(), bankAccount.getBalance());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedDate = contract.getStartDate().format(formatter);
+        superLeeDataController.insertcontract(id, contract.getContractID(), EmployeeController.getInstance().getEmployee(id).getBranchId(), contract.getSalary(), contract.getEmploymentType(), formattedDate);
         return "Employee added successfully";
+    }
 
+    public String addEmployeefromDTO(Integer id, String username, Contract contract , BankAccount bankAccount) throws Exception{
+        employees.put(id, new Employee(id, username, contract, bankAccount));
+        return "employee added from data successfully";
     }
 
     public String removeEmployee(Integer id) throws Exception{

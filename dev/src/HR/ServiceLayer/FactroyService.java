@@ -12,7 +12,7 @@ public class FactroyService {
     private BranchService branchService;
     SuperLeeDataController superLeeDataController;
 
-    public FactroyService() {
+    public FactroyService() throws Exception{
         this.shiftService = new ShiftService();
         this.employeeService = new EmployeeService();
         this.branchService = new BranchService();
@@ -75,6 +75,7 @@ public class FactroyService {
 
     public String addEmployee(Integer id, String name, Integer ContractId, Integer Salary , Integer Branchid ,String EmploymentType, String username ,String password,Integer balance, LocalDate startdate ) throws Exception{
         Contract contract = new Contract(ContractId,Salary,Branchid,EmploymentType,startdate);
+
         BankAccount bankAccount = new BankAccount(username,password,balance);
         System.out.println(employeeService.addEmployee(id, name, contract, bankAccount));
         return "";
@@ -153,8 +154,8 @@ public class FactroyService {
         return "";
     }
 
-    public String addEmployee(Integer shiftid, Integer workerid) throws Exception{
-        System.out.println(shiftService.addEmployee(shiftid, workerid));
+    public String addEmployee(Integer shiftid, Integer workerid, String role) throws Exception{
+        System.out.println(shiftService.addEmployee(shiftid, workerid, role));
         return "";
     }
 

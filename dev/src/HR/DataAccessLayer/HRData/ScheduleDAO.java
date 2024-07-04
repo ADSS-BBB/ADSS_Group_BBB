@@ -9,15 +9,26 @@ public class ScheduleDAO {
     private static ScheduleDAO instance;
     private Connection connection;
 
-    public static ScheduleDAO getInstance() {
+    public static ScheduleDAO getInstance() throws Exception{
         if (instance == null){
             instance = new ScheduleDAO();
         }
         return instance;
     }
 
-    public ScheduleDAO() {
-        this.connection = SuperLeeDataController.getInstance().getConnection();
+    private static Connection toConnect() throws ClassNotFoundException {
+        String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
+        Connection connection=null;
+        try {
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+        return connection;
+    }
+
+    public ScheduleDAO() throws Exception{
+        this.connection = toConnect();
     }
 
     public void insert(ScheduleDTO schedule) throws SQLException {
@@ -75,18 +86,13 @@ public class ScheduleDAO {
     public LinkedList<ScheduleDTO> Load() throws SQLException {
         String query = "SELECT * FROM schedule";
         LinkedList<ScheduleDTO> schedules = new LinkedList<>();
-        Integer ShiftID = -1;
-        Integer EmployeeID = -1;
-        Integer BranchID = -1;
-        String role = "";
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(query);
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet result = statement.executeQuery()){
             while (result.next()) {
-                ShiftID = result.getInt("ShiftID");
-                EmployeeID = result.getInt("EmployeeID");
-                BranchID = result.getInt("BranchID");
-                role = result.getString("role");
+                Integer ShiftID = result.getInt("ShiftID");
+                Integer EmployeeID = result.getInt("EmployeeID");
+                Integer BranchID = result.getInt("BranchID");
+                String role = result.getString("role");
                 schedules.add(new ScheduleDTO(ShiftID, EmployeeID, BranchID, role));
             }
             result.close();

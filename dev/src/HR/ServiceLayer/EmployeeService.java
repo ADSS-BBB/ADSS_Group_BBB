@@ -14,7 +14,7 @@ import java.util.LinkedList;
 public class EmployeeService {
     EmployeeController employeeController;
 
-    public EmployeeService() {
+    public EmployeeService() throws Exception {
         employeeController = EmployeeController.getInstance();
     }
 

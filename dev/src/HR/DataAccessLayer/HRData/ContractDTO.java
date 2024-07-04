@@ -12,9 +12,9 @@ public class ContractDTO {
     private Integer branchID;
     private Integer salary;
     private String employmentType;
-    private Date startDate;
+    private String startDate;
 
-    public ContractDTO(Integer employeeID, Integer contractID, Integer branchID, Integer salary, String employmentType, java.sql.Date startDate){
+    public ContractDTO(Integer employeeID, Integer contractID, Integer branchID, Integer salary, String employmentType, String startDate){
         this.employeeID = employeeID;
         this.contractID = contractID;
         this.branchID = branchID;
@@ -47,7 +47,7 @@ public class ContractDTO {
         return employmentType;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
@@ -67,15 +67,13 @@ public class ContractDTO {
         this.employmentType = employmentType;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
     public Contract DTO2Object() {
-        LocalDate start = startDate.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-
+        String[] date = startDate.split("-");
+        LocalDate start = LocalDate.of(Integer.parseInt(date[2]),Integer.parseInt(date[1]),Integer.parseInt(date[0]));
         return new Contract(contractID, salary, branchID, employmentType, start);
     }
 }

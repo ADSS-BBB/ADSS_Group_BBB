@@ -4,11 +4,12 @@ import HR.DomainLayer.BankAccount;
 import HR.DomainLayer.Contract;
 import HR.DomainLayer.EmployeePackage.Employee;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.sql.*;
 
 public class SuperLeeDataController {
-    private Connection connection;
+    private static Connection connection;
     private static SuperLeeDataController instance;
     private BankAccountDAO bankAccountDAO;
     private BranchDAO branchDAO;
@@ -21,14 +22,14 @@ public class SuperLeeDataController {
     private ShiftsHistoryDAO shiftsHistoryDAO;
     private WeeklyShiftsDAO weeklyShiftsDAO;
 
-    public static SuperLeeDataController getInstance() {
+    public static SuperLeeDataController getInstance() throws Exception{
         if (instance == null){
             instance = new SuperLeeDataController();
         }
         return instance;
     }
 
-    public SuperLeeDataController() {
+    public SuperLeeDataController() throws Exception{
         this.connection = toConnect();
         this.bankAccountDAO = BankAccountDAO.getInstance();
         this.branchDAO = BranchDAO.getInstance();
@@ -42,17 +43,18 @@ public class SuperLeeDataController {
         this.shiftsHistoryDAO = ShiftsHistoryDAO.getInstance();
     }
 
-    private static Connection toConnect() {
-        String path = Paths.get("").toAbsolutePath().toString();
-        String _connectionString = "jdbc:sqlite:" + path+"/superli.db";
+    private static Connection toConnect() throws ClassNotFoundException {
+        String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
         Connection connection=null;
         try {
-            connection = DriverManager.getConnection(_connectionString);
-        } catch (SQLException e) {}
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
         return connection;
     }
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
         return connection;
     }
 
@@ -114,7 +116,7 @@ public class SuperLeeDataController {
         return branchDAO.getBranch(branchid);
     }
     //contract
-    public void insertcontract(Integer employeeID, Integer contractid, Integer branchid, Integer salary, String employmentType, Date startdate) throws SQLException {
+    public void insertcontract(Integer employeeID, Integer contractid, Integer branchid, Integer salary, String employmentType, String startdate) throws SQLException {
         ContractDTO contract  = new ContractDTO(employeeID, contractid, branchid, salary, employmentType, startdate);
         contractDAO.insert(contract);
     }
@@ -163,7 +165,7 @@ public class SuperLeeDataController {
         return scheduleDAO.getSchedule(shiftid, employeeid);
     }
     //shift
-    public void insertshift(Integer shiftid, Integer branchid, String type, Integer minworkers, Date time) throws SQLException {
+    public void insertshift(Integer shiftid, Integer branchid, String type, Integer minworkers, String time) throws SQLException {
         ShiftDTO shift = new ShiftDTO(shiftid, branchid, type, minworkers, time);
         shiftDAO.insert(shift);
     }
