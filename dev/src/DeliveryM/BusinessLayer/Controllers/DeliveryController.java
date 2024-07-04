@@ -1,38 +1,80 @@
 package DeliveryM.BusinessLayer.Controllers;
 
 import DeliveryM.BusinessLayer.Objects.*;
+import DeliveryM.DataAccessLayer.DAOs.*;
+import DeliveryM.DataAccessLayer.DTOs.DeliveryDTO;
+import DeliveryM.DataAccessLayer.DTOs.DriverDTO;
+import DeliveryM.DataAccessLayer.DTOs.LocationDTO;
 
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class DeliveryController {
     private HashMap<Integer,Delivery> deliveries;
     private int deliveryID;
-    public DeliveryController(){
-        deliveries=new HashMap<>();
-        deliveryID=0;
+    private DeliveryDAO deliveryDao;
+    private DriverDAO driverDao;
+    private TruckDAO truckDao;
 
+    private LocationDAO locationDao;
+    private ItemsQuantityDAO itemsQuantityDAO;
+
+    public DeliveryController() throws Exception {
+        deliveries=new HashMap<>();
+        this.deliveryDao=new DeliveryDAO();
+        this.driverDao=new DriverDAO();
+        this.truckDao=new TruckDAO();
+        this.locationDao=new LocationDAO();
+        deliveryID=0;
+        this.loadData();
+    }
+    private void loadData() throws Exception {
+        List<DeliveryDTO> delDTOs = deliveryDao.getAllDeliveries();
+        for(DeliveryDTO d: delDTOs){
+            LocalDateTime leaving = LocalDateTime.parse(d.getExitTime());
+            LocalDateTime arrive = LocalDateTime.parse(d.getArrivalTime());
+            Driver driver=DriverController.getInstance().getDriverById(d.getDriverId());
+            Truck truck= TruckController.getInstance().getTruckByNumber(d.getTruckId());
+
+            Delivery toAdd= new Delivery(d.getId(),leaving,driver,truck,new Location(-1,"here","00000","","superlee"),arrive);
+
+            deliveries.put(d.getId(),toAdd);
+            deliveryID++;
+        }
     }
 
 
     //add delivery
-    public void addDelivery(Date dDelivery, String leavingtime, Truck truck, Driver driver, Location LOC){
+    public String addDelivery( LocalDateTime leavingtime, Truck truck, Driver driver, Location LOC, LocalDateTime arrive) throws SQLException {
         if(truck.getMaxWeight()<=driver.getMaxWeightToDriver(driver.getHumanId())){
-            Delivery d=new Delivery(deliveryID,dDelivery,leavingtime,driver,truck,LOC);
+            Delivery d=new Delivery(deliveryID,leavingtime,driver,truck,LOC,arrive);
             deliveries.put(deliveryID,d);
+            DeliveryDTO d1=new DeliveryDTO(deliveryID,leavingtime.toString(),arrive.toString(),truck.getNumber(),driver.getHumanId(),-1);
+            deliveryDao.addDelivery(d1);
+            //i need to fix is aavaliable
             deliveryID++;
+            return "confirmed:add! ";
         }else{
-            System.out.println("The driver can drive this truck");
+            return "The driver can drive this truck due to his license and weights issues!";
         }
 
     }
 
 
     //delete delivery
-    public boolean deleteDeliveryById(int id) {
-        deliveries.get(id).getTruck().setAvailable();
+    public boolean deleteDeliveryById(int id) throws SQLException {
+        int t=deliveries.get(id).getTruck().getNumber();
+        int d=deliveries.get(id).getDriver().getHumanId();
+        deliveries.get(id).getTruck().setAvailable(true);
         deliveries.get(id).getDriver().setAvailable(true);
+        //i need to fix available in the database
         deliveries.remove(id);
-        return false;
+        driverDao.updateisAvailable(d,"true");
+        truckDao.updateisAvailable(t,"true");
+        deliveryDao.deleteDelivery(id);
+
+        return true;
     }
 
     //get delivery
@@ -44,56 +86,37 @@ public class DeliveryController {
         return deliveries;
     }
 
-    //1)delete dest
-    public boolean deleteDestById(int deliveryid,int idDest,int docid){
-        deliveries.get(deliveryid).deleteDestinationById(idDest,docid);
-        return false;
-    }
-
-
     //3)remove items
     public boolean removeItems(int deliveryId){
         deliveries.get(deliveryId).removeItemsFromDelivery();
         return true;
     }
 
-    //4)change truck
-    public boolean changeTruckInDelivery(int deliveryId, Truck truck){
-        deliveries.get(deliveryId).changeTruck(truck);
-        return true;
-    }
-    public HashMap<Item,Integer> getDocOfDestUsingId(int deliveryid,int destid){
-        if(deliveries.get(deliveryid)!=null)
-            return deliveries.get(deliveryid).getDocUsingDestId(destid);
-        else return new HashMap<Item,Integer>();
-    }
-
-    public HashMap<Item,Integer> getDocOfDestUsingLocation(int deliveryid,Location dest) throws Exception {
-        if(deliveries.get(deliveryid)!=null)
-            return deliveries.get(deliveryid).getDocUsingDestLocation(dest);
-        else return new HashMap<Item,Integer>();
-    }
-
-
-
-    public void printAllDeliveries() {
+    public String printAllDeliveries() {
+        String str="";
         for (Delivery d : deliveries.values()) {
-            System.out.println("Delivery ID: " + d.getId() +
-                    ", Date: " + d.getDate() +
-                    ", Time: " + d.getTime() +
+            str+="\nDelivery ID: " + d.getId() +
+                    ", ExitTime: " + d.getTime() +
                     ", Driver ID: " + d.getDriverid() +
                     ", Truck Weight: " + d.getTruck().getTruckWeight() +
                     ", Truck Number: " + d.getTruckNumber() +
-                    ", Source: " + d.getSource().toString());
+                    ", Source: " + d.getSource().toString() +
+                    ",ArriveTime:" + d.getArrivetime().toString();
         }
+        return str;
     }
 
-
-    public void printall(int deliveryid ){
+    public String printall(int deliveryid ){
+        String str="";
         HashMap<Integer,LocItemDoc> a=this.getDeliveryById(deliveryid).getdoc();
         for(LocItemDoc i:a.values()){
-            i.printDetails();
+            str+= i.printDetails();
         }
+        return str;
+    }
+    public void updateQuantities(int deliveryID,String itemName,int q,int itemWeight){
+        Item toAdd=new Item(itemName,itemWeight,-1);
+        getDeliveryById(deliveryID).addItem(toAdd,q);
     }
 
 }

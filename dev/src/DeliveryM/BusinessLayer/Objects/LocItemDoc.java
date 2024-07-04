@@ -1,13 +1,12 @@
 package DeliveryM.BusinessLayer.Objects;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class LocItemDoc{
 
 	private int deliveryId;
 	private int docId;
-	private HashMap<Item,Integer> locItems;//id item,
+	private HashMap<Item,Integer> locItems;//item : quantity
 	private int currTruckWeight;
 	private String addressLoc;
 	public String contactNumber;
@@ -31,6 +30,16 @@ public class LocItemDoc{
 		}
 		return sum;
 	}
+	public void addItems(HashMap<Item,Integer> locItem){
+		for(Item i:locItem.keySet()){
+			if(locItems.containsKey(i)){
+				int j=locItems.get(i)+locItem.get(i);
+				locItems.put(i,j);
+			}
+			else {locItems.put(i,locItem.get(i));}
+		}
+
+	}
 	public int getDeliveryId(){return deliveryId;}
 	public int getDocId(){return docId;}
 	public String getAddressLoc(){return addressLoc;}
@@ -38,27 +47,37 @@ public class LocItemDoc{
 	public int getCurrTruckWeight(){return currTruckWeight;}
 	public String getContactName(){return contactName;}
 	public String getContactNumber(){return contactNumber;}
-	public void setItems(HashMap<Item,Integer> n){locItems=n;}
+	public void setItems(HashMap<Item,Integer> n){
+		for(Item i:locItems.keySet()){
+			for(Item t:n.keySet()){
+				if(i.getNameItem().equals(t.getNameItem())){
+					int s=locItems.get(i)+n.get(t);
+					locItems.replace(t,locItems.get(i),s);
+				}
+			}
+		}
+	}
 	public void setWeight(int n){
 		currTruckWeight =n;}
 
 
-	public void printDetails() {
+	public String printDetails() {
+		String str="";
 		int cur=currTruckWeight+itemsweight();
-		System.out.println("LocItemDoc{");
-		System.out.println("  deliveryId=" + deliveryId + ",");
-		System.out.println("  docId=" + docId + ",");
-		System.out.println("  addressLoc='" + addressLoc + "',");
+		str+= "LocItemDoc{";
+		str+= "  deliveryId=" + deliveryId + ",";
+		str+= "  docId=" + docId + ",";
+		str+= "  addressLoc='" + addressLoc + "',";
 		//System.out.println("  currTruckWeight=" + cur + ",");
-		System.out.println("  contactName='" + contactName + "',");
-		System.out.println("  contactNumber='" + contactNumber + "',");
-
-		System.out.println("  locItems={");
+		str+= "  contactName='" + contactName + "',";
+		str+= "  contactNumber='" + contactNumber + "',";
+		str+= "  locItems={";
 		for (Item i:locItems.keySet()) {
-			System.out.println("    " + i.getNameItem() + ": " + locItems.get(i) + ",");
+			str+= "    " + i.getNameItem() + ": " + locItems.get(i) + ",";
 		}
-		System.out.println("  }");
-		System.out.println("}");
+		str+= "  }";
+		str+= "}";
+		return str;
 	}
 
 

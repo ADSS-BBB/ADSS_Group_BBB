@@ -1,8 +1,11 @@
 package DeliveryM.ServiceLayer;
-import DeliveryM.BusinessLayer.Controllers.*;
-import DeliveryM.BusinessLayer.Objects.*;
 
-import java.util.Date;
+import DeliveryM.BusinessLayer.Controllers.*;
+import DeliveryM.BusinessLayer.Objects.Item;
+import DeliveryM.BusinessLayer.Objects.Location;
+
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class MainApplication {
@@ -17,25 +20,16 @@ public class MainApplication {
     private LocationController locationController;
     private LocationService locationService;
     public MainApplication() throws Exception {
+        locationController= new LocationController();
         deliveryController = new DeliveryController();
         driverController = new DriverController();
         truckController = new TruckController();
-        locationController= new LocationController();
         mainController= new MainController(driverController,deliveryController,truckController,locationController);
         this.truckService= new TruckService(truckController);
         this.delievryService= new DelievryService(deliveryController);
         this.driverService=new DriverService(driverController);
         this.locationService= new LocationService(locationController);
-        addTruck(000,"mazda",2000,5000);
-        addDriver(315282038,"bashar","C1");
-        addLocation("nahef","0502555511","mhmd","north");
-        addDelivery(new Date(),"1200",000,315282038,"superLee");
 
-        addTruck(111,"mazda",2000,10000);
-        addDriver(111,"qais","C1");
-        addLocation("kfr bra","0502555511","mhmd","0");
-        addDelivery(new Date(),"1200",111,111,"superLee");
-        //deliveryController.getDeliveryById(0).addDestinationAndItems();
     }
 
     public TruckService getTruckService(){
@@ -49,89 +43,73 @@ public class MainApplication {
     }
 
     //------------------------------------------------------------
-    //must use response and update if succeed or noy
-    public void addDriver(int id,String name,String licenseType) throws Exception {
-
-        this.driverService.addDriver(id,name, licenseType);
-
+    public String addDriver(int id,String name,String licenseType) throws Exception {
+        return this.driverService.addDriver(id,name, licenseType);
     }
-    public void addTruck(int number,String model,int weight,int maxWeight){
-        this.truckService.addTruck(number, model, weight, maxWeight);
+    public String addTruck(int number,String model,int weight,int maxWeight) throws SQLException {
+        return this.truckService.addTruck(number, model, weight, maxWeight);
 
     }
-
-    public void addLocation(String address,String contactnumber,String contactname,String area){
-        mainController.addLocation( address,contactnumber,contactname,area );
-    }
-    public void addDelivery(Date dDelivery, String leavingtime, int truck, int driver, String superLee)  {
-        if(truckController.getTruckByNumber(truck).isAvailable()&&driverController.getDriverById(driver).isAvailable()) {
-            deliveryController.addDelivery(dDelivery, leavingtime, truckController.getTruckByNumber(truck), driverController.getDriverById(driver), new Location(0, "superLee", "", "", ""));
-            for (Driver d : driverController.getAllDrivers()) {
-                if (d.getHumanId() == driver) {
-                    d.setAvailable(false);
-                }
-            }
-            for (Truck t : truckController.getAllTrucks()) {
-                if (t.getNumber() == truck) {
-                    t.setAvailable();
-                }
-            }
-        }
-        else {
-            System.out.println("cant add a delivery");
-        }
-    }
-    public void addDoc(HashMap<Item,Integer> quantity,int delid,int l) throws InterruptedException {
-
-        mainController.addDoc(quantity,delid,locationController.getLocation(l));
-    }
-
-    public void removeLocation(String address){
-        mainController.removeLocation(address);
-    }
-
-    public void deleteDriver(int id){
-        this.driverService.deleteDriver(id);
-    }
-
-    public void deleteTruck(int number)  {
-        this.truckService.deleteTruck(number);
-
-    }
-
-    public void printalldrivers(){
-        mainController.printAllDrivers();
-    }
-    public void printalltrucks(){
-        mainController.printAllTruck();
-    }
-    public void printalldeliveries(){
-        mainController.printAllDelivery();
-    }
-    public void printAllLocations(){
-        mainController.printAllLocations();
-    }
-    public void printalldoc(int deliveryid){
-        mainController.printallDoc(deliveryid);
-    }
-
-    public void addDelievry(String itemName,int quantity,String address){
-        this.delievryService.addDelievry(itemName,quantity,address);
-
+    public String addLocation(String address,String contactnumber,String contactname,String area,int id ) throws SQLException {
+        return this.locationService.addLocation( address,contactnumber,contactname,area,id );
     }
 
 
-    public void deletedelivery(int id){
-        mainController.removeDeliveryById(id);
+
+    public String addDelivery(LocalDateTime leavingtime, int truck, int driver, String superLee,LocalDateTime arrivetime) throws SQLException {
+       return  mainController.addDelivery(leavingtime,truck,driver,superLee,arrivetime);
+
     }
-    public void addArea(String area){
-        this.delievryService.addArea(area);
+    public String addDoc(HashMap<Item,Integer> quantity,int delid,int l) throws InterruptedException, SQLException {
+
+       return mainController.addDoc(quantity,delid,locationController.getLocation(l));
+    }
+    public String addShiftsStoreKeeper( String workaddress, LocalDateTime start,LocalDateTime end) throws SQLException {
+        return mainController.addShiftsStoreKeeper(workaddress,start,end);
+
+    }
+    public String addShiftDriver(int driverid,LocalDateTime start,LocalDateTime end) throws SQLException {
+        return mainController.updateshifts(driverid,start,end);
+
+    }
+    public String removeLocation(String address) throws SQLException {
+
+        return this.locationService.removeLocation(address);
+    }
+    public String deleteDriver(int id) throws SQLException {
+        return mainController.removeDriver(id);
+    }
+
+
+    public String deleteTruck(int number)  {
+        return this.truckService.deleteTruck(number);
+    }
+    public String printalldrivers(){
+       return this.driverService.printAllDrivers();
+    }
+    public String printalltrucks(){
+        return this.truckService.printalltrucks();
+    }
+    public String printalldeliveries(){
+        return this.delievryService.printalldeliveries();
+    }
+    public String printAllLocations(){ return this.locationService.printAllLocations(); }
+    public String printalldoc(int deliveryid){
+        return this.delievryService.printallDoc(deliveryid);
+    }
+    public String printShifts(){
+        return mainController.printshifts();
+    }
+
+    public String deletedelivery(int id) throws SQLException {
+        return this.delievryService.deletedelivery(id);
+
     }
 
     public Location getLocationbyADD(String  address) {
-        return mainController.getLocationbyADD(address);
+        return this.locationService.getLocationbyADD(address);
     }
     public Location getLocation(int id) {
-        return mainController.getLocation(id);
+        return this.locationService.getLocation(id);
     }
 }

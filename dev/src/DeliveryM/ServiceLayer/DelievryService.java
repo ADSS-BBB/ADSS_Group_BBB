@@ -3,8 +3,8 @@ package DeliveryM.ServiceLayer;
 import DeliveryM.BusinessLayer.Controllers.DeliveryController;
 import DeliveryM.BusinessLayer.Objects.Delivery;
 
+import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 
 public class DelievryService {
     private DeliveryController deliveryController;
@@ -13,15 +13,25 @@ public class DelievryService {
         this.deliveryController=deliveryController;
     }
 
-
-    public void addDelievry(String itemName,int quantity,String address){
-
+    public String deletedelivery(int id) throws SQLException {
+        if(deliveryController.deleteDeliveryById(id)){
+            return "delievry has been deleted sucssefully";
+        }
+        else return "could not delete the delivery";
     }
+
     public HashMap<Integer,Delivery> ALLdeliveries(){
         return deliveryController.getAllDeliveries();
     }
-    public void addArea(String area){
+
+    public String printalldeliveries(){
+        return this.deliveryController.printAllDeliveries();
 
     }
+
+    public String printallDoc(int delivery){
+       return deliveryController.printall(delivery);
+    }
+
 
 }

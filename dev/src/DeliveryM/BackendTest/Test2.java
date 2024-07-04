@@ -78,10 +78,11 @@ public class Test2 {
     }
     @Test
     public void addDriverShiftDAOtest() throws SQLException {
-        DriverDTO driver2= new DriverDTO(678900,"TESTING","C1","true");
-        if(driverController.getDriverById(678900)== null)
+        DriverDTO driver2= new DriverDTO(-1,"TESTING","C1","true");
+        if(driverController.getDriverById(-1)== null) {
             driverDAO.addDriver(driver2);
-        ShiftDTO shift1= new ShiftDTO(00000,"12/12/2024","13/12/2024",driver2.getHumantid(),-1);
+        }
+        //ShiftDTO shift1= new ShiftDTO(00000,"12/12/2024","13/12/2024",driver2.getHumantid(),-1);
         String dateTimeString = "12/12/2024 12:34:56"; // Example string including time
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         LocalDateTime starting = LocalDateTime.parse(dateTimeString, formatter);
@@ -89,15 +90,18 @@ public class Test2 {
         LocalDateTime ending = LocalDateTime.parse(dateTimeString2, formatter);
         mainController.updateshifts(driver2.getHumantid(),starting,ending);
         List<ShiftDTO> shifts=shiftDAO.getAllShifts();
+        //System.out.println(shifts.isEmpty());
         int driverId=-1;
         int shId=0;
         for (ShiftDTO sh:shifts){
-            if(sh.getDriverId()==driver2.getHumantid())
-                driverId=sh.getDriverId();
-            shId=sh.getShiftId();
+            if(sh.getDriverId()==driver2.getHumantid()) {
+                driverId = sh.getDriverId();
+                break;
+            }
         }
         assertEquals(driver2.getHumantid(),driverId,"shift must be added into database");
-        driverDAO.deleteDriver(678900);
+        mainController.removeDriver(driver2.getHumantid());
+        //driverDAO.deleteDriver(678900);
 
     }
 
@@ -147,7 +151,7 @@ public class Test2 {
 
     @Test
     public void addLocationDTOTest() throws SQLException {
-        locationController.addLocation("TESTING","123","123","TESTING");
+        locationController.addLocation("TESTING","123","123","TESTING",-1);
         List<LocationDTO> locations= locationDAO.getAllLocations();
         boolean here=false;
         int locId=-1;
@@ -164,7 +168,7 @@ public class Test2 {
     }
     @Test
     public void removeLocationDTOTest() throws SQLException {
-        locationController.addLocation("TESTING","123","123","TESTING");
+        locationController.addLocation("TESTING","123","123","TESTING",-1);
         List<LocationDTO> locations= locationDAO.getAllLocations();
         boolean here=false;
         int locId=-1;

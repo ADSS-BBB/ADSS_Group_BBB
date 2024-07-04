@@ -29,12 +29,7 @@ public class Truck{
 	public String getModel() {
 		return model;
 	}
-	//	public int getAvailableweight(){
-//		return maxWeight-truckWeight;
-//	}
-	public void setModel(String model) {
-		this.model = model;
-	}
+
 
 	public int getTruckWeight() {
 		return truckWeight;
@@ -63,8 +58,9 @@ public class Truck{
 		return isAvailable;
 	}
 
-	public void setAvailable() {
-		this.isAvailable = !isAvailable;
+	public void setAvailable(boolean is) {
+		this.isAvailable = is;
+
 	}
 
 

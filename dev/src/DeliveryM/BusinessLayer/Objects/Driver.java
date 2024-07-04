@@ -1,5 +1,7 @@
 package DeliveryM.BusinessLayer.Objects;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 public class Driver {
@@ -9,13 +11,14 @@ public class Driver {
 	private String licenseType;
 	private boolean isAvailable;
 	private List<LocItemDoc> documents;
-
+	private HashMap<Integer ,Shift> weeklyShifts;
 	public Driver(int driverId, String name, String licenseType ) {
 		this.humanId = driverId;
 		this.name = name;
 		this.licenseType = licenseType;
 		this.isAvailable = true;
 		this.documents = null;
+		this.weeklyShifts=new HashMap<>();
 	}
 
 	public int getHumanId() {
@@ -65,5 +68,20 @@ public class Driver {
 			case "E" -> 20000;
 			default -> 0;
 		};
+	}
+	//add
+	public Shift updateshift(int shiftid, LocalDateTime start, LocalDateTime end){
+		Shift toadd=new Shift(shiftid,start,end);
+		weeklyShifts.put(start.getDayOfWeek().getValue()+1,toadd);
+		return toadd;
+	}
+	public LocalDateTime getstart(int day){
+		return weeklyShifts.get(day).getStartingTime();
+	}
+	public LocalDateTime getend(int day){
+		return weeklyShifts.get(day).getEndingTime();
+	}
+	public HashMap<Integer,Shift> getshift(){
+		return this.weeklyShifts;
 	}
 }

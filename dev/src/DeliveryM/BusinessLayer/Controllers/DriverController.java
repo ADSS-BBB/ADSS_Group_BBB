@@ -1,45 +1,83 @@
 package DeliveryM.BusinessLayer.Controllers;
 
 import DeliveryM.BusinessLayer.Objects.Driver;
+import DeliveryM.DataAccessLayer.DAOs.DriverDAO;
+import DeliveryM.DataAccessLayer.DTOs.DriverDTO;
 
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
 public class DriverController {
 
     private List<Driver> drivers;
+    private DriverDAO driverDao;
+    private static DriverController instance;
 
-    public DriverController(){
+
+    public DriverController() throws Exception {
+        this.driverDao=new DriverDAO();
         this.drivers=new LinkedList<>();
+        this.loadData();
     }
 
-    //add driver
-    public void addDriver(Driver driver) {
+    public static DriverController getInstance() throws Exception {
+        if (instance == null) {
+            instance = new DriverController();
+
+        }
+        return instance;
+    }
+    public DriverDAO getdriverDao(){
+        return this.driverDao;
+    }
+    public void loadData(){
+        List<DriverDTO> driverDTOS=driverDao.getAllDrivers();
+        for(DriverDTO d:driverDTOS){
+            Driver dc=new Driver(d.getHumantid(),d.getName(),d.getLicenseType());
+
+            drivers.add(dc);
+            if(d.getIsAvailable().equals("true")) {
+                dc.setAvailable(true);
+            }
+            else dc.setAvailable(false);
+            //here we need to get the isavailable and add it alone
+        }
+    }
+
+        //add driver
+    public String addDriver(Driver driver) throws Exception {
+        String response="driver added successfully!!";
         boolean check=false;
         for(Driver d:drivers){
             if((d.getHumanId()==driver.getHumanId())){
-                System.out.println("driver already exists!");
+                response=("driver already exists!");
                 check=true;
             }
         }
         if(!check) {
             drivers.add(driver);
+            if(driver.isAvailable()){
+                driverDao.addDriver(new DriverDTO(driver.getHumanId(),driver.getName(),driver.getLicenseType(),"true"));
+            }
+            else{driverDao.addDriver(new DriverDTO(driver.getHumanId(),driver.getName(),driver.getLicenseType(),"false"));}
         }
+        return response;
+
     }
 
     //remove driver
-    public boolean removeDriver(int driverId){
+    public Driver removeDriver(int driverId) throws SQLException {
         for(Driver d:drivers){
-            if(d.getHumanId()==driverId)
+            if(d.getHumanId()==driverId){
                 drivers.remove(d);
+                driverDao.deleteDriver(driverId);
+                return d;
 
+            }
         }
-        return true;
-    }
-    public boolean removeDriver(Driver d){
-        if(!drivers.contains(d)){ return false;}
-        drivers.remove(d);
-        return true;
+        return null;
     }
 
     public Driver getDriverById(int driverId) {
@@ -64,16 +102,21 @@ public class DriverController {
         }
         return false;
     }
-
-    public void printAllDrivers() {
+    public void updateshifts(int driverid,int shiftid, LocalDateTime start, LocalDateTime end){
+        if(getDriverById(driverid)==null) return;
+        this.getDriverById(driverid).updateshift(shiftid,start,end);
+    }
+    public String printAllDrivers() {
+        String str="";
         for (Driver d : drivers) {
-            System.out.println("Driver ID: " + d.getHumanId() +
+            str+="\nDriver ID: " + d.getHumanId() +
                     ", Name: " + d.getName() +
                     ", License Type: " + d.getLicenseType() +
-                    ", Is Available: " + d.isAvailable());
+                    //", Driver shift: " + System.out.println("shift id :"+d.getShiftid()+"   startingtime:"+s.getStartingTime()+"   endingtime  :"+s.getEndingTime() + "   the day is:  "+ s.getStartingTime().getDayOfWeek());//s.getStartingTime().getDayOfWeek().getValue()+1
+                    ", Is Available: " + d.isAvailable();
         }
+        return str;
     }
-
 
 
 

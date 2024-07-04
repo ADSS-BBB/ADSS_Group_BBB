@@ -1,5 +1,6 @@
 
 package DeliveryM.BusinessLayer.Objects;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import  java.time.Clock;
@@ -9,27 +10,28 @@ import java.util.List;
 public class Delivery {
 
 	private int id;
-	private Date date;
-	private String time;
+	//private Date date;
+	private LocalDateTime leaving;
+	private LocalDateTime arrivetime;
 	private Driver driver;
 	private Truck truck;
 	private Location source;
 	private List<Location> destinations;
 	private HashMap<Item,Integer> quantity;
 	private HashMap<Integer,LocItemDoc> docs;
-	//private HashMap<Location,List<Item>> itemsforlocation;
+
 
 	// Constructor
-	public Delivery(int id, Date date, String time, Driver driver,Truck truck , Location source) {
+	public Delivery(int id, LocalDateTime leaving, Driver driver,Truck truck , Location source,LocalDateTime arrivetime) {
 		this.id = id;
-		this.date = date;
-		this.time = time;
+		this.leaving = leaving;
 		this.driver = driver;
 		this.truck=truck;
 		this.source = source;
 		this.destinations = new LinkedList<>();
 		this.quantity=new HashMap<>();
 		this.docs=new HashMap<>();
+		this.arrivetime=arrivetime;
 		//this.itemsforlocation=new HashMap<>();
 	}
 
@@ -42,20 +44,14 @@ public class Delivery {
 		this.id = id;
 	}
 
-	public Date getDate() {
-		return date;
+
+
+	public LocalDateTime getTime() {
+		return leaving;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public String getTime() {
-		return time;
-	}
-
-	public void setTime(String time) {
-		this.time = time;
+	public void setTime(LocalDateTime time) {
+		this.leaving = time;
 	}
 
 	public int getDriverid() {
@@ -77,8 +73,9 @@ public class Delivery {
 	}
 
 	public boolean changeTruck(Truck truck) {
-		this.truck.setAvailable();
+		this.truck.setAvailable(false);
 		this.truck = truck;
+		this.truck.setAvailable(true);
 		return true;
 	}
 
@@ -91,7 +88,9 @@ public class Delivery {
 	public Location getSource() {
 		return source;
 	}
-
+	public LocalDateTime getArrivetime(){
+		return this.arrivetime;
+	}
 	public void setSource(Location source) {
 		this.source = source;
 	}
@@ -103,15 +102,19 @@ public class Delivery {
 	}
 
 
-	//	private List<Location> destinations;//
-//	private HashMap<Item,Integer> quantity;
-//	private HashMap<Integer,LocItemDoc> docs;
-//	private HashMap<Location,List<Item>> itemsforlocation;//
 
 	public void addDestinationAndItems(int docId,Location newDest,HashMap<Item,Integer> order){//location hashmap<item,quantity>asf;
-		//itemsforlocation.put(newDest,new LinkedList<>(order.keySet()));
 		int sum=fixweight(order);
 		this.truck.setTruckWeight(sum);
+		if(destinations.contains(newDest)){
+			for(LocItemDoc locItemDoc:docs.values()){
+				if(locItemDoc.getAddressLoc().equals(newDest.getAddress())){
+					locItemDoc.setItems(order);
+				}
+			}
+		}
+
+
 		LocItemDoc newdoc=new LocItemDoc(this.id,docId,newDest.getAddress(),order,this.truck.getTruckWeight(), newDest.getContactName(), newDest.getContactNumber());
 		docs.put(docId,newdoc);
 		destinations.add(newDest);
@@ -125,8 +128,15 @@ public class Delivery {
 				new1 = quantity.get(item);
 				quantity.put(item, new1 + order.get(item));
 			}
-
 		}
+	}
+	//important
+	public int getwieght(){
+		int DelWeight=0;
+		for(LocItemDoc i:docs.values()){
+			DelWeight+=i.itemsweight();
+		}
+		return DelWeight;
 	}
 	public int  fixweight(HashMap<Item,Integer> order){
 		int sum=0;
@@ -212,29 +222,6 @@ public class Delivery {
 
 
 
-
-	public List<Item> getItems() {
-		return new LinkedList<>(quantity.keySet());
-	}
-	public HashMap<Item,Integer> getQuantity(){
-		return quantity;
-	}
-
-
-	public void addOneItem(Item i,int quantity1){
-		if(quantity.containsKey(i)) {
-			quantity.put(i,quantity.get(i)+quantity1);
-		}
-		else{quantity.put(i,quantity1);}
-	}
-
-	public void ChangeOneItem(Item i,int quantity1){
-		if(quantity.containsKey(i)) {
-			quantity.put(i,quantity1);
-		}
-	}
-
-
 	public int getWeightDelivery(){
 		int quan,weight,totalWeight=0;
 		for(Item i:quantity.keySet()){
@@ -246,28 +233,11 @@ public class Delivery {
 	}
 
 
-	public HashMap<Item,Integer> getDocUsingDestId(int destid){
-		HashMap<Item,Integer> a=new HashMap<>();
-		for(Item i:quantity.keySet()){
-			if(i.getDestinationId()==destid){
-				a.put(i,quantity.get(i));
-			}
-		}
-		return a;
-	}
-	public HashMap<Item,Integer> getDocUsingDestLocation(Location dest){
-		HashMap<Item,Integer> a=new HashMap<>();
-		for(Item i:quantity.keySet()){
-			if(i.getDestinationId()==dest.getLocationId()){
-				a.put(i,quantity.get(i));
-			}
-		}
-		return a;
-	}
 	public HashMap<Integer,LocItemDoc> getdoc(){
 		return docs;
 	}
-	public HashMap<Item,Integer> getquantity(){
-		return quantity;
+
+	public void addItem(Item item,int q){
+		this.quantity.put(item,q);
 	}
 }
