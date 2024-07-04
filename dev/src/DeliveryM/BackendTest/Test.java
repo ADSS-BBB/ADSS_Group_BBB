@@ -1,10 +1,14 @@
 package DeliveryM.BackendTest;
 
 import DeliveryM.BusinessLayer.Controllers.*;
-import DeliveryM.BusinessLayer.Objects.*;
+import DeliveryM.BusinessLayer.Objects.Driver;
+import DeliveryM.BusinessLayer.Objects.Item;
+import DeliveryM.BusinessLayer.Objects.Location;
+import DeliveryM.BusinessLayer.Objects.Truck;
 import org.junit.jupiter.api.*;
 
-import java.util.Date;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,12 +22,11 @@ class Test {
     private LocationController locationController;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         driverController = new DriverController();
         deliveryController = new DeliveryController();
         truckController = new TruckController();
         locationController = new LocationController();
-
         mainController = new MainController(driverController, deliveryController, truckController, locationController);
     }
 
@@ -32,84 +35,87 @@ class Test {
     }
 
     @org.junit.jupiter.api.Test
-    void testAddDriver() {
+    void testAddDriver() throws Exception {
         Driver driver = new Driver(1,"bashar","C1");
-        mainController.addDriver(driver);
+        driverController.addDriver(driver);
         assertEquals(driver, driverController.getDriverById(driver.getHumanId()));
     }
 
     @org.junit.jupiter.api.Test
-    void testAddTruck() {
+    void testAddTruck() throws SQLException {
         Truck truck = new Truck(1,"mazda",2000,1000);
-        mainController.addTruck(truck);
+        truckController.addTruck(truck);
         assertEquals(truck, truckController.getTruckByNumber(truck.getNumber()));
     }
     @org.junit.jupiter.api.Test
-    void testAddLocation() {
+    void testAddLocation() throws SQLException {
         String address = "nahef";
         String contactNumber = "0502555511";
         String contactName = "someone";
         String area = "north";
 
-        mainController.addLocation(address, contactNumber, contactName, area);
+        locationController.addLocation(address, contactNumber, contactName, area);
         assertNotNull(locationController.getLocationbyADD(address));
     }
 
     @org.junit.jupiter.api.Test
-    void testAddDelivery() {
+    void testAddDelivery() throws SQLException {
         int deliveryId = 0;
         Driver d=new Driver(315282038,"bashar","C1");
         Truck t=new Truck(315282038,"mazda",2000,10000);
         Location l=new Location(0,"nahef","0502555511","mhmd","north");
         //Delivery delivery = new Delivery(deliveryId,new Date(),"15:00",d,t,l);
-
-        deliveryController.addDelivery(new Date(),"15:00",t,d,l);
+        LocalDateTime leaving = LocalDateTime.of(2024, 7, 3, 8, 0);
+        LocalDateTime arriveTime = LocalDateTime.of(2024, 7, 3, 16, 0);
+        deliveryController.addDelivery(leaving,t,d,l,arriveTime);
 //        assertTrue(mainController.removeDeliveryById(deliveryId));
         assertEquals(1,deliveryController.getAllDeliveries().size());
 
     }
 
     @org.junit.jupiter.api.Test
-    void testRemoveDriver(){
-        mainController.addDriver(new Driver(315282038,"bashar","C1"));
+    void testRemoveDriver() throws Exception {
+        driverController.addDriver(new Driver(315282038,"bashar","C1"));
         assertEquals(1,driverController.getAllDrivers().size());
-        mainController.removeDriverById(315282038);
+        driverController.removeDriver(315282038);
         assertEquals(0,driverController.getAllDrivers().size());
     }
 
     @org.junit.jupiter.api.Test
-    void testRemoveLocation() {
+    void testRemoveLocation() throws SQLException {
         String address = "nahef";
-        mainController.addLocation(address, "0502555511", "someone", "north");
+        locationController.addLocation(address, "0502555511", "someone", "north");
         assertEquals(1,locationController.allLocations().size());
         locationController.removeLocation(address);
         assertEquals(0, locationController.allLocations().size());
     }
 
     @org.junit.jupiter.api.Test
-    void testRemoveDelivery() {
+    void testRemoveDelivery() throws SQLException {
         int deliveryId = 0;
         Driver d=new Driver(315282038,"bashar","C1");
         Truck t=new Truck(315282038,"mazda",2000,10000);
         Location l=new Location(0,"nahef","0502555511","mhmd","north");
         //Delivery delivery = new Delivery(deliveryId,new Date(),"15:00",d,t,l);
 
-        deliveryController.addDelivery(new Date(),"15:00",t,d,l);
+        LocalDateTime leaving = LocalDateTime.of(2024, 7, 3, 8, 0);
+        LocalDateTime arriveTime = LocalDateTime.of(2024, 7, 3, 16, 0);
+        deliveryController.addDelivery(leaving,t,d,l,arriveTime);
         assertEquals(1,deliveryController.getAllDeliveries().size());
-        mainController.removeDeliveryById(deliveryId);
+        deliveryController.deleteDeliveryById(deliveryId);
         assertEquals(0,deliveryController.getAllDeliveries().size());
     }
 
     @org.junit.jupiter.api.Test
     void testRemoveTruck() throws Exception {
         Truck truck = new Truck(1, "mazda", 2000, 1000);
-        mainController.addTruck(truck);
+        truckController.addTruck(truck);
         assertEquals(truck, truckController.getTruckByNumber(truck.getNumber()));
-        mainController.removeTruckByNumber(1);
+        truckController.removeTruckByNumber(1);
     }
 
     @org.junit.jupiter.api.Test
-    void testAddDoc() throws InterruptedException {
+    void testAddDoc() throws Exception {
         Truck t = new Truck(111, "mazda", 2000, 10000);
         Driver d = new Driver(111, "qais", "C1");
         Location l = new Location(0, "kfr bra", "0502555511", "mhmd", "0");
@@ -120,7 +126,9 @@ class Test {
         locationController.addLocation(l.getAddress(), l.getContactNumber(), l.getContactName(), l.getArea());
 
         // Add the delivery to the deliveryController
-        deliveryController.addDelivery(new Date(), "12:00", t, d, l);
+        LocalDateTime leaving = LocalDateTime.of(2024, 7, 3, 8, 0);
+        LocalDateTime arriveTime = LocalDateTime.of(2024, 7, 3, 16, 0);
+        deliveryController.addDelivery(leaving,t,d,l,arriveTime);
 
         // Verify the delivery has been added
         assertNotNull(deliveryController.getDeliveryById(0));
@@ -139,7 +147,7 @@ class Test {
 
 
     @org.junit.jupiter.api.Test
-    void testRemoveDoc() throws InterruptedException {
+    void testRemoveDoc() throws Exception {
         // Set up the truck, driver, location, and delivery
         Truck t = new Truck(111, "mazda", 2000, 10000);
         Driver d = new Driver(111, "qais", "C1");
@@ -151,7 +159,9 @@ class Test {
         locationController.addLocation(l.getAddress(), l.getContactNumber(), l.getContactName(), l.getArea());
 
         // Add the delivery to the deliveryController
-        deliveryController.addDelivery(new Date(), "12:00", t, d, l);
+        LocalDateTime leaving = LocalDateTime.of(2024, 7, 3, 8, 0);
+        LocalDateTime arriveTime = LocalDateTime.of(2024, 7, 3, 16, 0);
+        deliveryController.addDelivery(leaving,t,d,l,arriveTime);
 
         // Verify the delivery has been added
         assertNotNull(deliveryController.getDeliveryById(0));
