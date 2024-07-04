@@ -1,5 +1,6 @@
 package HR;
 
+import HR.DataAccessLayer.HRData.PersonnelManagerDAO;
 import HR.DataAccessLayer.HRData.SuperLeeDataController;
 import HR.DomainLayer.BranchPackage.Branch;
 import HR.DomainLayer.PersonnelManager;
@@ -35,6 +36,7 @@ public class Main {
     public static Application application = new Application(factroyService, manager);
 
     public static void main(String[] args) throws Exception {
+        SuperLeeDataController.getInstance().insertpersonnelmanager(manager.getName());
         while (true) {
             Scanner sc = new Scanner(System.in);
             String input;
