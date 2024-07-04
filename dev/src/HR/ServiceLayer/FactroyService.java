@@ -1,5 +1,6 @@
 package HR.ServiceLayer;
 
+import HR.DataAccessLayer.HRData.SuperLeeDataController;
 import HR.DomainLayer.BankAccount;
 import HR.DomainLayer.Contract;
 
@@ -9,12 +10,18 @@ public class FactroyService {
     private ShiftService shiftService;
     private EmployeeService employeeService;
     private BranchService branchService;
+    SuperLeeDataController superLeeDataController;
 
     public FactroyService() {
         this.shiftService = new ShiftService();
         this.employeeService = new EmployeeService();
         this.branchService = new BranchService();
+        this.superLeeDataController = new SuperLeeDataController();
 
+    }
+
+    public String LoadData() throws Exception {
+        return superLeeDataController.LoadData();
     }
 
 //branch service

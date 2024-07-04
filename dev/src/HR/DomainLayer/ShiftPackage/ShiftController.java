@@ -1,13 +1,16 @@
 package HR.DomainLayer.ShiftPackage;
 
+import HR.DataAccessLayer.HRData.SuperLeeDataController;
 import HR.DomainLayer.BranchPackage.BranchController;
 import HR.DomainLayer.EmployeePackage.EmployeeController;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class ShiftController {
+    SuperLeeDataController superLeeDataController = SuperLeeDataController.getInstance();
     private static ShiftController instance;
     private HashMap<Integer, Shift> shifts = new HashMap<>();
 
@@ -40,16 +43,18 @@ public class ShiftController {
         if (!shifts.containsKey(ShiftId)){
             throw new Exception("Shift is not existed");
         }
+        superLeeDataController.editminworkers(ShiftId, minWorkers);
         return shifts.get(ShiftId).setMinWorkers(minWorkers);
     }
 
-    public String addEmployee(Integer ShiftId, Integer WorkerId) throws Exception {
+    public String addEmployee(Integer ShiftId, Integer WorkerId, String role) throws Exception {
         if (ShiftId == null || ShiftId < 0){
             throw new Exception("ShiftId is null");
         }
         if (!shifts.containsKey(ShiftId)){
             throw new Exception("Shift is not existed");
         }
+        superLeeDataController.insertschedule(ShiftId, WorkerId, EmployeeController.getInstance().getEmployee(WorkerId).getBranchId(), role);
         return shifts.get(ShiftId).AddEmployee(WorkerId);
     }
 
@@ -60,6 +65,7 @@ public class ShiftController {
         if (!shifts.containsKey(ShiftId)){
             throw new Exception("Shift is not existed");
         }
+        superLeeDataController.deleteschedule(ShiftId, WorkerId);
         return shifts.get(ShiftId).RemoveEmployee(WorkerId);
     }
 
@@ -108,7 +114,13 @@ public class ShiftController {
             throw new Exception("Branch is not existed");
         }
         shifts.put(ShiftId, new Shift(ShiftId , time, MinWorkers, Type, BranchId));
+        Date date1 = Date.valueOf(time);
+        superLeeDataController.insertshift(ShiftId, BranchId, Type, MinWorkers, date1);
         return "Shift added successfully";
+    }
+    //this function is in progress and it should check if there is a storekeeper in the shift
+    public String posibletodelivery(String deliverytime){
+        return "to be implemented";
     }
 
     //for testing

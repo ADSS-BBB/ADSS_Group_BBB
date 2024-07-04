@@ -56,15 +56,16 @@ public class SuperLeeDataController {
         return connection;
     }
 
-    public void LoadData() throws Exception {
+    public String LoadData() throws Exception {
         shiftDAO.LoadData();
         branchDAO.LoadData();
         employeeDAO.LoadData();
         rolesDAO.LoadData();
         weeklyShiftsDAO.LoadData();
+        return  "dataLoaded";
     }
 
-    public void deleteData() throws Exception{
+    public String deleteData() throws Exception{
         try {
             Statement statement = connection.createStatement();
             statement.executeUpdate("DELETE FROM bankaccounts");
@@ -82,6 +83,7 @@ public class SuperLeeDataController {
         } catch (Exception e) {
             System.out.println("failed in deleting data");
         }
+        return "dataDeleted";
     }
     //bank
     public void insertbankaccount(Integer employeeID, String username, String password, Integer balance ) throws SQLException {
@@ -98,7 +100,7 @@ public class SuperLeeDataController {
         bankAccountDAO.editbankpassword(username, password);
     }
     //branch
-    public void inserbranch(Integer branchid, String location) throws SQLException {
+    public void insertbranch(Integer branchid, String location) throws SQLException {
         BranchDTO branch = new BranchDTO(branchid, location);
         branchDAO.insert(branch);
     }
@@ -150,8 +152,8 @@ public class SuperLeeDataController {
         rolesDAO.delete(employeeid, role);
     }
     //schedule
-    public void insertschedule(Integer shiftid, Integer employeeid, Integer branchid, String hrname, String role) throws SQLException {
-        ScheduleDTO schedule = new ScheduleDTO(shiftid, employeeid, branchid, hrname, role);
+    public void insertschedule(Integer shiftid, Integer employeeid, Integer branchid, String role) throws SQLException {
+        ScheduleDTO schedule = new ScheduleDTO(shiftid, employeeid, branchid, role);
         scheduleDAO.insert(schedule);
     }
     public void deleteschedule(Integer shiftid, Integer employeeid) throws SQLException {

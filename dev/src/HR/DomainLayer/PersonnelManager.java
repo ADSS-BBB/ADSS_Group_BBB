@@ -109,12 +109,12 @@ public class PersonnelManager {
                     HashMap<Integer, String> employeesinShift = new HashMap<>();
                     employeesinShift.put(employee.getEmployeeID(), role);
                     schedule.put(shiftid , employeesinShift);
-                    ShiftController.getInstance().addEmployee(shiftid,employee.getEmployeeID());
+                    ShiftController.getInstance().addEmployee(shiftid,employee.getEmployeeID(), role);
                 }
                 else{
                     if (!schedule.get(shiftid).containsKey(employee.getEmployeeID()))
                         schedule.get(shiftid).putIfAbsent(employee.getEmployeeID() , role);
-                        ShiftController.getInstance().addEmployee(shiftid,employee.getEmployeeID());
+                        ShiftController.getInstance().addEmployee(shiftid,employee.getEmployeeID(), role);
                 }
                 break;
             }

@@ -1,9 +1,13 @@
 package HR.DomainLayer.BranchPackage;
 
+import HR.DataAccessLayer.HRData.SuperLeeDataController;
+import HR.DomainLayer.EmployeePackage.EmployeeController;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class BranchController {
+    SuperLeeDataController superLeeDataController = SuperLeeDataController.getInstance();
     private static BranchController instance;
     private HashMap<Integer, Branch> branches = new HashMap<>();
 
@@ -32,27 +36,6 @@ public class BranchController {
         return branches;
     }
 
-//    public Integer[] setShift1Hours(Integer branchId, Integer[] shift1Hours) throws Exception {
-//        if (branchId == null || branchId < 0){
-//            throw new Exception("Branch id is null");
-//        }
-//        if (!branches.containsKey(branchId)){
-//            throw new Exception("Branch is not existed");
-//        }
-//        branches.get(branchId).setShift1Hours(shift1Hours);
-//        return branches.get(branchId).getShift1Hours();
-//    }
-//
-//    public Integer[] setShift2Hours(Integer branchId, Integer[] shift2Hours) throws Exception {
-//        if (branchId == null || branchId < 0){
-//            throw new Exception("Branch id is null");
-//        }
-//        if (!branches.containsKey(branchId)){
-//            throw new Exception("Branch is not existed");
-//        }
-//        branches.get(branchId).setShift2Hours(shift2Hours);
-//        return branches.get(branchId).getShift2Hours();
-//    }
 
     public String addRole(Integer branchId, String role) throws Exception {
         if (branchId == null || branchId < 0){
@@ -61,6 +44,7 @@ public class BranchController {
         if (!branches.containsKey(branchId)){
             throw new Exception("Branch is not existed");
         }
+        superLeeDataController.insertroles(null, branchId, role);
         return branches.get(branchId).AddRole(role);
     }
 
@@ -71,6 +55,7 @@ public class BranchController {
         if (!branches.containsKey(branchId)){
             throw new Exception("Branch is not existed");
         }
+        superLeeDataController.deleteroles(branchId, role);
         return branches.get(branchId).RemoveRole(role);
     }
 
@@ -108,6 +93,7 @@ public class BranchController {
             throw new Exception("Location is null");
         }
         branches.put(branchId, new Branch(location, branchId));
+        superLeeDataController.insertbranch(branchId, location);
         return "Branch added successfully";
     }
 
@@ -119,6 +105,7 @@ public class BranchController {
             throw new Exception("Branch is not existed");
         }
         branches.remove(branchId);
+        superLeeDataController.deletebranch(branchId);
         return "Branch removed successfully";
     }
 

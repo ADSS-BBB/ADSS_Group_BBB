@@ -4,14 +4,12 @@ public class ScheduleDTO {
     private Integer ShiftID;
     private Integer EmployeeID;
     private Integer BranchID;
-    private String HRname;
     private String role;
 
-    public ScheduleDTO(Integer ShiftID, Integer EmployeeID, Integer BranchID, String HRname, String role) {
+    public ScheduleDTO(Integer ShiftID, Integer EmployeeID, Integer BranchID, String role) {
         this.ShiftID = ShiftID;
         this.EmployeeID = EmployeeID;
         this.BranchID = BranchID;
-        this.HRname = HRname;
         this.role = role;
     }
 
@@ -25,10 +23,6 @@ public class ScheduleDTO {
 
     public Integer getShiftID() {
         return ShiftID;
-    }
-
-    public String getHRname() {
-        return HRname;
     }
 
     public String getRole() {
@@ -45,10 +39,6 @@ public class ScheduleDTO {
 
     public void setBranchID(Integer branchID) {
         BranchID = branchID;
-    }
-
-    public void setHRname(String HRname) {
-        this.HRname = HRname;
     }
 
     public void setShiftID(Integer shiftID) {

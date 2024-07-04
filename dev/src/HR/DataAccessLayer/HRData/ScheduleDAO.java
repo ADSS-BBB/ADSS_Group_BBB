@@ -21,14 +21,13 @@ public class ScheduleDAO {
     }
 
     public void insert(ScheduleDTO schedule) throws SQLException {
-        String query = "INSERT INTO schedule (ShiftID, EmployeeID, BranchID, HRname, role) VALUES (?,?,?,?,?)";
+        String query = "INSERT INTO schedule (ShiftID, EmployeeID, BranchID, role) VALUES (?,?,?,?)";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, schedule.getShiftID());
             statement.setInt(2, schedule.getEmployeeID());
             statement.setInt(3, schedule.getBranchID());
-            statement.setString(4, schedule.getHRname());
-            statement.setString(5, schedule.getRole());
+            statement.setString(4, schedule.getRole());
             statement.executeUpdate();
             statement.close();
             connection.close();
@@ -54,7 +53,6 @@ public class ScheduleDAO {
     public ScheduleDTO getSchedule(Integer ShiftID, Integer EmployeeID) throws SQLException {
         String query = "SELECT * FROM schedule WHERE ShiftID = ? AND EmployeeID = ?";
         Integer BranchId = -1;
-        String HRname = "";
         String role = "";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
@@ -63,12 +61,11 @@ public class ScheduleDAO {
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 BranchId = result.getInt("BranchID");
-                HRname = result.getString("HRname");
                 role = result.getString("role");
             }
             result.close();
             connection.close();
-            return new ScheduleDTO(ShiftID, EmployeeID, BranchId, HRname, role);
+            return new ScheduleDTO(ShiftID, EmployeeID, BranchId, role);
         } catch (SQLException e) {
             System.out.println("failed to get schedule");
         }
@@ -81,7 +78,6 @@ public class ScheduleDAO {
         Integer ShiftID = -1;
         Integer EmployeeID = -1;
         Integer BranchID = -1;
-        String HRname = "";
         String role = "";
         try {
             Statement statement = connection.createStatement();
@@ -90,9 +86,8 @@ public class ScheduleDAO {
                 ShiftID = result.getInt("ShiftID");
                 EmployeeID = result.getInt("EmployeeID");
                 BranchID = result.getInt("BranchID");
-                HRname = result.getString("HRname");
                 role = result.getString("role");
-                schedules.add(new ScheduleDTO(ShiftID, EmployeeID, BranchID, HRname, role));
+                schedules.add(new ScheduleDTO(ShiftID, EmployeeID, BranchID, role));
             }
             result.close();
             connection.close();

@@ -1,5 +1,6 @@
 package HR.DomainLayer.EmployeePackage;
 
+import HR.DataAccessLayer.HRData.SuperLeeDataController;
 import HR.DomainLayer.BankAccount;
 import HR.DomainLayer.BranchPackage.Branch;
 import HR.DomainLayer.BranchPackage.BranchController;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class EmployeeController {
+    SuperLeeDataController superLeeDataController =  SuperLeeDataController.getInstance();
     private HashMap<Integer, Employee> employees = new HashMap<>();
     private static EmployeeController instance;
 
@@ -44,6 +46,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+        superLeeDataController.insertroles(id, employees.get(id).getBranchId(), role);
         return employees.get(id).addRole(role);
     }
 
@@ -54,6 +57,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+        superLeeDataController.deleteroles(id, role);
         return employees.get(id).removeRole(role);
     }
 
@@ -64,6 +68,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+        superLeeDataController.editsalary(employees.get(id).getDealdetails().getContractID(), salary);
         return employees.get(id).IncreaseSalary(salary);
     }
 
@@ -74,6 +79,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+        superLeeDataController.editsalary(employees.get(id).getDealdetails().getContractID(), salary);
         return employees.get(id).DecreaseSalary(salary);
     }
 
@@ -104,6 +110,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+        superLeeDataController.insertweeklyshifts(id, employees.get(id).getBranchId(), shiftid);
         return employees.get(id).addShiftToWeek(shiftid);
     }
 
@@ -114,6 +121,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+        superLeeDataController.deleteweeklyshifts(id, shiftid);
         return employees.get(id).removeShiftFromWeek(shiftid);
     }
 
@@ -124,6 +132,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+        superLeeDataController.editemployemenType(employees.get(id).getDealdetails().getContractID(), type);
         return employees.get(id).setEmploymentType(type);
     }
 
@@ -183,6 +192,7 @@ public class EmployeeController {
             throw new Exception("no such branch");
         }
         employees.put(id, new Employee(id, username, contract, bankAccount));
+        superLeeDataController.insertemployee(id, username, bankAccount.getUsername(), contract.getContractID(), employees.get(id).getBranchId());
         return "Employee added successfully";
 
     }
@@ -199,6 +209,7 @@ public class EmployeeController {
         for (Branch branch : branches.values()){
             branch.RemoveBranchEmployee(id);
         }
+        superLeeDataController.deletetemployee(id);
         return "Employee removed successfully";
     }
 
@@ -210,6 +221,14 @@ public class EmployeeController {
             throw new Exception("Employee is not existed");
         }
         return employees.get(id).getWeeklyAvailableShifts();
+    }
+    //this function is in progress and it should add driver to system
+    public String addDriver(Integer driverid, Integer drivinglicense){
+        return "to be implemented";
+    }
+    //this function is in progress and it should check if the driver has the match license for the delivery
+    public String checklLicense(Integer driverid, Integer licenseid){
+        return "to be implemented";
     }
 
     //for testing
