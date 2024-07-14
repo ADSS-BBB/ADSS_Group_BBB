@@ -14,7 +14,7 @@ public class PersonnelManagerDAO {
         return instance;
     }
 
-    private static Connection toConnect() throws ClassNotFoundException {
+    private static Connection toConnect() throws SQLException {
         String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
         Connection connection=null;
         try {
@@ -32,6 +32,7 @@ public class PersonnelManagerDAO {
     public void insert(PersonnelManagerDTO HRmanager) throws SQLException {
         String query = "INSERT INTO HRmanagers (name) VALUES (?)";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, HRmanager.getName());
             statement.executeUpdate();
@@ -47,6 +48,7 @@ public class PersonnelManagerDAO {
         LinkedList<PersonnelManagerDTO> HRmanagers = new LinkedList<>();
         try (PreparedStatement statement = connection.prepareStatement(query);
              ResultSet result = statement.executeQuery()){
+            connection = toConnect();
             while (result.next()){
                 String name = result.getString("name");
                 HRmanagers.add(new PersonnelManagerDTO(name));

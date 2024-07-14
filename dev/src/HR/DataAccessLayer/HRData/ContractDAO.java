@@ -17,7 +17,7 @@ public class ContractDAO {
         }
         return instance;
     }
-    private static Connection toConnect() throws ClassNotFoundException {
+    private static Connection toConnect() throws SQLException {
         String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
         Connection connection=null;
         try {
@@ -35,6 +35,7 @@ public class ContractDAO {
     public void insert(ContractDTO contract) throws SQLException {
         String query = "INSERT INTO contracts (employeeID, contractID, branchID, salary, employmentType, startDate) VALUES (?, ?, ?, ?, ?, ?)";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, contract.getEmployeeID());
             statement.setInt(2, contract.getContractID());
@@ -53,6 +54,7 @@ public class ContractDAO {
     public void delete(Integer contractID) throws SQLException {
         String query = "DELETE FROM contracts WHERE contractID = ?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, contractID);
             statement.executeUpdate();
@@ -66,6 +68,7 @@ public class ContractDAO {
     public void editEmploymentType(Integer contractID, String employmentType) throws SQLException {
         String query = "UPDATE contracts SET employmentType = ? WHERE contractID = ?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, employmentType);
             statement.setInt(2, contractID);
@@ -80,6 +83,7 @@ public class ContractDAO {
     public void editSalary(Integer contractID, Integer salary) throws SQLException {
         String query = "UPDATE contracts SET salary = ? WHERE contractID = ?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, salary);
             statement.setInt(2, contractID);
@@ -99,6 +103,7 @@ public class ContractDAO {
         String employmentType;
         String startDate;
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, employeeID);
             ResultSet result = statement.executeQuery();
@@ -123,6 +128,7 @@ public class ContractDAO {
         LinkedList<ContractDTO> contracts = new LinkedList<>();
         try (PreparedStatement statement = connection.prepareStatement(query);
              ResultSet result = statement.executeQuery()){
+            connection = toConnect();
             while (result.next()){
                 Integer employeeID = result.getInt("employeeID");
                 Integer contratID = result.getInt("contractID");

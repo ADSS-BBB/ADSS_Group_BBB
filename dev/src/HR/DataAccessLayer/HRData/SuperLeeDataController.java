@@ -130,11 +130,11 @@ public class SuperLeeDataController {
         contractDAO.editSalary(contractid, salary);
     }
     //employee
-    public void insertemployee(Integer employeeid,String employeename, String baankusername, Integer contractid, Integer branchid) throws SQLException {
+    public void insertemployee(Integer employeeid,String employeename, String baankusername, Integer contractid, Integer branchid) throws Exception {
         EmployeeDTO employee = new EmployeeDTO(employeeid, employeename, baankusername, contractid, branchid);
         employeeDAO.insert(employee);
     }
-    public void deletetemployee(Integer employeeid) throws SQLException {
+    public void deletetemployee(Integer employeeid) throws Exception {
         employeeDAO.delete(employeeid);
     }
     public EmployeeDTO getEmployee(Integer employeeid) throws SQLException {

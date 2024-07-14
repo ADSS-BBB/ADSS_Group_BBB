@@ -16,7 +16,7 @@ public class ScheduleDAO {
         return instance;
     }
 
-    private static Connection toConnect() throws ClassNotFoundException {
+    private static Connection toConnect() throws SQLException {
         String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
         Connection connection=null;
         try {
@@ -34,6 +34,7 @@ public class ScheduleDAO {
     public void insert(ScheduleDTO schedule) throws SQLException {
         String query = "INSERT INTO schedule (ShiftID, EmployeeID, BranchID, role) VALUES (?,?,?,?)";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, schedule.getShiftID());
             statement.setInt(2, schedule.getEmployeeID());
@@ -50,6 +51,7 @@ public class ScheduleDAO {
     public void delete(Integer ShiftID, Integer EmployeeID) throws SQLException {
         String query = "DELETE FROM schedule WHERE ShiftID = ? AND EmployeeID = ?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, ShiftID);
             statement.setInt(2, EmployeeID);
@@ -66,6 +68,7 @@ public class ScheduleDAO {
         Integer BranchId = -1;
         String role = "";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, ShiftID);
             statement.setInt(2, EmployeeID);
@@ -88,6 +91,7 @@ public class ScheduleDAO {
         LinkedList<ScheduleDTO> schedules = new LinkedList<>();
         try (PreparedStatement statement = connection.prepareStatement(query);
              ResultSet result = statement.executeQuery()){
+            connection = toConnect();
             while (result.next()) {
                 Integer ShiftID = result.getInt("ShiftID");
                 Integer EmployeeID = result.getInt("EmployeeID");

@@ -19,7 +19,7 @@ public class ShiftDAO {
         return instance;
     }
 
-    private static Connection toConnect() throws ClassNotFoundException {
+    private static Connection toConnect() throws SQLException {
         String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
         Connection connection=null;
         try {
@@ -37,6 +37,7 @@ public class ShiftDAO {
     public void insert(ShiftDTO shift) throws SQLException {
         String query = "INSERT INTO shifts (shiftID, branchID, type, minWorkers, time) VALUES (?, ?, ?, ?, ?)";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, shift.getShiftID());
             statement.setInt(2, shift.getBranchID());
@@ -54,6 +55,7 @@ public class ShiftDAO {
     public void delete(Integer shiftID) throws SQLException{
         String query = "DELETE FROM shifts WHERE shiftID = ?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, shiftID);
             statement.executeUpdate();
@@ -67,6 +69,7 @@ public class ShiftDAO {
     public void editMinWorkers (Integer shiftID, Integer MinWorkers) throws SQLException{
         String query = "UPDATE shifts SET minWorkers = ? WHERE shiftID =?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, MinWorkers);
             statement.setInt(2, shiftID);
@@ -85,6 +88,7 @@ public class ShiftDAO {
         Integer minWorkers= -1;
         String time = "";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, shiftID);
             ResultSet result = statement.executeQuery();
@@ -108,6 +112,7 @@ public class ShiftDAO {
         LinkedList<ShiftDTO> shifts = new LinkedList<>();
         try (PreparedStatement statement = connection.prepareStatement(query);
              ResultSet result = statement.executeQuery()){
+            connection = toConnect();
             while (result.next()){
                 Integer shiftID = result.getInt("shiftID");
                 Integer branchID = result.getInt("branchID");

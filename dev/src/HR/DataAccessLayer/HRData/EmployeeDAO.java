@@ -20,7 +20,7 @@ public class EmployeeDAO {
         }
         return instance;
     }
-    private static Connection toConnect() throws ClassNotFoundException {
+    private static Connection toConnect() throws SQLException {
         String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
         Connection connection=null;
         try {
@@ -38,6 +38,7 @@ public class EmployeeDAO {
     public void insert(EmployeeDTO employee) throws SQLException {
         String query = "INSERT INTO employees (employeeID, employeeName, bankUsername, contractID, branchID) VALUES (?, ?, ?, ?, ?)";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, employee.getEmployeeID());
             statement.setString(2, employee.getEmployeeName());
@@ -55,6 +56,7 @@ public class EmployeeDAO {
     public void delete(Integer employeeID) throws SQLException {
         String query = "DELETE FROM employees WHERE employeeID = ?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, employeeID);
             statement.executeUpdate();
@@ -72,6 +74,7 @@ public class EmployeeDAO {
         Integer contractID = -1;
         Integer branchID = -1;
         try{
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, employeeID);
             ResultSet result = statement.executeQuery();
@@ -97,6 +100,7 @@ public class EmployeeDAO {
         String query = "SELECT * FROM employees";
         try (PreparedStatement statement = connection.prepareStatement(query);
              ResultSet result = statement.executeQuery()){
+            connection = toConnect();
             while (result.next()) {
                 Integer employeeID = result.getInt("employeeID");
                 String employeeName = result.getString("employeeName");

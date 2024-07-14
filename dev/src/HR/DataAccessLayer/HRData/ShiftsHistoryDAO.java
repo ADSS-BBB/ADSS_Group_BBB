@@ -14,7 +14,7 @@ public class ShiftsHistoryDAO {
         return instance;
     }
 
-    private static Connection toConnect() throws ClassNotFoundException {
+    private static Connection toConnect() throws SQLException {
         String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
         Connection connection=null;
         try {
@@ -32,6 +32,7 @@ public class ShiftsHistoryDAO {
     public void insert(ShiftsHistoryDTO shiftsHistory) throws SQLException{
         String query = "INSERT INTO shiftshistory (EmployeeID, BranchID, ShiftID) VALUES (?, ?, ?)";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, shiftsHistory.getEmployeeID());
             statement.setInt(2, shiftsHistory.getBranchID());
@@ -47,6 +48,7 @@ public class ShiftsHistoryDAO {
     public void delete(Integer ShiftID, Integer EmployeeID) throws SQLException {
         String query = "DELETE FROM shiftshistory WHERE ShiftID = ? AND EmployeeID = ?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, ShiftID);
             statement.setInt(2, EmployeeID);
@@ -63,6 +65,7 @@ public class ShiftsHistoryDAO {
         LinkedList<ShiftsHistoryDTO> shiftsHistory = new LinkedList<>();
         try (PreparedStatement statement = connection.prepareStatement(query);
              ResultSet result = statement.executeQuery()){
+            connection = toConnect();
             while (result.next()){
                 Integer EmployeeID = result.getInt("EmploeeID");
                 Integer BranchID = result.getInt("BranchID");

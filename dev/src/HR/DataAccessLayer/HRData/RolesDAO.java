@@ -18,7 +18,7 @@ public class RolesDAO {
         return instance;
     }
 
-    private static Connection toConnect() throws ClassNotFoundException {
+    private static Connection toConnect() throws SQLException {
         String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
         Connection connection=null;
         try {
@@ -36,6 +36,7 @@ public class RolesDAO {
     public void insert(RolesDTO rolesDTO) throws SQLException {
         String query = "INSERT INTO Roles (EmployeeID, BranchId, role) VALUES(?,?,?)";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, rolesDTO.getEmployeeID());
             statement.setInt(2, rolesDTO.getBranchId());
@@ -52,6 +53,7 @@ public class RolesDAO {
     public void delete(Integer EmployeeID, String role) throws SQLException {
         String query = "DELETE FROM Roles WHERE EmployeeID = ? AND role = ?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, EmployeeID);
             statement.setString(2, role);
@@ -69,6 +71,7 @@ public class RolesDAO {
         LinkedList<RolesDTO> roles = new LinkedList<>();
         try (PreparedStatement statement = connection.prepareStatement(query);
              ResultSet result = statement.executeQuery()){
+            connection = toConnect();
             while (result.next()) {
                 Integer EmployeeID = result.getInt("EmployeeID");
                 Integer BranchID = result.getInt("BranchId");

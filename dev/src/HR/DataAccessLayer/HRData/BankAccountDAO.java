@@ -21,7 +21,7 @@ public class BankAccountDAO {
         this.connection = toConnect();
     }
 
-    private static Connection toConnect() throws ClassNotFoundException {
+    private static Connection toConnect() throws SQLException {
         String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
         Connection connection=null;
         try {
@@ -35,6 +35,7 @@ public class BankAccountDAO {
     public void insert(BankAccountDTO bank) throws SQLException {
         String query = "INSERT INTO bankaccounts (employeeID, username, password, balance) VALUES (?, ?, ?, ?)";
         try {
+            connection = toConnect();
             PreparedStatement statment = connection.prepareStatement(query);
             statment.setInt(1, bank.getEmployeeID());
             statment.setString(2, bank.getUsername());
@@ -51,6 +52,7 @@ public class BankAccountDAO {
     public void delete(String username) throws SQLException {
         String query = "DELETE FROM bankaccounts WHERE username = ?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
             statement.executeUpdate();
@@ -62,6 +64,7 @@ public class BankAccountDAO {
     public void editbankbalance(String username, Integer balance) throws SQLException {
         String query = "UPDATE bankaccounts SET balance = ? WHERE username = ?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
             statement.setInt(2, balance);
@@ -76,6 +79,7 @@ public class BankAccountDAO {
     public void editbankpassword(String username, String password) throws SQLException{
         String query = "UPDATE bankaccounts SET password = ? WHERE username = ?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
             statement.setString(2, password);
@@ -93,6 +97,7 @@ public class BankAccountDAO {
         String password;
         Integer balance;
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, employeeID);
             ResultSet result = statement.executeQuery();
@@ -115,6 +120,7 @@ public class BankAccountDAO {
         LinkedList<BankAccountDTO> bankAccounts = new LinkedList<>();
         try (PreparedStatement statement = connection.prepareStatement(query);
              ResultSet result = statement.executeQuery()){
+            connection = toConnect();
             while (result.next()){
                 Integer employeeID = result.getInt("employeeID");
                 String username = result.getString("username");

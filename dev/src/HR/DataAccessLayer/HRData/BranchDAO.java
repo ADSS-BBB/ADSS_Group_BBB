@@ -16,7 +16,7 @@ public class BranchDAO {
         return instance;
     }
 
-    private static Connection toConnect() throws ClassNotFoundException {
+    private static Connection toConnect() throws SQLException {
         String url = "jdbc:sqlite:C:/Users/Win10/Desktop/ADSS_Group_BBB/ADSS_Group_BBB/SuperLee.db";
         Connection connection=null;
         try {
@@ -34,6 +34,7 @@ public class BranchDAO {
     public void insert(BranchDTO branch) throws SQLException {
         String query = "INSERT INTO branches (branchID, location) VALUES (?,?)";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, branch.getBranchID());
             statement.setString(2, branch.getLocation());
@@ -48,6 +49,7 @@ public class BranchDAO {
     public void delete(Integer branchID) throws SQLException {
         String query = "DELETE FROM branches WHERE branchID = ?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, branchID);
             statement.executeUpdate();
@@ -61,6 +63,7 @@ public class BranchDAO {
     public void editlocation(Integer branchID, String location) throws SQLException {
         String query = "UPDATE branches SET location = ? WHERE branchID = ?";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, location);
             statement.setInt(2, branchID);
@@ -76,6 +79,7 @@ public class BranchDAO {
         String query = "SELECT * FROM branches WHERE branchID = ?";
         String location = "";
         try {
+            connection = toConnect();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, branchID);
             ResultSet result = statement.executeQuery();
@@ -96,6 +100,7 @@ public class BranchDAO {
         LinkedList<BranchDTO> branches = new LinkedList<>();
         try (PreparedStatement statement = connection.prepareStatement(query);
              ResultSet result = statement.executeQuery()){
+            connection = toConnect();
             while (result.next()){
                 Integer branchID = result.getInt("branchID");
                 String location = result.getString("location");

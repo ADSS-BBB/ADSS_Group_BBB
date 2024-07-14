@@ -15,9 +15,11 @@ import java.util.Scanner;
 public class Main {
     public static FactroyService factroyService;
 
+
     static {
         try {
             factroyService = new FactroyService();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -36,7 +38,6 @@ public class Main {
     public static Application application = new Application(factroyService, manager);
 
     public static void main(String[] args) throws Exception {
-        SuperLeeDataController.getInstance().insertpersonnelmanager(manager.getName());
         while (true) {
             Scanner sc = new Scanner(System.in);
             String input;
@@ -48,9 +49,10 @@ public class Main {
             input = sc.nextLine();
             switch (Integer.parseInt(input)) {
                 case 1:
+                    SuperLeeDataController.getInstance().insertpersonnelmanager(manager.getName());
                     factroyService.addbranch(1, "Beer sheva");
                     factroyService.addEmployee(1, "essa", 1, 12000, 1, "full", "essa", "essa12", 15000, LocalDate.of(2023, 8, 2));
-                    factroyService.addEmployee(2, "athel", 2, 12000, 1, "full", "athel", "athel12", 15000, LocalDate.of(2023, 8, 2));
+                    factroyService.addEmployee(2, "athel", 2, 12000, 1, "full", "athel", "athel12", 12000, LocalDate.of(2023, 8, 2));
                     factroyService.addEmployeeRole(1, "Shift Manager");
                     factroyService.addEmployeeRole(2, "cashier");
                     factroyService.addShift(1, LocalDate.of(2024, 10, 10), 2, "Morning", 1);
