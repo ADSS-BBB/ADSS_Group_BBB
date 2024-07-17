@@ -1,5 +1,8 @@
 package HR.DomainLayer.EmployeePackage;
 
+import DeliveryM.BusinessLayer.Controllers.DriverController;
+import DeliveryM.BusinessLayer.Objects.Driver;
+import HR.DataAccessLayer.HRData.SuperLeeDataController;
 import HR.DomainLayer.BankAccount;
 import HR.DomainLayer.BranchPackage.Branch;
 import HR.DomainLayer.BranchPackage.BranchController;
@@ -7,13 +10,20 @@ import HR.DomainLayer.Contract;
 import HR.DomainLayer.ShiftPackage.Shift;
 import HR.DomainLayer.ShiftPackage.ShiftController;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class EmployeeController {
+    SuperLeeDataController superLeeDataController =  SuperLeeDataController.getInstance();
     private HashMap<Integer, Employee> employees = new HashMap<>();
     private static EmployeeController instance;
-    public static EmployeeController getInstance() {
+
+    public EmployeeController() throws Exception {
+    }
+
+
+    public static EmployeeController getInstance() throws Exception {
         if (instance == null) {
             instance = new EmployeeController();
         }
@@ -35,13 +45,18 @@ public class EmployeeController {
         throw new Exception("Employee is not existed");
     }
 
-    public String addRole(String role, Integer id) throws Exception{
+    public String addRole(String role, Integer id,String licenseType) throws Exception{
         if (id == null || id < 0){
             throw new Exception("Employee id is null");
         }
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+
+        if(role.equals("driver")) {
+            addDriver(id, employees.get(id).getUsername(), licenseType);
+        }
+        superLeeDataController.insertroles(id, employees.get(id).getBranchId(), role);
         return employees.get(id).addRole(role);
     }
 
@@ -52,6 +67,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+        superLeeDataController.deleteroles(id, role);
         return employees.get(id).removeRole(role);
     }
 
@@ -62,6 +78,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+        superLeeDataController.editsalary(employees.get(id).getDealdetails().getContractID(), salary);
         return employees.get(id).IncreaseSalary(salary);
     }
 
@@ -72,6 +89,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+        superLeeDataController.editsalary(employees.get(id).getDealdetails().getContractID(), salary);
         return employees.get(id).DecreaseSalary(salary);
     }
 
@@ -102,6 +120,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+        superLeeDataController.insertweeklyshifts(id, employees.get(id).getBranchId(), shiftid);
         return employees.get(id).addShiftToWeek(shiftid);
     }
 
@@ -112,6 +131,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+        superLeeDataController.deleteweeklyshifts(id, shiftid);
         return employees.get(id).removeShiftFromWeek(shiftid);
     }
 
@@ -122,6 +142,7 @@ public class EmployeeController {
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
+        superLeeDataController.editemployemenType(employees.get(id).getDealdetails().getContractID(), type);
         return employees.get(id).setEmploymentType(type);
     }
 
@@ -145,7 +166,7 @@ public class EmployeeController {
             if (employee.getWeeklyAvailableShifts().contains(shiftId)){
                 if (!shiftEmployees.contains(employee)){
                     shiftEmployees.add(employee);
-                    ShiftController.getInstance().getShift(shiftId).getEmployees().add(employee.getEmployeeID());
+                    ShiftController.getInstance().getShift(shiftId).AddEmployee(employee.getEmployeeID());
                     employee.updatehistory();
                 }
 
@@ -158,7 +179,7 @@ public class EmployeeController {
     }
 
 
-    public String addEmployee(Integer id, String username, Contract contract , BankAccount bankAccount, Integer branchid) throws Exception{
+    public String addEmployee(Integer id, String username, Contract contract , BankAccount bankAccount) throws Exception{
         if (id == null || id < 0){
             throw new Exception("Employee id is null");
         }
@@ -174,15 +195,24 @@ public class EmployeeController {
         if (bankAccount == null || bankAccount.isEmpty()){
             throw new Exception("BankAccount is null");
         }
-        if (branchid == null || branchid<0){
+        if (contract.getBranchId() == null || contract.getBranchId()<0){
             throw new Exception("Branchid is null");
         }
-        if (!BranchController.getInstance().getBranches().containsKey(branchid)){
+        if (!BranchController.getInstance().getBranches().containsKey(contract.getBranchId())){
             throw new Exception("no such branch");
         }
-        employees.put(id, new Employee(id, username, contract, bankAccount, branchid));
+        employees.put(id, new Employee(id, username, contract, bankAccount));
+        superLeeDataController.insertemployee(id, username, bankAccount.getUsername(), contract.getContractID(), employees.get(id).getBranchId());
+        superLeeDataController.insertbankaccount(id, username, bankAccount.getPassword(), bankAccount.getBalance());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedDate = contract.getStartDate().format(formatter);
+        superLeeDataController.insertcontract(id, contract.getContractID(), EmployeeController.getInstance().getEmployee(id).getBranchId(), contract.getSalary(), contract.getEmploymentType(), formattedDate);
         return "Employee added successfully";
+    }
 
+    public String addEmployeefromDTO(Integer id, String username, Contract contract , BankAccount bankAccount) throws Exception{
+        employees.put(id, new Employee(id, username, contract, bankAccount));
+        return "employee added from data successfully";
     }
 
     public String removeEmployee(Integer id) throws Exception{
@@ -195,20 +225,34 @@ public class EmployeeController {
         employees.remove(id);
         HashMap<Integer, Branch> branches = BranchController.getInstance().getBranches();
         for (Branch branch : branches.values()){
-            branch.getBranchEmployees().remove(id);
+            branch.RemoveBranchEmployee(id);
         }
+        superLeeDataController.deletetemployee(id);
         return "Employee removed successfully";
     }
 
-    public LinkedList<Integer> showAvailableShifts(Integer id, Integer shiftid) throws Exception{
+    public LinkedList<Integer> showAvailableShifts(Integer id) throws Exception{
         if (id == null || id < 0){
             throw new Exception("Employee id is null");
         }
         if (!employees.containsKey(id)){
             throw new Exception("Employee is not existed");
         }
-        LinkedList<Integer> ans = new LinkedList<Integer>();
-        employees.get(id).getWeeklyAvailableShifts().add(shiftid);
         return employees.get(id).getWeeklyAvailableShifts();
+    }
+    //this function is in progress and it should add driver to system
+    public String addDriver(Integer driverid,String name, String drivinglicense) throws Exception {
+        return DriverController.getInstance().addDriver(new Driver(driverid,name,drivinglicense));
+    }
+    //this function is in progress and it should check if the driver has the match license for the delivery
+    public String checklLicense(Integer driverid, Integer licenseid){
+        return "to be implemented";
+    }
+
+    //for testing
+
+
+    public static void setInstancetonull(EmployeeController instance) {
+        EmployeeController.instance = null;
     }
 }

@@ -1,18 +1,23 @@
 package HR.DomainLayer.EmployeePackage;
 
+import DeliveryM.BusinessLayer.Controllers.DriverController;
+import DeliveryM.BusinessLayer.Controllers.MainController;
+import DeliveryM.BusinessLayer.Objects.Driver;
 import HR.DomainLayer.BankAccount;
 import HR.DomainLayer.BranchPackage.Branch;
 import HR.DomainLayer.BranchPackage.BranchController;
 import HR.DomainLayer.Contract;
+import HR.DomainLayer.PersonnelManager;
 import HR.DomainLayer.ShiftPackage.Shift;
 import HR.DomainLayer.ShiftPackage.ShiftController;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Employee {
     private Integer EmployeeID;
-    private String Username;
+    private String name;
     private Contract Dealdetails;
     private BankAccount BankAccount;
     private LinkedList<Integer> WeeklyAvailableShifts;
@@ -21,21 +26,21 @@ public class Employee {
     private Integer BranchId;
 
 
-    public Employee(Integer EmployeeID , String Username, Contract Dealdetails, BankAccount BankAccount, Integer BranchId) {
+    public Employee(Integer EmployeeID , String name, Contract Dealdetails, BankAccount BankAccount) throws Exception{
         this.EmployeeID = EmployeeID;
-        this.Username = Username;
+        this.name = name;
         this.Dealdetails = Dealdetails;
         this.BankAccount = BankAccount;
         WeeklyAvailableShifts = new LinkedList<>();
         ShiftsHistory = new LinkedList<>();
         roles = new LinkedList<>();
-        this.BranchId = BranchId;
+        this.BranchId = Dealdetails.getBranchId();
         EmployeeController.getInstance().getEmployees().put(EmployeeID,this);
-
+        BranchController.getInstance().addEmployee(EmployeeID , Dealdetails.getBranchId());
     }
 
     public String getUsername() {
-        return Username;
+        return name;
     }
 
     public BankAccount getBankAccount() {
@@ -74,6 +79,10 @@ public class Employee {
         if (roles.contains(role)){
             throw new Exception("the employee already has this role");
         }
+//        if(role.equals("driver")){
+//
+//            DriverController.getInstance().addDriver(new Driver(this.EmployeeID,this.name,))
+//        }
         roles.add(role);
         return "the role added successfully";
     }
@@ -157,6 +166,9 @@ public class Employee {
         if (!ShiftController.getInstance().getShifts().containsKey(ShiftId)){
             throw new Exception("no such shift");
         }
+        if (Dealdetails.getStartDate().isAfter(ShiftController.getInstance().getShift(ShiftId).getTime())){
+            throw new Exception("shift date is after start date");
+        }
         WeeklyAvailableShifts.add(ShiftId);
         return "employee added an available day";
     }
@@ -180,12 +192,18 @@ public class Employee {
         return "employment type changed successfully";
     }
 
+    public String addDTOContract(Integer contractID, Integer branchID, Integer salary, String employmentType, LocalDate startdate){
+        Dealdetails = new Contract(contractID, branchID, salary, employmentType, startdate);
+        return "contract added succsfully";
+    }
+
     public String updatehistory() throws Exception{
         HashMap<Integer, Shift> shifts = ShiftController.getInstance().getShifts();
-        for (int i = 0 ; i < shifts.size() ; i++){
-            Shift currshift = shifts.get(i);
-            if (currshift.getEmployees().contains(this.EmployeeID)){
-                ShiftsHistory.add(currshift.getShiftId());
+        for (Shift shift : shifts.values()){
+            if (shift != null) {
+                if (shift.getEmployees().contains(this.EmployeeID)) {
+                    ShiftsHistory.add(shift.getShiftId());
+                }
             }
         }
         return "updated the history";

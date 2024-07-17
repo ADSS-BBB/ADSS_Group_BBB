@@ -4,24 +4,38 @@ import HR.DomainLayer.BankAccount;
 import HR.DomainLayer.Contract;
 import HR.DomainLayer.EmployeePackage.Employee;
 import HR.DomainLayer.EmployeePackage.EmployeeController;
+import HR.LocalDateAdapter;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.time.LocalDate;
 import java.util.LinkedList;
 
 public class EmployeeService {
     EmployeeController employeeController;
 
-    public EmployeeService() {
+    public EmployeeService() throws Exception {
         employeeController = EmployeeController.getInstance();
     }
 
-    public String addEmployee(Integer id, String username, Contract contract, BankAccount bankAccount, Integer branchid) throws Exception {
+    public String addEmployee(Integer id, String username, Contract contract, BankAccount bankAccount) throws Exception {
         try {
-            String result = employeeController.addEmployee(id, username, contract, bankAccount, branchid);
+            String result = employeeController.addEmployee(id, username, contract, bankAccount);
             return result;
         }
         catch (Exception e) {
             return "failed while trying to add employee";
+        }
+    }
+
+    public String getEmployee(Integer employeeId) throws Exception{
+        try {
+            Employee result = employeeController.getEmployee(employeeId);
+            Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
+            String json = gson.toJson(result);
+            return json;
+        } catch (Exception e) {
+            return "failed while trying to retrieve employee";
         }
     }
 
@@ -36,9 +50,9 @@ public class EmployeeService {
 
     }
 
-    public String addRole(Integer id, String role) throws Exception {
+    public String addRole(Integer id, String role,String licenseType) throws Exception {
         try{
-            String result = employeeController.addRole(role, id);
+            String result = employeeController.addRole(role, id,licenseType);
             return result;
         }
         catch (Exception e) {
@@ -150,9 +164,9 @@ public class EmployeeService {
         }
     }
 
-    public String showAvailableShifts(Integer id, Integer shiftid) throws Exception{
+    public String showAvailableShifts(Integer id) throws Exception{
         try {
-            LinkedList<Integer> result = employeeController.showAvailableShifts(id, shiftid);
+            LinkedList<Integer> result = employeeController.showAvailableShifts(id);
             Gson gson = new Gson();
             String json = gson.toJson(result);
             return json;

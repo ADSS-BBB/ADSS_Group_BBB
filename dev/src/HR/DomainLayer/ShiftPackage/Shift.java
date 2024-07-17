@@ -2,14 +2,14 @@ package HR.DomainLayer.ShiftPackage;
 
 import HR.DomainLayer.EmployeePackage.EmployeeController;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Shift {
     private Integer ShiftId;
-    private LocalDateTime Time;
-    private Integer ShiftManagerId;
+    private LocalDate Time;
     private LinkedList<Integer> Employees;
     private LinkedList<Integer> Cancelations;
     private Integer MinWorkers;
@@ -17,10 +17,9 @@ public class Shift {
     private Integer BranchId;
 
 
-    public Shift(Integer ShiftId, Integer ShiftManagerId , Integer MinWorkers, String Type, Integer BranchId) {
+    public Shift(Integer ShiftId, LocalDate time, Integer MinWorkers, String Type, Integer BranchId) throws Exception {
         this.ShiftId = ShiftId;
-        this.Time = LocalDateTime.now();
-        this.ShiftManagerId = ShiftManagerId;
+        this.Time = time;
         this.MinWorkers = MinWorkers;
         Employees = new LinkedList<>();
         Cancelations = new LinkedList<>();
@@ -35,11 +34,8 @@ public class Shift {
     public Integer getShiftId() {
         return ShiftId;
     }
-    public LocalDateTime getTime() {
+    public LocalDate getTime() {
         return Time;
-    }
-    public Integer getShiftManagerId() {
-        return ShiftManagerId;
     }
     public String getType() {
         return Type;
@@ -78,7 +74,7 @@ public class Shift {
         if (!EmployeeController.getInstance().getEmployees().containsKey(WorkerId)) {
             throw new Exception("Employee does not exist");
         }
-        if (!EmployeeController.getInstance().getEmployee(WorkerId).getWeeklyAvailableShifts().contains(WorkerId)) {
+        if (!EmployeeController.getInstance().getEmployee(WorkerId).getWeeklyAvailableShifts().contains(ShiftId)) {
             throw new Exception("Employee is not available");
         }
         Employees.add(WorkerId);

@@ -5,11 +5,12 @@ import HR.DomainLayer.BranchPackage.BranchController;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class BranchService {
      BranchController branchController;
 
-     public BranchService(){
+     public BranchService() throws Exception {
          branchController=BranchController.getInstance();
      }
 
@@ -27,7 +28,7 @@ public class BranchService {
             String result = branchController.removeBranch(id);
             return result;
         } catch (Exception e){
-            return "failed while trying to remove branc";
+            return "failed while trying to remove branch";
         }
     }
 
@@ -49,6 +50,18 @@ public class BranchService {
         }
     }
 
+    public String getRoles(Integer id) throws Exception{
+         try{
+             LinkedList<String> result = branchController.getRoles(id);
+             Gson gson = new Gson();
+             String json = gson.toJson(result);
+             return json;
+         }
+         catch (Exception e){
+             return "failed while trying to get roles";
+         }
+    }
+
     public String addRole(Integer id , String role) throws Exception{
          try{
              String result = branchController.addRole(id,role);
@@ -67,27 +80,27 @@ public class BranchService {
         }
     }
 
-    public String setShift1Hours(Integer branchId, Integer[] shift1Hours) throws Exception{
-         try{
-             Integer[] result = BranchController.getInstance().setShift1Hours(branchId,shift1Hours);
-             Gson gson = new Gson();
-             String json = gson.toJson(result);
-             return json;
-         } catch (Exception e){
-             return "failed while trying to setShifthours1";
-         }
-    }
-
-    public String setShift2Hours(Integer branchId, Integer[] shift2Hours) throws Exception{
-        try{
-            Integer[] result = BranchController.getInstance().setShift2Hours(branchId,shift2Hours);
-            Gson gson = new Gson();
-            String json = gson.toJson(result);
-            return json;
-        } catch (Exception e){
-            return "failed while trying to setShifthours2";
-        }
-    }
+//    public String setShift1Hours(Integer branchId, Integer[] shift1Hours) throws Exception{
+//         try{
+//             Integer[] result = BranchController.getInstance().setShift1Hours(branchId,shift1Hours);
+//             Gson gson = new Gson();
+//             String json = gson.toJson(result);
+//             return json;
+//         } catch (Exception e){
+//             return "failed while trying to setShifthours1";
+//         }
+//    }
+//
+//    public String setShift2Hours(Integer branchId, Integer[] shift2Hours) throws Exception{
+//        try{
+//            Integer[] result = BranchController.getInstance().setShift2Hours(branchId,shift2Hours);
+//            Gson gson = new Gson();
+//            String json = gson.toJson(result);
+//            return json;
+//        } catch (Exception e){
+//            return "failed while trying to setShifthours2";
+//        }
+//    }
 
     public String updateBranchShift(Integer id) throws Exception{
          try {

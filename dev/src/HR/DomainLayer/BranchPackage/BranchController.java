@@ -1,17 +1,31 @@
 package HR.DomainLayer.BranchPackage;
 
+import HR.DataAccessLayer.HRData.SuperLeeDataController;
+import HR.DomainLayer.EmployeePackage.EmployeeController;
+
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class BranchController {
+    SuperLeeDataController superLeeDataController = SuperLeeDataController.getInstance();
     private static BranchController instance;
     private HashMap<Integer, Branch> branches = new HashMap<>();
 
-    public static BranchController getInstance() {
+    public BranchController() throws Exception {
+    }
+
+    public static BranchController getInstance() throws Exception{
         if (instance == null) {
             instance = new BranchController();
-
         }
         return instance;
+    }
+
+    public LinkedList<String> getRoles(Integer branchID) throws Exception {
+        if (branches.containsKey(branchID)){
+            return branches.get(branchID).getRoles();
+        }
+        throw new Exception("Branch not found");
     }
 
     public Branch getBranch(Integer id) throws Exception {
@@ -25,27 +39,6 @@ public class BranchController {
         return branches;
     }
 
-    public Integer[] setShift1Hours(Integer branchId, Integer[] shift1Hours) throws Exception {
-        if (branchId == null || branchId < 0){
-            throw new Exception("Branch id is null");
-        }
-        if (!branches.containsKey(branchId)){
-            throw new Exception("Branch is not existed");
-        }
-        branches.get(branchId).setShift1Hours(shift1Hours);
-        return branches.get(branchId).getShift1Hours();
-    }
-
-    public Integer[] setShift2Hours(Integer branchId, Integer[] shift2Hours) throws Exception {
-        if (branchId == null || branchId < 0){
-            throw new Exception("Branch id is null");
-        }
-        if (!branches.containsKey(branchId)){
-            throw new Exception("Branch is not existed");
-        }
-        branches.get(branchId).setShift2Hours(shift2Hours);
-        return branches.get(branchId).getShift2Hours();
-    }
 
     public String addRole(Integer branchId, String role) throws Exception {
         if (branchId == null || branchId < 0){
@@ -54,6 +47,7 @@ public class BranchController {
         if (!branches.containsKey(branchId)){
             throw new Exception("Branch is not existed");
         }
+        superLeeDataController.insertroles(-1, branchId, role);
         return branches.get(branchId).AddRole(role);
     }
 
@@ -64,6 +58,7 @@ public class BranchController {
         if (!branches.containsKey(branchId)){
             throw new Exception("Branch is not existed");
         }
+        superLeeDataController.deleteroles(branchId, role);
         return branches.get(branchId).RemoveRole(role);
     }
 
@@ -74,7 +69,8 @@ public class BranchController {
         if (!branches.containsKey(branchId)){
             throw new Exception("Branch is not existed");
         }
-        return branches.get(branchId).AddBranchEmployee(employeeId);
+        branches.get(branchId).AddBranchEmployee(employeeId);
+        return "employee added successfully";
 
     }
 
@@ -100,7 +96,13 @@ public class BranchController {
             throw new Exception("Location is null");
         }
         branches.put(branchId, new Branch(location, branchId));
+        superLeeDataController.insertbranch(branchId, location);
         return "Branch added successfully";
+    }
+
+    public String addBranchfromDTO(Integer branchId, String location) throws Exception{
+        branches.put(branchId, new Branch(location, branchId));
+        return "succesfully added";
     }
 
     public String removeBranch(Integer branchId) throws Exception {
@@ -111,6 +113,7 @@ public class BranchController {
             throw new Exception("Branch is not existed");
         }
         branches.remove(branchId);
+        superLeeDataController.deletebranch(branchId);
         return "Branch removed successfully";
     }
 
@@ -125,4 +128,10 @@ public class BranchController {
         return branches;
     }
 
+    //for testing
+
+
+    public static void setInstancetonull(BranchController instance) {
+        BranchController.instance = null;
+    }
 }
